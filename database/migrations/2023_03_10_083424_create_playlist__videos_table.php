@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('playlist__videos', function (Blueprint $table) {
             $table->unsignedBigInteger("playlist_id");
-            $table->foreign("playlist_id")->references("id")->on("playlist")->onDelete("cascade");
+            $table->foreign("playlist_id")->references("id")->on("playlists")->onDelete("cascade");
             $table->unsignedBigInteger("video_id");
-            $table->foreign("video_id")->references("id")->on("video")->onDelete("cascade");
+            $table->foreign("video_id")->references("id")->on("videos")->onDelete("cascade");
             $table->unsignedInteger("position");
             $table->timestamps();
         });
