@@ -8,4 +8,15 @@ use Illuminate\Database\Eloquent\Model;
 class Playlist_Video extends Model
 {
     use HasFactory;
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'playlist_id',
+        'video_id',
+        'position'
+    ];
 }
