@@ -16,9 +16,9 @@ return new class extends Migration
             $table->unsignedBigInteger("user_id");
             $table->foreign("user_id")->references("id")->on("users")->onDelete("cascade");
             $table->string("title");
-            $table->string("filename", 255);
+            $table->string("filename");
             $table->text("description");
-            $table->string("thumbnail", 255);
+            $table->string("thumbnail");
             $table->unsignedInteger("views")->default(0);
             $table->unsignedInteger("likes")->default(0);
             $table->unsignedInteger("dislikes")->default(0);
