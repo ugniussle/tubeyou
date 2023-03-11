@@ -24,7 +24,8 @@ return new class extends Migration
             $table->unsignedInteger("dislikes")->default(0);
             $table->date("upload_date")->default(now());
             $table->tinyInteger("visibility");
-            $table->string("url")->unique();
+            $table->string("url_token")->unique();
+            $table->timestamps();
         });
     }
 

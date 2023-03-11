@@ -21,6 +21,6 @@ class Video extends Model
         'description',
         'thumbnail',
         'visibility',
-        'url'
+        'url_token'
     ];
 }
