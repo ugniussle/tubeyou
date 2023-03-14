@@ -1,7 +1,4 @@
 <script setup>
-import LargeFileInput from '@/Components/LargeFileInput.vue';
-import LargeFileProgress from '@/Components/LargeFileProgress.vue';
-import TextInput from '@/Components/TextInput.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import Resumable from 'resumablejs';
 
@@ -87,13 +84,13 @@ r.on('fileSuccess', function(file, message) {
 
 <template>
     <div class="text-center">
-        <LargeFileInput id="browseVideoFiles" @vnodeMounted="setupUpload($event)">Browse...</LargeFileInput>
-        <LargeFileProgress
-            :progressBarId="'videoProgress'"
-            :fileDisplayId="'videoFileDisplay'"
-            :progressBarDiv="'progressDisplay'"
-            ></LargeFileProgress>
+        <SecondaryButton id="browseVideoFiles" @vnodeMounted="setupUpload($event)">Browse...</SecondaryButton>
+        <div id="progressDisplay" class="hidden border-black">
+            <span class="block" id="videoFileDisplay"></span>
 
+            <label for="videoProgress">Upload progress:</label>
+            <progress id="videoProgress" max="100" value="0"></progress>
+        </div>
         <SecondaryButton   id="startUploadButton" class="hidden" @click="startStopUpload($event)">Start file upload</SecondaryButton>
 
     </div>

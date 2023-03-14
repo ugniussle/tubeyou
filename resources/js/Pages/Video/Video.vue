@@ -1,12 +1,18 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-defineProps(['video'])
+defineProps(['videoInfo'])
 </script>
 
 <template>
     <AuthenticatedLayout>
-        <div class="grid grid-flow-row grid-rows-max gap-4 grid-cols-3 text-center text-xl m-10">
-            title is <span>{{ video.title }}</span>
+        <div class="text-xl m-10">
+            <video class="w-2/3 m-2 ml-0" controls width="320" height="240" autoplay>
+                <source :src="videoInfo.video_asset">
+                Your browser does not support the video tag.
+            </video> 
+            <div class="text-2xl">{{ videoInfo.title }}</div>
+            <div class>{{ videoInfo.description }}</div>
+
         </div>
     </AuthenticatedLayout>
     

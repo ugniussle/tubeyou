@@ -42,6 +42,9 @@ Route::resource('videos', VideoController::class)
 
 Route::get('/videos/{token}', function(string $token) {
     return VideoController::view($token);
-});
+})->name('videos.url_token');
+
+Route::post('videos/uploadVideo', [VideoController::class, 'upload'])
+    ->middleware(['auth', 'verified'])->name('videos.uploadVideo');
 
 require __DIR__.'/auth.php';

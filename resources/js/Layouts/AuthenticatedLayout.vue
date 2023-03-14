@@ -26,11 +26,14 @@ const showingNavigationDropdown = ref(false);
                                     />
                                 </Link>
                             </div>
-
+                            
                             <!-- Navigation Links -->
                             <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                                <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
-                                    Dashboard
+                                <NavLink :href="route('videos.index')" :active="route().current('videos.index')">
+                                    Videos
+                                </NavLink>
+                                <NavLink :href="route('videos.create')" :active="route().current('videos.create')">
+                                    Upload Video
                                 </NavLink>
                             </div>
                         </div>

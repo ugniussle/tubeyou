@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreign("user_id")->references("id")->on("users")->onDelete("cascade");
             $table->string("title");
             $table->string("filename");
-            $table->text("description");
+            $table->text("description")->nullable();
             $table->string("thumbnail");
             $table->unsignedInteger("views")->default(0);
             $table->unsignedInteger("likes")->default(0);
@@ -25,6 +25,8 @@ return new class extends Migration
             $table->date("upload_date")->default(now());
             $table->tinyInteger("visibility");
             $table->string("url_token")->unique();
+            $table->string('video_asset')->unique();
+            $table->string('thumbnail_asset')->unique();
             $table->timestamps();
         });
     }
