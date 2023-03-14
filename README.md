@@ -45,3 +45,4 @@
 
 1. Style video upload progress
 2. Let unregistered users view videos
+3. Group vue templates by usage (videos, input)
