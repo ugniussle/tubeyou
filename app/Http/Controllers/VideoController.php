@@ -104,6 +104,12 @@ class VideoController extends Controller
         $filepath = 'storage/videos/'.basename($request->filename);
 
         // validate file
+        if(str_starts_with(mime_content_type($filepath), 'video')) {
+            Log::debug('file is valid');
+        } else {
+            Log::debug('file is invalid');
+            return;
+        }
 
         $proccessedFileInfo = $this->processVideo(public_path($filepath));
         
