@@ -17,9 +17,10 @@
    5. Add content tags
    6. Add own thumbnail
    7. Edit thumbnail
-   8. Add liking and disliking.
-   9. Create multiple resolution video sources
-   10. Create multiple resolution thumbnails
+   8. Count views
+   9. Add liking and disliking
+   10. Create multiple resolution video sources
+   11. Create multiple resolution thumbnails
 2. Playlists
    1. Create playlist
    2. Add video to playlist
@@ -39,6 +40,7 @@
    3. Add sidebar for playlists, subscribed channels and other stuff
    4. Homepage
       1. ~~List public videos~~
+      2. Search
 7. Filesystem
    1. Deleted video files should be deleted after some time
 
@@ -47,6 +49,8 @@
 1. Style video upload progress
 2. Let unregistered users view videos
 3. Group vue templates by usage (videos, input)
+4. Show channel name and picture in video preview
+
 ### setup instructions
 
 1. copy .env.example to .env
