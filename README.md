@@ -4,6 +4,7 @@
 - [Tubeyou](#tubeyou)
     - [features to implement](#features-to-implement)
     - [things to do](#things-to-do)
+    - [setup instructions](#setup-instructions)
 
 
 ### features to implement
@@ -46,3 +47,12 @@
 1. Style video upload progress
 2. Let unregistered users view videos
 3. Group vue templates by usage (videos, input)
+### setup instructions
+
+1. copy .env.example to .env
+2. configure .env file (set database file path)
+3. ``` composer update ```
+3. ``` npm install ```
+3. ``` php artisan migrate ```
+3. ``` php artisan key:generate ```
+4. ``` php artisan storage:link ```
