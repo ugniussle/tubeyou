@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Video;
+use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
@@ -210,15 +211,23 @@ class VideoController extends Controller
      */
     public static function view(string $token)
     {
-        $video = Video::where('url_token', $token)->get();
+        $videos = Video::where('url_token', $token)->get();
 
-        Log::debug($video);
+        Log::debug($videos);
 
-        if($video->isEmpty()) {
+        if($videos->isEmpty()) {
             return redirect(RouteServiceProvider::HOME);
         } else {
+            $video = $videos[0];
+
+            $channel = User::where('id', $video->user_id)->get()[0];
+            
+            Log::debug("Video is: $video");
+            Log::debug("Channel is: $channel");
+
             return Inertia::render('Video/Video', [
-                'videoInfo' => $video[0]
+                'videoInfo' => $video,
+                'channelInfo' => $channel
             ]);
         }
     }
