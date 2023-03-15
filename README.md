@@ -33,7 +33,6 @@
    3. Tag other users.
 5. Subscriptions
    1. User can subscribe to channel (and unsubscribe).
-   2. 
 6. Design
    1. Custom page icon
    2. Style the navigation bar
