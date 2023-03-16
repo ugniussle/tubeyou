@@ -1,10 +1,13 @@
 <script setup>
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import Resumable from 'resumablejs';
+import { ref } from 'vue';
 
 const props = defineProps(['modelValue', 'csrf_token'])
 
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(['update:modelValue', 'updateErrorMessage'])
+
+const progressBar = ref(null)
 
 var r = new Resumable({
     chunkSize: 1 * 1024 * 1024,
@@ -20,10 +23,45 @@ const setupUpload = function(event) {
     r.assignBrowse(event.el, false)
 }
 
+r.on('fileAdded', function(file, event){
+    console.log(props.csrf_token)
+    if(!validateFile(file)) {
+        console.log('file is invalid')
+        document.getElementById('progressDisplay').style.display = 'none'
+        document.getElementById('startUploadButton').style.display = 'none'
+        document.getElementById('videoFileDisplay').innerHTML = ''
+        return
+    }
+
+    // console.log(file.file.type)
+    console.log(file, event)
+
+    document.getElementById('progressDisplay').style.display = 'block'
+    document.getElementById('startUploadButton').style.display = 'inline-block'
+    document.getElementById('videoFileDisplay').innerHTML = file.fileName
+})
+
+r.on('fileProgress', function(file) {
+    let progress = Math.floor(file.progress()*100)
+
+    progressBar.value.value = progress
+    progressBar.value.innerHTML = progress + '%'
+})
+
+r.on('fileSuccess', function(file, message) {
+    const response = JSON.parse(message)
+
+    emit('update:modelValue', response.path)
+})
+
+
 const validateFile = function(file) {
     if(file.file.type.slice(0, 5) === 'video') {
+        emit('updateErrorMessage', '')
         return true
     } else {
+        console.log('emitting')
+        emit('updateErrorMessage', 'File is not a video. Choose a video file.')
         return false
     }
 }
@@ -45,53 +83,17 @@ function startStopUpload(event) {
     r.upload()
 }
 
-
-r.on('fileAdded', function(file, event){
-    console.log(props.csrf_token)
-    if(!validateFile(file)) {
-        console.log('file is invalid')
-        document.getElementById('progressDisplay').style.display = 'none'
-        document.getElementById('startUploadButton').style.display = 'none'
-        document.getElementById('videoFileDisplay').innerHTML = ''
-        return
-    }
-
-    // console.log(file.file.type)
-    console.log(file, event)
-
-    document.getElementById('progressDisplay').style.display = 'block'
-    document.getElementById('startUploadButton').style.display = 'inline-block'
-    document.getElementById('videoFileDisplay').innerHTML = file.fileName
-})
-
-r.on('fileProgress', function(file) {
-    document.getElementById('videoProgress').value = Math.floor(file.progress()*100)
-    document.getElementById('videoProgress').innerHTML = Math.floor(file.progress()*100) + '%'
-})
-
-r.on('fileSuccess', function(file, message) {
-    console.log(message)
-    console.log(typeof(message))
-    
-    const response = JSON.parse(message)
-
-    console.log(response)
-
-    emit('update:modelValue', response.path)
-    console.log(response.path)
-})
 </script>
 
 <template>
-    <div class="text-center">
+    <div>
         <SecondaryButton id="browseVideoFiles" @vnodeMounted="setupUpload($event)">Browse...</SecondaryButton>
-        <div id="progressDisplay" class="hidden border-black">
-            <span class="block" id="videoFileDisplay"></span>
+            <div id="progressDisplay" class="hidden border-black">
+                <span class="block" id="videoFileDisplay"></span>
 
-            <label for="videoProgress">Upload progress:</label>
-            <progress id="videoProgress" max="100" value="0"></progress>
-        </div>
-        <SecondaryButton   id="startUploadButton" class="hidden" @click="startStopUpload($event)">Start file upload</SecondaryButton>
-
+                <label for="videoProgress">Upload progress:</label>
+                <progress ref="progressBar" class="w-full h-10 rounded-sm bg-gray-500" id="videoProgress" max="100" value="0"></progress>
+            </div>
+        <SecondaryButton id="startUploadButton" class="hidden" @click="startStopUpload($event)">Start file upload</SecondaryButton>
     </div>
 </template>

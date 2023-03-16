@@ -59,12 +59,12 @@ const options = ["public", "unlisted", "private"];
 
                 <InputError class="mt-2" :message="form.errors.filename" />
                 <InputLabel>Video file</InputLabel>
-                <FileUpload :csrf_token="csrf_token" v-model="form.filename"></FileUpload>
-
-                <InputError class="mt-2" :message="form.errors.visibility" />
-                <InputLabel>Visibility</InputLabel>
-                <SelectInput required v-model="form.visibility" :options="options">
-                </SelectInput>
+                    <FileUpload 
+                    class="max-w-xl" 
+                    :csrf_token="csrf_token" 
+                    v-model="form.filename" 
+                    @update-error-message="($message) => form.errors.filename = $message"
+                    />
 
                 <div>
                     <PrimaryButton class="mt-4" @click="createVideo">Create</PrimaryButton>
