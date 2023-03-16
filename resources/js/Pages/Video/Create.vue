@@ -12,6 +12,7 @@ import SelectInput from '@/Components/SelectInput.vue';
 import TextAreaInput from '@/Components/TextAreaInput.vue';
 import FileInput from "@/Components/FileInput.vue"
 import FileUpload from '@/Components/FileUpload.vue';
+import FormContainer from '@/Components/FormContainer.vue';
 
 import { useForm } from '@inertiajs/vue3';
 
@@ -36,40 +37,47 @@ const options = ["public", "unlisted", "private"];
 
 <template>
     <Head title="Upload video"/>
+    
     <AuthenticatedLayout>
-        <div class="p-10 text-center">
-            <form @submit.prevent="submit" enctype="multipart/form-data">
-                <header>
-                    <h2 class="text-lg font-medium text-gray-900">Upload Video</h2>
+        <div class="py-12 max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+            <FormContainer>
+                <form @submit.prevent="submit" enctype="multipart/form-data">
+                    <header class="mb-8">
+                        <h2 class="text-lg font-medium text-gray-900">Upload Video</h2>
 
-                    <p class="mt-1 text-sm text-gray-600">
-                        Upload a video for the whole world to see. Or not.
-                    </p>
-                </header>
+                        <p class="mt-1 text-sm text-gray-600">
+                            Upload a video for the whole world to see. Or not.
+                        </p>
+                    </header>
 
-                <InputError class="mt-2" :message="form.errors.title" />
+                    <!-- video title -->
+                    <InputLabel>Title</InputLabel>
+                    <TextInput class="max-w-xl mb-4" required v-model="form.title" type="text"></TextInput>
+                    <InputError class="mt-2" :message="form.errors.title" />
 
-                <InputLabel>Title</InputLabel>
-                <TextInput required v-model="form.title" type="text"></TextInput>
+                    <!-- video description -->
+                    <InputLabel>Description</InputLabel>
+                    <TextAreaInput class="max-w-xl mb-4" v-model="form.description"></TextAreaInput>
+                    <InputError class="mt-2" :message="form.errors.description" />
 
-                <InputError class="mt-2" :message="form.errors.description" />
+                    <!-- video visibility -->
+                    <InputLabel>Visibility</InputLabel>
+                    <SelectInput class="max-w-xl mb-4" required v-model="form.visibility" :options="options"/>
+                    <InputError class="mt-2" :message="form.errors.visibility" />
 
-                <InputLabel>Description</InputLabel>
-                <TextAreaInput v-model="form.description"></TextAreaInput>
-
-                <InputError class="mt-2" :message="form.errors.filename" />
-                <InputLabel>Video file</InputLabel>
+                    <!-- video file -->
+                    <InputLabel>Video file</InputLabel>
                     <FileUpload 
-                    class="max-w-xl" 
-                    :csrf_token="csrf_token" 
-                    v-model="form.filename" 
-                    @update-error-message="($message) => form.errors.filename = $message"
+                        class="max-w-xl" 
+                        :csrf_token="csrf_token" 
+                        v-model="form.filename" 
+                        @update-error-message="($message) => form.errors.filename = $message"
                     />
-
-                <div>
-                    <PrimaryButton class="mt-4" @click="createVideo">Create</PrimaryButton>
-                </div>
-            </form>
+                    <InputError class="mt-2" :message="form.errors.filename" />
+                    
+                    <PrimaryButton class="mt-4" v-show="form.filename" @click="createVideo">Publish Video</PrimaryButton>
+                </form>
+            </FormContainer>
         </div>
     </AuthenticatedLayout>
 </template>
