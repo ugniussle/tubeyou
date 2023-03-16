@@ -28,7 +28,7 @@ const updatePicture = () => {
     });
 };
 
-const newPicture = ref("")
+const newPicture = ref('')
 
 const setPicture = (file) => {
     // check file type and tell user if it is not an image
@@ -73,6 +73,7 @@ const setPicture = (file) => {
                     New profile picture
                     <ProfilePicture class="inline" :picture="newPicture" :size="20"/>
                 </div>
+                
                 <InputLabel for="profilePictureInput" value="Upload picture" />
 
                 <FileInput
@@ -80,7 +81,7 @@ const setPicture = (file) => {
                     type="file"
                     class="mt-1 block"
                     @setFile="setPicture"
-                    accept="image/*"
+                    :accept="'image/*'"
                     required
                     autofocus
                 />
