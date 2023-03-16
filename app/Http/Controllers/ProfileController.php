@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
@@ -27,7 +29,7 @@ class ProfileController extends Controller
     /**
      * Update the user's profile information.
      */
-    public function update(ProfileUpdateRequest $request): RedirectResponse
+    public function updateInfo(ProfileUpdateRequest $request): RedirectResponse
     {
         $request->user()->fill($request->validated());
 
@@ -35,6 +37,39 @@ class ProfileController extends Controller
             $request->user()->email_verified_at = null;
         }
 
+        $request->user()->save();
+
+        return Redirect::route('profile.edit');
+    }
+
+     /**
+     * Update the user's profile information.
+     */
+    public function updatePicture(Request $request): RedirectResponse
+    {
+        // Log::debug("request update picture");
+        // Log::debug("$request->picture");
+
+        $request->validate([
+            'picture' => ['required', 'file']
+        ]);
+
+        $file = $request->picture;
+
+        if(!str_starts_with($file->getMimeType(), 'image')) {
+            Log::debug('file is invalid');
+            Log::debug($file->getMimeType());
+            return Redirect::route('profile.edit');
+        }
+
+        $filepath = asset('storage/'.$file->storePublicly('profilePictures/', 'public'));
+
+        $oldPicture = 'storage/profilePictures/'.basename($request->user()->profile_picture);
+        Log::debug($oldPicture);
+        Storage::disk('public')->delete($oldPicture);
+        
+
+        $request->user()->profile_picture = $filepath;
         $request->user()->save();
 
         return Redirect::route('profile.edit');

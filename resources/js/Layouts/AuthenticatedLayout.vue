@@ -5,7 +5,10 @@ import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
-import { Link } from '@inertiajs/vue3';
+import { Link, usePage } from '@inertiajs/vue3';
+import ProfilePicture from '@/Components/ProfilePicture.vue';
+
+const user = usePage().props.auth.user;
 
 const showingNavigationDropdown = ref(false);
 </script>
@@ -48,7 +51,8 @@ const showingNavigationDropdown = ref(false);
                                                 type="button"
                                                 class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150"
                                             >
-                                                {{ $page.props.auth.user.username }}
+                                                <ProfilePicture class="mr-2" v-if="user.profile_picture" :picture="user.profile_picture" :size="8"/>
+                                                {{user.username}}
 
                                                 <svg
                                                     class="ml-2 -mr-0.5 h-4 w-4"
