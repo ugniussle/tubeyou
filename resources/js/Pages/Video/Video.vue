@@ -1,6 +1,7 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
+import ProfilePicture from '@/Components/ProfilePicture.vue';
 defineProps(['videoInfo', 'channelInfo'])
 </script>
 
@@ -14,9 +15,9 @@ defineProps(['videoInfo', 'channelInfo'])
             </video> 
             <div id="videoInfo" class="text-2xl w-2/3">
                 <span class="block" id="videoTitle"> {{ videoInfo.title }} </span>
-                <img id="channelPicture" :src="channelInfo.profile_picture">
+                <ProfilePicture class="inline mr-2" :picture="channelInfo.profile_picture" :size="10"/>
                 <span id="channelName">{{ channelInfo.username }}</span>
-                <span id="uploadDate" class="">{{ videoInfo.upload_date }}</span>
+                <span id="uploadDate" class="block">{{ videoInfo.upload_date }}</span>
                 
             </div>
             <div class="border-2 w-2/3">{{ videoInfo.description }}</div>
