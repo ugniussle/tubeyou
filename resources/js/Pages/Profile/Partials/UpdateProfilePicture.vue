@@ -23,19 +23,33 @@ const updatePicture = () => {
         onSuccess: () => {
             form.reset()
             newPicture.value = null
+            document.getElementById('profilePictureInput').value=''
         }
     });
 };
 
-const newPicture = ref("")
+const newPicture = ref('')
 
 const setPicture = (file) => {
-    console.log(file)
+    // check file type and tell user if it is not an image
+    if(!file.type.startsWith('image')) {
+        console.log('bad file')
+        newPicture.value = null
+        form.picture = null
+        document.getElementById('profilePictureInput').value=''
+
+        form.errors.picture = 'File is not an image.'
+
+        return
+    }
+
+    form.errors.picture = ''
 
     form.picture = file
     newPicture.value = URL.createObjectURL(file)
 
-    console.log(newPicture.value)
+/*     console.log(document.getElementById('profilePictureInput'))
+    console.log(newPicture.value) */
 }
 </script>
 
@@ -59,13 +73,15 @@ const setPicture = (file) => {
                     New profile picture
                     <ProfilePicture class="inline" :picture="newPicture" :size="20"/>
                 </div>
-                <InputLabel for="profilePicture" value="Upload picture" />
+                
+                <InputLabel for="profilePictureInput" value="Upload picture" />
 
                 <FileInput
-                    id="profilePicture"
+                    id="profilePictureInput"
                     type="file"
                     class="mt-1 block"
                     @setFile="setPicture"
+                    :accept="'image/*'"
                     required
                     autofocus
                 />

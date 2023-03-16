@@ -12,6 +12,7 @@ use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use App\Rules\ImageFile;
 
 class ProfileController extends Controller
 {
@@ -51,16 +52,10 @@ class ProfileController extends Controller
         // Log::debug("$request->picture");
 
         $request->validate([
-            'picture' => ['required', 'file']
+            'picture' => ['required', 'file', new ImageFile]
         ]);
 
         $file = $request->picture;
-
-        if(!str_starts_with($file->getMimeType(), 'image')) {
-            Log::debug('file is invalid');
-            Log::debug($file->getMimeType());
-            return Redirect::route('profile.edit');
-        }
 
         $filepath = asset('storage/'.$file->storePublicly('profilePictures/', 'public'));
 
