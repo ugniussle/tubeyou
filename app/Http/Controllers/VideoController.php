@@ -26,11 +26,21 @@ class VideoController extends Controller
      */
     public function index()
     {
-        Log::debug(Video::all(['title', 'id', 'visibility', 'thumbnail_asset']));
+        $videos = Video::where('visibility', 0)
+                    ->latest()
+                    ->take(12)
+                    ->get();
+
+        foreach($videos as $video) {
+            $user = User::where('id', $video->user_id)->get()[0];
+
+            $video['username'] = $user->username;
+            $video['profilePicture'] = $user->profile_picture;
+        }
+
+        // Log::debug(Video::all(['title', 'id', 'visibility', 'thumbnail_asset']));
         return Inertia::render('Video/Videos', [
-            'videos' => Video::where('visibility', 0)
-                        ->latest()
-                        ->get()
+            'videos' => $videos
         ]);
     }
 
