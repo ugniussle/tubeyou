@@ -2,8 +2,9 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import DeleteUserForm from './Partials/DeleteUserForm.vue';
 import UpdatePasswordForm from './Partials/UpdatePasswordForm.vue';
-import UpdateProfilePicture from './Partials/UpdateProfilePicture.vue';
+import UpdateProfilePictureForm from './Partials/UpdateProfilePicture.vue';
 import UpdateProfileInformationForm from './Partials/UpdateProfileInformationForm.vue';
+import FormContainer from '@/Components/FormContainer.vue';
 import { Head } from '@inertiajs/vue3';
 
 defineProps({
@@ -22,25 +23,25 @@ defineProps({
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-                <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
+                <FormContainer>
                     <UpdateProfileInformationForm
                         :must-verify-email="mustVerifyEmail"
                         :status="status"
                         class="max-w-xl"
                     />
-                </div>
+                </FormContainer>
 
-                <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
+                <FormContainer>
                     <UpdatePasswordForm class="max-w-xl" />
-                </div>
+                </FormContainer>
 
-                <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                    <UpdateProfilePicture class="max-w-xl" />
-                </div>
+                <FormContainer>
+                    <UpdateProfilePictureForm class="max-w-xl" />
+                </FormContainer>
 
-                <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
+                <FormContainer>
                     <DeleteUserForm class="max-w-xl" />
-                </div>
+                </FormContainer>
             </div>
         </div>
     </AuthenticatedLayout>
