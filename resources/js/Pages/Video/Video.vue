@@ -15,7 +15,7 @@ defineProps(['videoInfo', 'channelInfo'])
             </video> 
             <div id="videoInfo" class="text-2xl w-2/3">
                 <span class="block" id="videoTitle"> {{ videoInfo.title }} </span>
-                <ProfilePicture class="inline mr-2" :picture="channelInfo.profile_picture" :size="10"/>
+                <ProfilePicture class="inline mr-2" :picture="channelInfo.profile_picture" :size="8"/>
                 <span id="channelName">{{ channelInfo.username }}</span>
                 <span id="uploadDate" class="block">{{ videoInfo.upload_date }}</span>
                 
