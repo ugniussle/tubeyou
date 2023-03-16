@@ -81,6 +81,15 @@ class VideoController extends Controller
         ]);
     }
 
+    private static function moveVideo(UploadedFile $file) {
+        $filepath = $file->storePublicly('videos/', 'public');
+
+        return response()->json([
+            'path' => $filepath,
+            'mime_type' => $file->getMimeType(),
+        ]);
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -143,14 +152,6 @@ class VideoController extends Controller
         return redirect("videos/$token");
     }
 
-    private static function moveVideo(UploadedFile $file) {
-        $filepath = $file->storePublicly('videos/', 'public');
-
-        return response()->json([
-            'path' => $filepath,
-            'mime_type' => $file->getMimeType(),
-        ]);
-    }
     
     /**
      * Store a newly created resource in storage.
