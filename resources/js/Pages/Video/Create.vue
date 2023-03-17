@@ -16,7 +16,7 @@ import FormContainer from '@/Components/Forms/FormContainer.vue';
 
 import { useForm } from '@inertiajs/vue3';
 
-const props = defineProps(['csrf_token'])
+const props = defineProps(['csrfToken'])
 
 const form = useForm({
     title: '',
@@ -69,7 +69,7 @@ const options = ["public", "unlisted", "private"];
                     <InputLabel>Video file</InputLabel>
                     <FileUpload 
                         class="max-w-xl" 
-                        :csrf_token="csrf_token" 
+                        :csrfToken="csrfToken" 
                         v-model="form.filename" 
                         @update-error-message="($message) => form.errors.filename = $message"
                     />
