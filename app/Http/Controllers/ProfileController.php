@@ -57,14 +57,16 @@ class ProfileController extends Controller
 
         $file = $request->picture;
 
-        $filepath = asset('storage/'.$file->storePublicly('profilePictures/', 'public'));
+        $url = asset('storage/'.$file->storePublicly('profilePictures/', 'public'));
 
-        $oldPicture = 'storage/profilePictures/'.basename($request->user()->profile_picture);
-        Log::debug($oldPicture);
-        Storage::disk('public')->delete($oldPicture);
+        $oldPicture = 'profilePictures/'.basename($request->user()->profile_picture);
+
+        if(Storage::disk('public')->exists($oldPicture) && Storage::disk('public')->delete($oldPicture) === true) {
+            Log::debug('old picture deleted');
+        }
         
 
-        $request->user()->profile_picture = $filepath;
+        $request->user()->profile_picture = $url;
         $request->user()->save();
 
         return Redirect::route('profile.edit');

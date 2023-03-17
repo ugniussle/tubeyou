@@ -4,7 +4,7 @@ import DeleteUserForm from './Partials/DeleteUserForm.vue';
 import UpdatePasswordForm from './Partials/UpdatePasswordForm.vue';
 import UpdateProfilePictureForm from './Partials/UpdateProfilePicture.vue';
 import UpdateProfileInformationForm from './Partials/UpdateProfileInformationForm.vue';
-import FormContainer from '@/Components/FormContainer.vue';
+import FormContainer from '@/Components/Forms/FormContainer.vue';
 import { Head } from '@inertiajs/vue3';
 
 defineProps({

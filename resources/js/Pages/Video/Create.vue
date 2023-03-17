@@ -3,20 +3,20 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
 
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
+import InputError from '@/Components/Forms/InputError.vue';
+import InputLabel from '@/Components/Forms/InputLabel.vue';
 import Modal from '@/Components/Modal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
-import SelectInput from '@/Components/SelectInput.vue';
-import TextAreaInput from '@/Components/TextAreaInput.vue';
-import FileInput from "@/Components/FileInput.vue"
-import FileUpload from '@/Components/FileUpload.vue';
-import FormContainer from '@/Components/FormContainer.vue';
+import TextInput from '@/Components/Forms/TextInput.vue';
+import SelectInput from '@/Components/Forms/SelectInput.vue';
+import TextAreaInput from '@/Components/Forms/TextAreaInput.vue';
+import FileInput from "@/Components/Forms/FileInput.vue"
+import FileUpload from '@/Components/Forms/FileUpload.vue';
+import FormContainer from '@/Components/Forms/FormContainer.vue';
 
 import { useForm } from '@inertiajs/vue3';
 
-const props = defineProps(['csrf_token'])
+const props = defineProps(['csrfToken'])
 
 const form = useForm({
     title: '',
@@ -69,7 +69,7 @@ const options = ["public", "unlisted", "private"];
                     <InputLabel>Video file</InputLabel>
                     <FileUpload 
                         class="max-w-xl" 
-                        :csrf_token="csrf_token" 
+                        :csrfToken="csrfToken" 
                         v-model="form.filename" 
                         @update-error-message="($message) => form.errors.filename = $message"
                     />

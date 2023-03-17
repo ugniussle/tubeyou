@@ -3,7 +3,7 @@ import SecondaryButton from '@/Components/SecondaryButton.vue';
 import Resumable from 'resumablejs';
 import { ref } from 'vue';
 
-const props = defineProps(['modelValue', 'csrf_token'])
+const props = defineProps(['modelValue', 'csrfToken'])
 
 const emit = defineEmits(['update:modelValue', 'updateErrorMessage'])
 
@@ -16,17 +16,16 @@ var r = new Resumable({
     target: route('videos.uploadVideo'),
     method: 'multipart',
     maxFiles: 1,
-    query: {'_token': props.csrf_token}
+    query: {'_token': props.csrfToken}
 });
 
-const setupUpload = function(event) {
+const setupUpload = (event) => {
     r.assignBrowse(event.el, false)
 }
 
-r.on('fileAdded', function(file, event){
-    console.log(props.csrf_token)
+r.on('fileAdded', (file, event) => {
+    console.log(props.csrfToken)
     if(!validateFile(file)) {
-        console.log('file is invalid')
         document.getElementById('progressDisplay').style.display = 'none'
         document.getElementById('startUploadButton').style.display = 'none'
         document.getElementById('videoFileDisplay').innerHTML = ''
@@ -34,55 +33,53 @@ r.on('fileAdded', function(file, event){
     }
 
     // console.log(file.file.type)
-    console.log(file, event)
+    // console.log(file, event)
 
     document.getElementById('progressDisplay').style.display = 'block'
     document.getElementById('startUploadButton').style.display = 'inline-block'
     document.getElementById('videoFileDisplay').innerHTML = file.fileName
 })
 
-r.on('fileProgress', function(file) {
+r.on('fileProgress', (file) => {
     let progress = Math.floor(file.progress()*100)
 
     progressBar.value.value = progress
     progressBar.value.innerHTML = progress + '%'
 })
 
-r.on('fileSuccess', function(file, message) {
+r.on('fileSuccess', (file, message) => {
     const response = JSON.parse(message)
 
     emit('update:modelValue', response.path)
 })
 
 
-const validateFile = function(file) {
+const validateFile = (file) => {
     if(file.file.type.slice(0, 5) === 'video') {
         emit('updateErrorMessage', '')
         return true
     } else {
-        console.log('emitting')
         emit('updateErrorMessage', 'File is not a video. Choose a video file.')
         return false
     }
 }
 
-function startStopUpload(event) {
+const startStopUpload = (event) => {
     if(r.files.length == 0) {
-        console.log('add files first')
+        emit('updateErrorMessage', 'No files selected.')
         return
     }
 
     console.log('starting download')
     
     if(r.isUploading()) {
-        event.target.innerHTML = "Stop File Upload"
+        event.target.innerHTML = "Pause File Upload"
     } else {
         event.target.innerHTML = "Start File Upload"
     }
 
     r.upload()
 }
-
 </script>
 
 <template>
