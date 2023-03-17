@@ -21,6 +21,7 @@
    9. Add liking and disliking
    10. Create multiple resolution video sources
    11. Create multiple resolution thumbnails
+   12. Add pagination
 2. Playlists
    1. Create playlist
    2. Add video to playlist
