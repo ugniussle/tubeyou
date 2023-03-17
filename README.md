@@ -37,7 +37,7 @@
 6. Design
    1. Custom page icon
    2. Style the navigation bar
-   3. Add sidebar for playlists, subscribed channels and other stuff
+   3. ~~Add sidebar for playlists, subscribed channels and other stuff~~
    4. Homepage
       1. ~~List public videos~~
       2. Search
