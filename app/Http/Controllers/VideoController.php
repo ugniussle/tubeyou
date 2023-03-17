@@ -50,7 +50,7 @@ class VideoController extends Controller
     public function create()
     {
         return Inertia::render('Video/Create',[
-            'csrf_token' => csrf_token()
+            'csrfToken' => csrf_token()
         ]);
     }
 
@@ -67,8 +67,6 @@ class VideoController extends Controller
     public static function upload(Request $request) {
         $receiver = new FileReceiver('file', $request, HandlerFactory::classFromRequest($request));
         
-        // Log::debug("Uploading file");
-
         if($receiver->isUploaded() === false) {
             throw new UploadMissingFileException();
         }
@@ -76,6 +74,8 @@ class VideoController extends Controller
         $save = $receiver->receive();
 
         if($save->isFinished()) {
+            Log::debug('Uploaded file');
+
             return VideoController::moveVideo($save->getFile());
         }
 
@@ -83,7 +83,7 @@ class VideoController extends Controller
 
         $percentageDone = $handler->getPercentageDone();
 
-        Log::debug("Uploading file, progress: $percentageDone");
+        // Log::debug("Uploading file, progress: $percentageDone");
 
         return response()->json([
             'done' => $percentageDone,
@@ -95,8 +95,7 @@ class VideoController extends Controller
         $filepath = $file->storePublicly('videos/', 'public');
 
         return response()->json([
-            'path' => $filepath,
-            'mime_type' => $file->getMimeType(),
+            'path' => $filepath
         ]);
     }
 
@@ -148,16 +147,16 @@ class VideoController extends Controller
         $video = Video::create([
             'user_id' => $user['id'],
             'title' => $request->title,
-            'filename' => $filepath,
             'description' => $request->description,
-            'thumbnail' => $proccessedFileInfo['thumbnailPath'],
             'visibility' => $visibility,
             'url_token' => $token,
+            'filename' => $filepath,
+            'thumbnail' => $proccessedFileInfo['thumbnailPath'],
             'video_asset' => asset($filepath),
             'thumbnail_asset' => asset($proccessedFileInfo['thumbnailPath']),
         ]);
 
-        Log::debug("video is $video");
+        // Log::debug("video is $video");
 
         return redirect("videos/$token");
     }
@@ -176,18 +175,16 @@ class VideoController extends Controller
         $filename = basename($filepath);
         $info['filename'] = $filename;
 
-        $ffmpeg = FFMpeg::create();
-        $video = $ffmpeg->open($filepath);
-
         $thumbnailStorage = public_path("storage/thumbnails");
-
-        Log::debug($thumbnailStorage);
 
         if(!is_dir($thumbnailStorage)) {
             mkdir($thumbnailStorage);
         }
 
         $thumbnailFilename = explode('.', $filename)[0];
+
+        $ffmpeg = FFMpeg::create();
+        $video = $ffmpeg->open($filepath);
 
         $thumbnailPath = "$thumbnailStorage/$thumbnailFilename.jpg";
         $this->saveThumbnail($video, $thumbnailPath); 
@@ -229,8 +226,6 @@ class VideoController extends Controller
     public static function view(string $token)
     {
         $videos = Video::where('url_token', $token)->get();
-
-        Log::debug($videos);
 
         if($videos->isEmpty()) {
             return redirect(RouteServiceProvider::HOME);
