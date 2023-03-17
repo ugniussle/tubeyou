@@ -9,6 +9,8 @@ import { Link, usePage } from '@inertiajs/vue3';
 import ProfilePicture from '@/Components/ProfilePicture.vue';
 import Sidebar from '@/Components/Layout/Sidebar.vue';
 
+const props = defineProps(['main', 'disableSidebar'])
+
 const user = usePage().props.auth.user;
 
 const showingNavigationDropdown = ref(false);
@@ -18,10 +20,10 @@ const showingNavigationDropdown = ref(false);
 <template>
     <div>
         <div class="min-h-screen bg-gray-100">
-            <nav class="bg-white border-b border-gray-100 sticky top-0 w-screen">
+            <nav style="z-index: 1;" class="bg-white border-b border-gray-100 sticky top-0 w-screen">
                 <!-- Primary Navigation Menu -->
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div class="pl-16 flex justify-between h-16">
+                    <div class="flex justify-between h-16">
                         <div class="flex">
                             <!-- Logo -->
                             <div class="shrink-0 flex items-center">
@@ -135,9 +137,8 @@ const showingNavigationDropdown = ref(false);
                 </div>
             </header>
 
-
             <!-- Sidebar -->
-            <Sidebar/>
+            <Sidebar v-if="!props.disableSidebar" :main="props.main"/>
 
             <!-- Page Content -->
             <main>
