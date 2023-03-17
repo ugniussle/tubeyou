@@ -38,7 +38,7 @@ const options = ["public", "unlisted", "private"];
 <template>
     <Head title="Upload video"/>
     
-    <AuthenticatedLayout>
+    <AuthenticatedLayout :disableSidebar="true">
         <div class="py-12 max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
             <FormContainer>
                 <form @submit.prevent="submit" enctype="multipart/form-data">

@@ -2,13 +2,17 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import ProfilePicture from '@/Components/ProfilePicture.vue';
+import { ref } from 'vue';
+
 defineProps(['videoInfo', 'channelInfo'])
+
+const main = ref(null)
 </script>
 
 <template>
     <Head :title="videoInfo.title"/>
-    <AuthenticatedLayout>
-        <div class="text-xl m-10">
+    <AuthenticatedLayout :main="main">
+        <div class="text-xl m-10" ref="main">
             <video class="w-2/3 m-2 ml-0" controls width="320" height="240" autoplay>
                 <source :src="videoInfo.video_asset">
                 Your browser does not support the video tag.
