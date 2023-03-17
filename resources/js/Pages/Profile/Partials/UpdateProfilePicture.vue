@@ -1,8 +1,8 @@
 <script setup>
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
+import InputError from '@/Components/Forms/InputError.vue';
+import InputLabel from '@/Components/Forms/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import FileInput from '@/Components/FileInput.vue';
+import FileInput from '@/Components/Forms/FileInput.vue';
 import { useForm, usePage } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import ProfilePicture from '@/Components/ProfilePicture.vue';

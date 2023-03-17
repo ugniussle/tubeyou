@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue';
-import SecondaryButton from './SecondaryButton.vue';
+import SecondaryButton from '../SecondaryButton.vue';
 
 const emit = defineEmits(['setFile']);
 const props = defineProps(['accept']);
