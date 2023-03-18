@@ -6,8 +6,8 @@ defineProps(['video'])
 
 <template>
     <div class="text-center">
-        <a :href="route('videos.url_token', video.url_token)" class="rounded-sm w-1/3">
-            <img class="rounded-sm hover:ring-red-500 hover:ring-2" :src="video.thumbnail_asset">
+        <a :href="route('videos.url_token', video.url_token)" class="rounded-sm w-2/6 h-1/6">
+            <img style="aspect-ratio: 16/9;object-fit: contain;" class="rounded-sm hover:ring-red-500 hover:ring-2 w-full" :src="video.thumbnail_asset">
             <div class="ml-1">
                 <span class="block text-left">{{ video.title }}</span>
                 <span class="block text-left">
