@@ -66,15 +66,15 @@ const toggleSidebar = () => {
         class="fixed top:0 inline items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out"
         style="z-index: 1;"
     >
-        <svg class="h-12 w-12" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+        <svg class="h-12 w-12" stroke="currentColor" fill="none" viewBox="0 0 512 512">
             <path
                 :class="{
                     'inline-flex': !sidebarExpanded,
                 }"
                 stroke-linecap="round"
                 stroke-linejoin="round"
-                stroke-width="1"
-                d="M4 6h16M4 12h16M4 18h16"
+                stroke-width="20"
+                d="M80 128 h352 M80 256 h352 M80 384 h352"
             />
         </svg>
     </button>
@@ -84,8 +84,8 @@ const toggleSidebar = () => {
         class="bg-white fixed left-0 top-16 h-screen overflow-y-auto transition-all"
         :style="'width:'+sidebarClosedWidth"
     >
-        <div class="mr-2 flex items-center">
-            <main>
+        <div class="flex items-center space-y-24 text-gray-400">
+            <main class="w-full">
                 <slot/>
             </main>
         </div>
