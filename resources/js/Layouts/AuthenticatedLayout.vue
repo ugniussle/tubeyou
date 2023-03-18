@@ -9,20 +9,25 @@ import { Link, usePage } from '@inertiajs/vue3';
 import ProfilePicture from '@/Components/ProfilePicture.vue';
 import Sidebar from '@/Components/Layout/Sidebar.vue';
 
-const props = defineProps(['main', 'disableSidebar'])
+const props = defineProps(['main', 'disableSidebar', 'hideSidebar'])
 
 const user = usePage().props.auth.user;
 
 const showingNavigationDropdown = ref(false);
+
+const navMargin = props.disableSidebar ? 'pl-0' : 'pl-16'
 
 </script>
 
 <template>
     <div>
         <div class="min-h-screen bg-gray-100">
-            <nav style="z-index: 1;" class="bg-white border-b border-gray-100 sticky top-0 w-screen">
+            <!-- Sidebar -->
+            <Sidebar v-if="!props.disableSidebar" :main="props.main" :sidebarHidden="props.hideSidebar"/>
+
+            <nav :class="navMargin" class="bg-white sticky top-0 w-screen">
                 <!-- Primary Navigation Menu -->
-                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="mx-auto px-4">
                     <div class="flex justify-between h-16">
                         <div class="flex">
                             <!-- Logo -->
@@ -137,8 +142,6 @@ const showingNavigationDropdown = ref(false);
                 </div>
             </header>
 
-            <!-- Sidebar -->
-            <Sidebar v-if="!props.disableSidebar" :main="props.main"/>
 
             <!-- Page Content -->
             <main>

@@ -11,7 +11,7 @@ const main = ref(null)
 
 <template>
     <Head :title="videoInfo.title"/>
-    <AuthenticatedLayout :main="main">
+    <AuthenticatedLayout :main="main" :hideSidebar="true">
         <div class="text-xl m-10" ref="main">
             <video class="w-2/3 m-2 ml-0" controls width="320" height="240" autoplay>
                 <source :src="videoInfo.video_asset">
