@@ -106,8 +106,8 @@ const showingNavigationDropdown = ref(false);
                     class="pl-16 sm:hidden"
                 >
                     <div class="pt-2 pb-3 space-y-1">
-                        <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
-                            Dashboard
+                        <ResponsiveNavLink :href="route('profile.edit')" :active="route().current('profile.edit')">
+                            Profile
                         </ResponsiveNavLink>
                     </div>
 
