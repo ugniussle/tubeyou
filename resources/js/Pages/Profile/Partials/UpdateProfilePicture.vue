@@ -67,11 +67,11 @@ const setPicture = (file) => {
             <div>
                 <div class="inline" v-if="user.profile_picture">
                     Current profile picture
-                    <ProfilePicture class="inline" :picture="user.profile_picture" :size="20"/>
+                    <ProfilePicture class="inline" :picture="user.profile_picture" :size="'5rem'"/>
                 </div>
                 <div class="ml-4 inline" v-if="newPicture">
                     New profile picture
-                    <ProfilePicture class="inline" :picture="newPicture" :size="20"/>
+                    <ProfilePicture class="inline" :picture="newPicture" :size="'5rem'"/>
                 </div>
                 
                 <InputLabel for="profilePictureInput" value="Upload picture" />

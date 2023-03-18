@@ -11,7 +11,7 @@ defineProps(['video'])
             <div class="ml-1">
                 <span class="block text-left">{{ video.title }}</span>
                 <span class="block text-left">
-                    <ProfilePicture class="inline" :picture="video.profilePicture" :size="6"/>
+                    <ProfilePicture class="inline" :picture="video.profilePicture" :size="'2rem'"/>
                     {{ video.username }}
                 </span>
             </div>

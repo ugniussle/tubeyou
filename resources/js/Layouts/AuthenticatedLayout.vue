@@ -9,20 +9,25 @@ import { Link, usePage } from '@inertiajs/vue3';
 import ProfilePicture from '@/Components/ProfilePicture.vue';
 import Sidebar from '@/Components/Layout/Sidebar.vue';
 
-const props = defineProps(['main', 'disableSidebar'])
+const props = defineProps(['main', 'disableSidebar', 'hideSidebar'])
 
 const user = usePage().props.auth.user;
 
 const showingNavigationDropdown = ref(false);
+
+const navMargin = props.disableSidebar ? 'pl-0' : 'pl-16'
 
 </script>
 
 <template>
     <div>
         <div class="min-h-screen bg-gray-100">
-            <nav style="z-index: 1;" class="bg-white border-b border-gray-100 sticky top-0 w-screen">
+            <!-- Sidebar -->
+            <Sidebar v-if="!props.disableSidebar" :main="props.main" :sidebarHidden="props.hideSidebar"/>
+
+            <nav :class="navMargin" class="bg-white sticky top-0 w-screen">
                 <!-- Primary Navigation Menu -->
-                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="mx-auto px-4">
                     <div class="flex justify-between h-16">
                         <div class="flex">
                             <!-- Logo -->
@@ -52,7 +57,7 @@ const showingNavigationDropdown = ref(false);
                                                 type="button"
                                                 class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150"
                                             >
-                                                <ProfilePicture class="mr-2" v-if="user.profile_picture" :picture="user.profile_picture" :size="8"/>
+                                                <ProfilePicture class="mr-2" v-if="user.profile_picture" :picture="user.profile_picture" :size="'3rem'"/>
                                                 {{user.username}}
 
                                                 <svg
@@ -93,7 +98,7 @@ const showingNavigationDropdown = ref(false);
                                         'inline-flex': !showingNavigationDropdown,
                                     } + 'h-6 w-6'"
                                     :picture="user.profile_picture"
-                                    :size="8"
+                                    :size="'3rem'"
                                 />
                             </button>
                         </div>
@@ -106,8 +111,8 @@ const showingNavigationDropdown = ref(false);
                     class="pl-16 sm:hidden"
                 >
                     <div class="pt-2 pb-3 space-y-1">
-                        <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
-                            Dashboard
+                        <ResponsiveNavLink :href="route('profile.edit')" :active="route().current('profile.edit')">
+                            Profile
                         </ResponsiveNavLink>
                     </div>
 
@@ -137,8 +142,6 @@ const showingNavigationDropdown = ref(false);
                 </div>
             </header>
 
-            <!-- Sidebar -->
-            <Sidebar v-if="!props.disableSidebar" :main="props.main"/>
 
             <!-- Page Content -->
             <main>

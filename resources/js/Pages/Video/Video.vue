@@ -11,7 +11,7 @@ const main = ref(null)
 
 <template>
     <Head :title="videoInfo.title"/>
-    <AuthenticatedLayout :main="main">
+    <AuthenticatedLayout :main="main" :hideSidebar="true">
         <div class="text-xl m-10" ref="main">
             <video class="w-2/3 m-2 ml-0" controls width="320" height="240" autoplay>
                 <source :src="videoInfo.video_asset">
@@ -19,7 +19,7 @@ const main = ref(null)
             </video> 
             <div id="videoInfo" class="text-2xl w-2/3">
                 <span class="block" id="videoTitle"> {{ videoInfo.title }} </span>
-                <ProfilePicture class="inline mr-2" :picture="channelInfo.profile_picture" :size="8"/>
+                <ProfilePicture class="inline mr-2" :picture="channelInfo.profile_picture" :size="'3rem'"/>
                 <span id="channelName">{{ channelInfo.username }}</span>
                 <span id="uploadDate" class="block">{{ videoInfo.upload_date }}</span>
                 
