@@ -26,7 +26,7 @@ const navMargin = props.disableSidebar ? 'pl-0' : 'pl-16'
             <!-- Sidebar -->
             <Sidebar v-if="!props.disableSidebar" :main="props.main" :sidebarHidden="props.hideSidebar">
                 <SidebarItem :link="'/playlists'">            
-                    <svg class="inline" fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="20" height="3rem" width="3rem" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve"><g><path d="M48 32 l 160 0"/><path d="M48 128 l 160 0"/><path d="M48 224 l 160 0"/></g><g><path d="M336 32 l 0 384" stroke-width="50"/><path d="M336 64 c 160 85 145 160 95 225" fill="none" stroke-width="50"/><circle cx="273" cy="415" r="86" stroke-width="5"/></g></svg>
+                    <svg class="inline w-12 h-12" fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve"><g><path d="M48 32 l 160 0"/><path d="M48 128 l 160 0"/><path d="M48 224 l 160 0"/></g><g><path d="M336 32 l 0 384" stroke-width="50"/><path d="M336 64 c 160 85 145 160 95 225" fill="none" stroke-width="50"/><circle cx="273" cy="415" r="86" stroke-width="5"/></g></svg>
                     <span class="pl-10">
                         Playlists
                     </span>
