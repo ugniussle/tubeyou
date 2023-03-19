@@ -11,7 +11,8 @@ const button = ref(null)
 const showDropdown = ref(false)
 
 onMounted(() => {
-    button.value.onclick = (event) => {
+    const showDropdown = (args) => {
+        const event = args[0]
         dropdown.value.style.transform = "scale(1)"
 
         // offset dropdown if it would go off screen
@@ -31,14 +32,21 @@ onMounted(() => {
         dropdown.value.focus()
     }
 
+    button.value.addEventListener('click', (event) => {
+        setTimeout(showDropdown, 20, [event])
+    })
+    
+
     dropdown.value.addEventListener('focusout', () => {
-        dropdown.value.style.transform = "scale(0)"
-        showDropdown.value = !showDropdown.value 
-        })
+        setTimeout(() => {
+            dropdown.value.style.transform = "scale(0)"
+            showDropdown.value = !showDropdown.value 
+        }, 100)
+    })
 
     dropdown.value.addEventListener('focusin', () => {
             console.log('i was focused')
-        })
+    })
 })
 </script>
 
@@ -62,9 +70,9 @@ onMounted(() => {
                     <circle cx="20" cy="30" r="2"/>
                 </svg>
             </div>
-            <div tabindex="0" style="transform: scale(0);" ref="dropdown" class="fixed bg-white focus:bg-green-500">
-                <a href="#" class="block focus:bg-red-500">Link 1</a>
-                <a href="#" class="block focus:bg-red-500">Link 2</a>
+            <div tabindex="0" style="transform: scale(0);" ref="dropdown" class="fixed bg-white">
+                <a class="block" href="#">Link 1</a>
+                <a class="block" href="/">Link 2</a>
             </div>
         </div>
     </div>
