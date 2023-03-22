@@ -84,7 +84,7 @@ class VideoController extends Controller
         $percentageDone = $handler->getPercentageDone();
 
         // Log::debug("Uploading file, progress: $percentageDone");
-
+//
         return response()->json([
             'done' => $percentageDone,
             'status' => true
@@ -117,7 +117,6 @@ class VideoController extends Controller
             'visibility' => ['required', 'string'],
             'filename' => ['required', 'string', 'unique:App\Models\Video,filename']
         ]);
-
 
         $filepath = 'storage/videos/'.basename($request->filename);
 
@@ -232,16 +231,21 @@ class VideoController extends Controller
         } else {
             $video = $videos[0];
 
-            $channel = User::where('id', $video->user_id)->get()[0];
+            $uploader = VideoController::getVideoUploader($video->user_id);
             
             Log::debug("Video is: $video");
-            Log::debug("Channel is: $channel");
+            Log::debug("Channel is: $uploader");
 
             return Inertia::render('Video/Video', [
                 'videoInfo' => $video,
-                'channelInfo' => $channel
+                'channelInfo' => $uploader
             ]);
         }
+    }
+
+    public static function getVideoUploader($videoId) {
+        $video = Video::where('id', $videoId)->get()->first();
+        return User::where('id', $video->user_id)->get()->first();
     }
 
     /**

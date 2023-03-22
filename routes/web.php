@@ -1,7 +1,10 @@
 <?php
 
+use App\Http\Controllers\PlaylistController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\VideoController;
+use App\Http\Controllers\PlaylistVideoController;
+use App\Http\Requests\PlaylistVideoRequest;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -42,5 +45,22 @@ Route::get('/videos/{token}', function(string $token) {
 
 Route::post('videos/uploadVideo', [VideoController::class, 'upload'])
     ->middleware(['auth', 'verified'])->name('videos.uploadVideo');
+
+Route::resource('playlists', PlaylistController::class)
+    ->only(['index', 'create', 'store'])
+    ->middleware(['auth', 'verified']);
+
+Route::get('/playlists/{token}', function(string $token) {
+        return PlaylistController::view($token);
+})->middleware(['auth', 'verified']);
+
+Route::post('/playlists/get', function() {
+    return PlaylistController::getPlaylists();
+})->middleware(['auth', 'verified'])
+  ->name('playlists.getPlaylists');
+
+Route::resource('playlistVideos', PlaylistVideoController::class)
+    ->only(['store', 'delete'])
+    ->middleware(['auth', 'verified']);
 
 require __DIR__.'/auth.php';

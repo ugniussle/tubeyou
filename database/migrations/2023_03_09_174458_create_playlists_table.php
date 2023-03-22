@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreign("user_id")->references("id")->on("users")->onDelete("cascade");
             $table->string("title");
             $table->tinyInteger("visibility");
-            $table->string("url")->unique();
+            $table->string("url_token")->unique();
             $table->unsignedInteger("views")->default(0);
             $table->timestamps();
         });

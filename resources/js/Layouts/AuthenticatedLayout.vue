@@ -9,6 +9,7 @@ import { Link, usePage } from '@inertiajs/vue3';
 import ProfilePicture from '@/Components/ProfilePicture.vue';
 import Sidebar from '@/Components/Layout/Sidebar.vue';
 import SidebarItem from '@/Components/Layout/SidebarItem.vue';
+import Modal from '@/Components/Modal.vue';
 
 const props = defineProps(['main', 'disableSidebar', 'hideSidebar'])
 
@@ -149,7 +150,6 @@ const navMargin = props.disableSidebar ? 'pl-0' : 'pl-16'
                     <slot name="header" />
                 </div>
             </header>
-
 
             <!-- Page Content -->
             <main>
