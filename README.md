@@ -57,7 +57,8 @@
 1. copy .env.example to .env
 2. configure .env file (set database file path)
 3. ``` composer update ```
-3. ``` npm install ```
-3. ``` php artisan migrate ```
-3. ``` php artisan key:generate ```
-4. ``` php artisan storage:link ```
+4. ``` npm install ```
+5. ``` php artisan migrate ```
+6. ``` php artisan key:generate ```
+7. ``` php artisan storage:link ```
+8. install ffmpeg (make sure you can run it from any path)
