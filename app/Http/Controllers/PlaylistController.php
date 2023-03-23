@@ -11,8 +11,7 @@ use App\Models\Video;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-// use App\Http\Controllers\PlaylistVideoController;
-
+use App\Http\Requests\PlaylistRequest;
 
 class PlaylistController extends Controller
 {
@@ -126,9 +125,14 @@ class PlaylistController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Playlist $playlist)
+    public static function destroy(PlaylistRequest $request)
     {
-        //
+        $validated = $request->validated();
+
+        $playlist = Playlist::find($validated['playlistId']);
+        Log::debug("destroying playlist $playlist");
+
+        $playlist->delete();
     }
 
     public static function view(string $token)
@@ -137,10 +141,8 @@ class PlaylistController extends Controller
 
         $playlist = Playlist::where('url_token', $token)->get()->first();
 
-        // validate if the user can view this playlist
 
         $playlist->length = PlaylistController::getPlaylistLength($playlist->id);
-
         $playlist->thumbnail = PlaylistController::getPlaylistThumbnail($playlist->id);
 
         $videos = PlaylistController::getPlaylistVideos($playlist);
