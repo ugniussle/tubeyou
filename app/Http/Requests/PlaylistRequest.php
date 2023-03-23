@@ -3,10 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\Models\Playlist;
-use Illuminate\Support\Facades\Log;
 
-class PlaylistVideoRequest extends FormRequest
+class PlaylistRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,8 +22,7 @@ class PlaylistVideoRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'playlistId' => ['required', 'numeric', 'integer'],
-            'videoId' => ['required', 'numeric', 'integer'],
+            'playlistId' => ['required', 'numeric', 'integer']
         ];
     }
 }
