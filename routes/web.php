@@ -4,10 +4,10 @@ use App\Http\Controllers\PlaylistController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\VideoController;
 use App\Http\Controllers\PlaylistVideoController;
-use App\Http\Requests\PlaylistVideoRequest;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Requests\PlaylistVideoRequest;
 
 /*
 |--------------------------------------------------------------------------
@@ -60,7 +60,12 @@ Route::post('/playlists/get', function() {
   ->name('playlists.getPlaylists');
 
 Route::resource('playlistVideos', PlaylistVideoController::class)
-    ->only(['store', 'delete'])
+    ->only(['store'])
     ->middleware(['auth', 'verified']);
+
+Route::delete('playlistVideos/delete', function(PlaylistVideoRequest $request) {
+    PlaylistVideoController::destroy($request);
+})->middleware(['auth', 'verified', 'editPlaylist'])
+  ->name('playlistVideos.destroy');
 
 require __DIR__.'/auth.php';

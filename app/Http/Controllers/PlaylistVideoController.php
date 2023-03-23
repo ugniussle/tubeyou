@@ -34,10 +34,12 @@ class PlaylistVideoController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public static function destroy(Playlist_Video $playlistVideo)
+    public static function destroy(PlaylistVideoRequest $request)
     {
-
-        // $playlistVideo->delete();
+        Playlist_Video::where([
+            'playlist_id' => $request->playlistId,
+            'video_id' => $request->videoId
+        ])->delete();
 
         return;
     }
