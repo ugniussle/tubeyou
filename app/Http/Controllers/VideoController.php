@@ -32,7 +32,7 @@ class VideoController extends Controller
                     ->get();
 
         foreach($videos as $video) {
-            $user = User::where('id', $video->user_id)->get()[0];
+            $user = User::where('id', $video->user_id)->get()->first();
 
             $video['username'] = $user->username;
             $video['profilePicture'] = $user->profile_picture;
@@ -160,7 +160,6 @@ class VideoController extends Controller
         return redirect("videos/$token");
     }
 
-    
     /**
      * Store a newly created resource in storage.
      * @param string $filepath
@@ -171,8 +170,7 @@ class VideoController extends Controller
         $info = array();
         $info['filepath'] = $filepath;
 
-        $filename = basename($filepath);
-        $info['filename'] = $filename;
+        $info['filename'] = basename($filepath);
 
         $thumbnailStorage = public_path("storage/thumbnails");
 
@@ -180,10 +178,10 @@ class VideoController extends Controller
             mkdir($thumbnailStorage);
         }
 
-        $thumbnailFilename = explode('.', $filename)[0];
+        $thumbnailFilename = explode('.', $info['filename'])[0];
 
         $ffmpeg = FFMpeg::create();
-        $video = $ffmpeg->open($filepath);
+        $video = $ffmpeg->open($info['filepath']);
 
         $thumbnailPath = "$thumbnailStorage/$thumbnailFilename.jpg";
         $this->saveThumbnail($video, $thumbnailPath); 
@@ -233,12 +231,12 @@ class VideoController extends Controller
 
             $uploader = VideoController::getVideoUploader($video->user_id);
             
-            Log::debug("Video is: $video");
-            Log::debug("Channel is: $uploader");
+            /* Log::debug("Video is: $video");
+            Log::debug("Channel is: $uploader"); */
 
             return Inertia::render('Video/Video', [
-                'videoInfo' => $video,
-                'channelInfo' => $uploader
+                'video' => $video,
+                'channel' => $uploader
             ]);
         }
     }
