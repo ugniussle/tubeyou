@@ -22,7 +22,6 @@ return new class extends Migration
             $table->unsignedInteger("views")->default(0);
             $table->unsignedInteger("likes")->default(0);
             $table->unsignedInteger("dislikes")->default(0);
-            $table->date("upload_date")->default(now());
             $table->tinyInteger("visibility");
             $table->string("url_token")->unique();
             $table->string('video_asset')->unique();
