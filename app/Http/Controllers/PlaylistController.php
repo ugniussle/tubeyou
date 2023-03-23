@@ -160,7 +160,7 @@ class PlaylistController extends Controller
     private static function getPlaylistThumbnail($playlistId) {
         $firstVideo = Playlist_Video::where([
             ['playlist_id', '=', $playlistId],
-            ['position', '=', 1]
+            /* ['position', '=', 1] */
         ])->get()->first();
 
         if($firstVideo != null) {
