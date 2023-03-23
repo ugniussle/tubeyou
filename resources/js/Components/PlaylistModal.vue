@@ -1,9 +1,6 @@
 <script setup>
-import { computed, onMounted, onUnmounted, watch, ref } from 'vue';
-import { useForm } from '@inertiajs/vue3';
-import TextInput from './Forms/TextInput.vue';
-import SelectInput from './Forms/SelectInput.vue';
-import InputLabel from './Forms/InputLabel.vue';
+import { onMounted, onUnmounted, watch } from 'vue';
+import { useForm, Link } from '@inertiajs/vue3';
 import PrimaryButton from './PrimaryButton.vue';
 import PlaylistModalItem from './PlaylistModalItem.vue';
 
@@ -36,13 +33,10 @@ var selectedPlaylists = []
 const saveVideoToPlaylists = () => {
     for (let i = 0; i < selectedPlaylists.length; i++) {
         let playlist = selectedPlaylists[i]
-        console.log(playlist)
 
         if(playlist.action === true) {
-            console.log('saving video', props.selectedVideoId, 'to playlists', selectedPlaylists)
             saveVideoToPlaylist(playlist.id, props.selectedVideoId)
         } else if(playlist.action === false) {
-            console.log('deleting video', props.selectedVideoId, 'to playlists', selectedPlaylists)
             deleteVideoFromPlaylist(playlist.id, props.selectedVideoId, playlist.url_token)
         }
     }
@@ -53,7 +47,6 @@ const saveVideoToPlaylists = () => {
 }
 
 const saveVideoToPlaylist = (playlistId, videoId) => {
-    console.log(playlistId, videoId)
     let playlistVideoForm = useForm({
         playlistId: playlistId,
         videoId: videoId
@@ -65,16 +58,10 @@ const saveVideoToPlaylist = (playlistId, videoId) => {
 const deleteVideoFromPlaylist = (playlistId, videoId) => {
     let playlistVideoForm = useForm({
         playlistId: playlistId,
-        videoId: videoId
+        videoId: videoId,
     })
 
-    const playlistVideo = 
-
-    console.log(route('playlistVideos.destroy', playlistUrlToken))
-
-    playlistVideoForm.delete(
-        route('playlistVideos.destroy', playlistVideo)
-    )
+    playlistVideoForm.delete(route('playlistVideos.destroy'))
 }
 
 const selectPlaylist = (playlistId, action) => {
@@ -94,8 +81,6 @@ const selectPlaylist = (playlistId, action) => {
     } else {
         selectedPlaylists.splice(index, 1)
     }
-
-    console.log(selectedPlaylists)
 }
 
 watch(
@@ -149,17 +134,24 @@ onUnmounted(() => {
                     leave-to-class="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                 >
                     <div
-                        v-show="show"
+                        v-if="show"
                         class="-translate-x-1/2 top-1/4 left-1/2  absolute mb-6 bg-white rounded-lg overflow-hidden shadow-xl transform transition-all w-full sm:mx-auto md:w-3/12 text-2xl p-2"
                     >
-                        <PlaylistModalItem 
-                            v-for="playlist in playlists"
-                            :key="playlist.id"
-                            :playlist="playlist"
-                            :videoId="selectedVideoId"
-                            @updateSelectedPlaylists="($playlistId, $action) => selectPlaylist($playlistId, $action)"
-                        />
-                        <PrimaryButton @click="saveVideoToPlaylists">Save</PrimaryButton>
+                        <div v-if="playlists.length === 0">
+                            You have no playlists. You can create a playlist 
+                            <Link class="text-blue-500" :href="route('playlists.create')">here</Link>.
+                        </div>
+                        
+                        <div v-else>
+                            <PlaylistModalItem 
+                                v-for="playlist in playlists"
+                                :key="playlist.id"
+                                :playlist="playlist"
+                                :videoId="selectedVideoId"
+                                @updateSelectedPlaylists="($playlistId, $action) => selectPlaylist($playlistId, $action)"
+                            />
+                            <PrimaryButton @click="saveVideoToPlaylists">Save</PrimaryButton>
+                        </div>
                     </div>
                 </transition>
             </div>

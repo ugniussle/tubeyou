@@ -8,7 +8,6 @@ import { ref, onMounted } from 'vue';
 defineProps(['videos'])
 
 const modalOpen = ref(false)
-const modal = ref(null)
 const main = ref(null)
 const selectedVideoId = ref(null)
 

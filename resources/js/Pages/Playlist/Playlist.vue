@@ -1,5 +1,5 @@
 <script setup>
-import { Head } from '@inertiajs/vue3';
+import { Head, Link } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 
@@ -24,14 +24,14 @@ const main = ref(null)
                 key="video.id"
                 :video="video"
             >
-                <a :href="'/videos/'+video.url_token">
+                <Link :href="'/videos/'+video.url_token">
                     <img class="object-contain aspect-video w-64 bg-black" :src="video.thumbnail_asset">
-                </a>
+                </Link>
                 
                 <div class="p-2">
-                    <a :href="'/videos/'+video.url_token">
+                    <Link :href="'/videos/'+video.url_token">
                         <span class="block">{{ video.title }}</span>
-                    </a>
+                    </Link>
                     
                 </div>
             </div>
