@@ -26,7 +26,7 @@ const props = defineProps(['video'])
                     </Link>
     
                     <!-- channel name, view count and date -->
-                    <div class="text-sm">
+                    <div class="text-left text-sm">
                         <span>{{ video.username }}</span>
                         <svg class="inline w-5" viewBox="0 0 10 10"><circle cx="5" cy="4" r="1"/></svg>
                         <span>{{ video.views }} views</span>
