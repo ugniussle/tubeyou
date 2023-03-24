@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Playlist_Video extends Model
@@ -26,8 +27,8 @@ class Playlist_Video extends Model
         return $this->HasOne(Video::class, 'id', 'video_id');
     }
 
-    public function playlist(): HasOne
+    public function playlist(): BelongsTo
     {
-        return $this->hasOne(Playlist::class, 'id', 'playlist_id');
+        return $this->belongsTo(Playlist::class, 'id', 'playlist_id');
     }
 }

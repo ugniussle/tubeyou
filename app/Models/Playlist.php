@@ -26,11 +26,11 @@ class Playlist extends Model
 
     public function playlistVideos(): HasMany 
     {
-        return $this->hasMany(Playlist_Video::class, 'playlist_id');
+        return $this->hasMany(Playlist_Video::class, 'playlist_id', 'id');
     }
 
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'id', 'user_id');
     }
 }
