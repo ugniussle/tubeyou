@@ -3,6 +3,7 @@ import { onMounted, onUnmounted, watch } from 'vue';
 import { useForm, Link } from '@inertiajs/vue3';
 import PrimaryButton from './PrimaryButton.vue';
 import PlaylistModalItem from './PlaylistModalItem.vue';
+import axios from 'axios';
 
 const props = defineProps({
     show: {
@@ -52,7 +53,8 @@ const saveVideoToPlaylist = (playlistId, videoId) => {
         videoId: videoId
     })
 
-    playlistVideoForm.post(route('playlistVideos.store'))
+    // playlistVideoForm.post(route('playlistVideos.store'))
+    axios.post(route('playlistVideos.store'), playlistVideoForm)
 }
 
 const deleteVideoFromPlaylist = (playlistId, videoId) => {
@@ -61,7 +63,8 @@ const deleteVideoFromPlaylist = (playlistId, videoId) => {
         videoId: videoId,
     })
 
-    playlistVideoForm.delete(route('playlistVideos.destroy'))
+    //playlistVideoForm.delete(route('playlistVideos.destroy'))
+    axios.delete(route('playlistVideos.destroy'), { data: playlistVideoForm })
 }
 
 const selectPlaylist = (playlistId, action) => {
