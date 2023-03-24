@@ -4,9 +4,10 @@ use App\Http\Controllers\PlaylistController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\VideoController;
 use App\Http\Controllers\PlaylistVideoController;
-use Illuminate\Foundation\Application;
+use App\Http\Controllers\RatingController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Illuminate\Http\Request;
 use App\Http\Requests\PlaylistVideoRequest;
 use App\Http\Requests\PlaylistRequest;
 
@@ -36,6 +37,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+/* videos */
 Route::resource('videos', VideoController::class)
     ->only(['index', 'create', 'store'])
     ->middleware(['auth', 'verified']);
@@ -47,6 +49,7 @@ Route::get('/videos/{token}', function(string $token) {
 Route::post('videos/uploadVideo', [VideoController::class, 'upload'])
     ->middleware(['auth', 'verified'])->name('videos.uploadVideo');
 
+/* playlists */
 Route::resource('playlists', PlaylistController::class)
     ->only(['index', 'create', 'store'])
     ->middleware(['auth', 'verified']);
@@ -56,7 +59,7 @@ Route::get('/playlists/{token}', function(string $token) {
 })->middleware(['auth', 'verified', 'viewPlaylist']);
 
 Route::delete('playlists/delete', function(PlaylistRequest $request) {
-    PlaylistController::destroy($request);
+    return PlaylistController::destroy($request);
 })->middleware(['auth', 'verified', 'editPlaylist'])
   ->name('playlists.destroy');
 
@@ -70,8 +73,14 @@ Route::resource('playlistVideos', PlaylistVideoController::class)
     ->middleware(['auth', 'verified']);
 
 Route::delete('playlistVideos/delete', function(PlaylistVideoRequest $request) {
-    PlaylistVideoController::destroy($request);
+    return PlaylistVideoController::destroy($request);
 })->middleware(['auth', 'verified', 'editPlaylist'])
   ->name('playlistVideos.destroy');
+
+/* ratings */
+Route::post('ratings/rateVideo', function(Request $request) {
+    return RatingController::store($request);
+})->middleware(['auth', 'verified'])
+  ->name('ratings.rateVideo');
 
 require __DIR__.'/auth.php';

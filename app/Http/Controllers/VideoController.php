@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Rating;
 use App\Models\Video;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
@@ -14,6 +15,7 @@ use FFMpeg\FFMpeg;
 use FFMpeg\Coordinate\TimeCode;
 use FFMpeg\Media\Video as FFMpegVideo;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Auth;
 use Pion\Laravel\ChunkUpload\Exceptions\UploadFailedException;
 use Pion\Laravel\ChunkUpload\Exceptions\UploadMissingFileException;
 use Pion\Laravel\ChunkUpload\Handler\HandlerFactory;
@@ -225,12 +227,20 @@ class VideoController extends Controller
         if(!$video) {
             return redirect(RouteServiceProvider::HOME);
         } else {
-            /* Log::debug("Video is: $video");
-            Log::debug("Channel is: $uploader"); */
+            $user = Auth::user();
+
+            $userRating = Rating::where([
+                ['user_id', '=', $user->id],
+                ['video_id', '=', $video->id],
+            ])->first();
+
+            $video->views += 1;
+            $video->save();
 
             return Inertia::render('Video/Video', [
                 'video' => $video,
-                'channel' => $video->user()->first()
+                'channel' => $video->user()->first(),
+                'userRating' => $userRating
             ]);
         }
     }
