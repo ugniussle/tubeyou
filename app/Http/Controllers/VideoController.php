@@ -32,10 +32,8 @@ class VideoController extends Controller
                     ->get();
 
         foreach($videos as $video) {
-            $user = User::where('id', $video->user_id)->get()[0];
-
-            $video['username'] = $user->username;
-            $video['profilePicture'] = $user->profile_picture;
+            $video['username'] = $video->user->username;
+            $video['profilePicture'] = $video->user->profile_picture;
         }
 
         // Log::debug(Video::all(['title', 'id', 'visibility', 'thumbnail_asset']));
@@ -84,7 +82,7 @@ class VideoController extends Controller
         $percentageDone = $handler->getPercentageDone();
 
         // Log::debug("Uploading file, progress: $percentageDone");
-
+//
         return response()->json([
             'done' => $percentageDone,
             'status' => true
@@ -117,7 +115,6 @@ class VideoController extends Controller
             'visibility' => ['required', 'string'],
             'filename' => ['required', 'string', 'unique:App\Models\Video,filename']
         ]);
-
 
         $filepath = 'storage/videos/'.basename($request->filename);
 
@@ -161,7 +158,6 @@ class VideoController extends Controller
         return redirect("videos/$token");
     }
 
-    
     /**
      * Store a newly created resource in storage.
      * @param string $filepath
@@ -172,8 +168,7 @@ class VideoController extends Controller
         $info = array();
         $info['filepath'] = $filepath;
 
-        $filename = basename($filepath);
-        $info['filename'] = $filename;
+        $info['filename'] = basename($filepath);
 
         $thumbnailStorage = public_path("storage/thumbnails");
 
@@ -181,10 +176,10 @@ class VideoController extends Controller
             mkdir($thumbnailStorage);
         }
 
-        $thumbnailFilename = explode('.', $filename)[0];
+        $thumbnailFilename = explode('.', $info['filename'])[0];
 
         $ffmpeg = FFMpeg::create();
-        $video = $ffmpeg->open($filepath);
+        $video = $ffmpeg->open($info['filepath']);
 
         $thumbnailPath = "$thumbnailStorage/$thumbnailFilename.jpg";
         $this->saveThumbnail($video, $thumbnailPath); 
@@ -232,16 +227,21 @@ class VideoController extends Controller
         } else {
             $video = $videos[0];
 
-            $channel = User::where('id', $video->user_id)->get()[0];
+            $uploader = VideoController::getVideoUploader($video->user_id);
             
-            Log::debug("Video is: $video");
-            Log::debug("Channel is: $channel");
+            /* Log::debug("Video is: $video");
+            Log::debug("Channel is: $uploader"); */
 
             return Inertia::render('Video/Video', [
-                'videoInfo' => $video,
-                'channelInfo' => $channel
+                'video' => $video,
+                'channel' => $uploader
             ]);
         }
+    }
+
+    public static function getVideoUploader($videoId) {
+        $video = Video::where('id', $videoId)->get()->first();
+        return User::where('id', $video->user_id)->get()->first();
     }
 
     /**

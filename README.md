@@ -23,9 +23,10 @@
    11. Create multiple resolution thumbnails
    12. Add pagination
 2. Playlists
-   1. Create playlist
-   2. Add video to playlist
-   3. Remove video from playlist
+   1. ~~Create playlist~~
+   2. ~~Add video to playlist~~
+   3. ~~Remove video from playlist~~
+   4. Arrange videos in playlist (change list order)
 3. Channels
    1. View user videos and playlists
 4. Comments

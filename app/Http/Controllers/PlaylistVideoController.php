@@ -3,63 +3,44 @@
 namespace App\Http\Controllers;
 
 use App\Models\Playlist_Video;
+use App\Models\Playlist;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use App\Http\Requests\PlaylistVideoRequest;
 
 class PlaylistVideoController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(PlaylistVideoRequest $request)
     {
-        //
-    }
+        $validated = $request->validated();
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Playlist_Video $playlist_Video)
-    {
-        //
-    }
+        $playlistVideo = Playlist_Video::create([
+            'video_id' => $validated['videoId'],
+            'playlist_id' => $validated['playlistId'],
+            'position' => Playlist_Video::where('playlist_id', $validated['playlistId'])->count()+1
+        ]);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Playlist_Video $playlist_Video)
-    {
-        //
-    }
+        $playlist = $playlistVideo->playlist()->get()->first();
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Playlist_Video $playlist_Video)
-    {
-        //
+        Log::debug("playlistVideo is $playlistVideo");
+        Log::debug("playlist is $playlist");
+
+        return;
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Playlist_Video $playlist_Video)
+    public static function destroy(PlaylistVideoRequest $request)
     {
-        //
+        Playlist_Video::where([
+            'playlist_id' => $request->playlistId,
+            'video_id' => $request->videoId
+        ])->delete();
+
+        return;
     }
 }
