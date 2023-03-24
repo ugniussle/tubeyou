@@ -33,11 +33,6 @@ const closePlaylistModal = () => {
     modalOpen.value = false
 }
 
-/* onMounted(() => {
-    console.log(createPlaylistButton)
-    //createPlaylistButton.value.addEventListener('click', () => {
-}) */
-
 </script>
 
 <template>
