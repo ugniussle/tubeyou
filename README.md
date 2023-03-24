@@ -17,8 +17,8 @@
    5. Add content tags
    6. Add own thumbnail
    7. Edit thumbnail
-   8. Count views
-   9. Add liking and disliking
+   8. ~~Count views~~
+   9. ~~Add liking and disliking~~
    10. Create multiple resolution video sources
    11. Create multiple resolution thumbnails
    12. Add pagination
