@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use App\Models\User;
 use App\Models\Playlist;
 use App\Models\Playlist_Video;
 use App\Models\Video;
@@ -137,15 +136,17 @@ class PlaylistController extends Controller
 
     public static function view(string $token)
     {
-        $currentUserId = Auth::id();
-
         $playlist = Playlist::where('url_token', $token)->get()->first();
-
 
         $playlist->length = PlaylistController::getPlaylistLength($playlist->id);
         $playlist->thumbnail = PlaylistController::getPlaylistThumbnail($playlist->id);
 
         $videos = PlaylistController::getPlaylistVideos($playlist);
+
+        foreach($videos as $video) {
+            $video['username'] = $video->user->username;
+            $video['profilePicture'] = $video->user->profile_picture;
+        }
 
         return Inertia::render('Playlist/Playlist', [
             'playlist' => $playlist,

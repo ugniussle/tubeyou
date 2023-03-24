@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Video extends Model
 {
@@ -25,4 +27,9 @@ class Video extends Model
         'video_asset',
         'thumbnail_asset',
     ];
+
+    public function user(): BelongsTo
+    {
+        return $this->BelongsTo(User::class);
+    }
 }

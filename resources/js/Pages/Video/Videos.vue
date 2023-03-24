@@ -1,6 +1,6 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import VideoPreview from '@/Components/VideoPreview.vue';
+import VideoPreview from '@/Components/VideoPreviewGrid.vue';
 import PlaylistModal from '@/Components/PlaylistModal.vue';
 import { Head } from '@inertiajs/vue3';
 import { ref } from 'vue';
@@ -38,8 +38,12 @@ const closePlaylistModal = () => {
                 v-for="video in videos"
                 :key="video.id"
                 :video="video"
-                v-on:open-playlist-modal="($id) => openPlaylistModal($id)"
-            />
+            >
+                <!-- dropdown menu items -->
+                <div @click="openPlaylistModal(video.id)" class="hover:cursor-pointer hover:bg-gray-300 p-2">
+                    Add to playlist...
+                </div>
+            </VideoPreview>
         </div>
     </AuthenticatedLayout>
 

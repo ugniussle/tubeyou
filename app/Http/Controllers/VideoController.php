@@ -32,10 +32,8 @@ class VideoController extends Controller
                     ->get();
 
         foreach($videos as $video) {
-            $user = User::where('id', $video->user_id)->get()->first();
-
-            $video['username'] = $user->username;
-            $video['profilePicture'] = $user->profile_picture;
+            $video['username'] = $video->user->username;
+            $video['profilePicture'] = $video->user->profile_picture;
         }
 
         // Log::debug(Video::all(['title', 'id', 'visibility', 'thumbnail_asset']));

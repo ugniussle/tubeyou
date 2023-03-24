@@ -4,10 +4,27 @@ import { Head, Link } from '@inertiajs/vue3';
 import ProfilePicture from '@/Components/ProfilePicture.vue';
 import { ref } from 'vue';
 import DropdownMenu from '@/Components/DropdownMenu.vue';
+import PlaylistModal from '@/Components/PlaylistModal.vue';
 
 const props = defineProps(['video', 'channel'])
 
 const main = ref(null)
+
+const selectedVideoId = ref(null)
+const modalOpen = ref(false)
+
+const openPlaylistModal = async (videoId) => {
+    console.log('opening playlist modal', videoId)
+
+    modalOpen.value = true
+    selectedVideoId.value = videoId
+}
+
+const closePlaylistModal = () => {
+    console.log('closing playlist modal')
+
+    modalOpen.value = false
+}
 </script>
 
 <template>
@@ -51,13 +68,20 @@ const main = ref(null)
 
                 <!-- dropdown with button -->
                 <DropdownMenu>
-                    <div ref="addToPlaylistButton" class="hover:cursor-pointer hover:bg-gray-300 p-2">
+                    <div @click="openPlaylistModal(video.id)" class="hover:cursor-pointer hover:bg-gray-300 p-2">
                         Add to playlist...
                     </div>
                 </DropdownMenu>
             </div>
             <div class="border-2 w-2/3">{{ video.description }}</div>
         </div>
+
+        <PlaylistModal
+            v-if="modalOpen"
+            :selectedVideoId="selectedVideoId" 
+            :show="modalOpen" 
+            @close="closePlaylistModal"
+        />
     </AuthenticatedLayout>
     
 </template>

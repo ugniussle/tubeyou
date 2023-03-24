@@ -1,20 +1,10 @@
 <script setup>
 import ProfilePicture from './ProfilePicture.vue';
-import { ref, onMounted } from 'vue';
 import { Link } from '@inertiajs/vue3';
 import DropdownMenu from './DropdownMenu.vue'
 
 const props = defineProps(['video'])
 
-const emit = defineEmits(['openPlaylistModal'])
-
-const addToPlaylistButton = ref(null)
-
-onMounted(() => {
-    addToPlaylistButton.value.addEventListener('click', () => {
-        emit('openPlaylistModal', props.video.id)
-    })
-})
 </script>
 
 <template>
@@ -30,7 +20,6 @@ onMounted(() => {
             
             <div class="inline">
                 <!-- title -->
-
                 <Link :href="route('videos.url_token', video.url_token)" class="block text-left">
                     {{ video.title }}
                 </Link>
@@ -43,11 +32,8 @@ onMounted(() => {
                 <!-- view count and date -->
                 <div class="text-sm">
                     <span>{{ video.views }} views</span>
-                    <svg class="inline w-5" viewBox="0 0 10 10">
-                        <circle cx="5" cy="4" r="1"/>
-                    </svg>
+                    <svg class="inline w-5" viewBox="0 0 10 10"><circle cx="5" cy="4" r="1"/></svg>
                     <span>{{ video.created_at.slice(0, 10) }} </span>
-                    
                 </div>
             </div>
 
@@ -56,9 +42,9 @@ onMounted(() => {
 
             <!-- dropdown with button -->
             <DropdownMenu>
-                <div ref="addToPlaylistButton" class="hover:cursor-pointer hover:bg-gray-300 p-2">
-                    Add to playlist...
-                </div>
+                <main>
+                    <slot/>
+                </main>
             </DropdownMenu>
         </div>
     </div>

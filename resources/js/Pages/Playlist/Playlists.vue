@@ -79,7 +79,7 @@ const closeModal = () => {
             >
                 <!-- thumbnail -->
                 <Link :href="'/playlists/'+playlist.url_token">
-                    <img class="object-contain aspect-video w-64 bg-black" :src="playlist.thumbnail">
+                    <img class="object-contain aspect-video h-32 bg-black" :src="playlist.thumbnail">
                 </Link>
 
                 <!-- info -->
@@ -91,11 +91,11 @@ const closeModal = () => {
                     <span>Videos in playlist: {{ playlist.length }}</span>
                 </div>
 
-                <span class="grow"></span>
+                <div class="grow"></div>
 
                 <DropdownMenu>
-                    <div class="hover:cursor-pointer hover:bg-gray-300 p-2">
-                        <div @click="openDeletePlaylistModal(playlist)">Delete playlist</div>
+                    <div @click="openDeletePlaylistModal(playlist)" class="hover:cursor-pointer hover:bg-gray-300 p-2">
+                        Delete playlist
                     </div>
                 </DropdownMenu>
             </div>

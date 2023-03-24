@@ -10,6 +10,8 @@ const showDropdown = (args) => {
 
     let yScroll = window.scrollY
 
+    console.log(window.innerWidth - event.pageX, dropdown.value.offsetWidth)
+
     // if dropdown would go beyond screen boundries, attach it to the right
     if(window.innerWidth - event.pageX < dropdown.value.offsetWidth) {
         dropdown.value.style.right = 0 + 'px'
@@ -49,7 +51,7 @@ onMounted(() => {
     </div>
     
     <!-- dropdown -->
-    <div tabindex="0" style="transform: scale(0);" ref="dropdown" class="fixed bg-white whitespace-nowrap w-48 transition-all border-2 border-gray-700">
+    <div tabindex="0" style="transform: scale(0);" ref="dropdown" class="fixed bg-white whitespace-nowrap transition-all border-2 border-gray-700 text-base">
         <main>
             <slot/>
         </main>
