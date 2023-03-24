@@ -64,7 +64,6 @@ class ProfileController extends Controller
         if(Storage::disk('public')->exists($oldPicture) && Storage::disk('public')->delete($oldPicture) === true) {
             Log::debug('old picture deleted');
         }
-        
 
         $request->user()->profile_picture = $url;
         $request->user()->save();

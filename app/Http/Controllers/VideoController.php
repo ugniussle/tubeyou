@@ -220,28 +220,19 @@ class VideoController extends Controller
      */
     public static function view(string $token)
     {
-        $videos = Video::where('url_token', $token)->get();
+        $video = Video::where('url_token', $token)->get()->first();
 
-        if($videos->isEmpty()) {
+        if(!$video) {
             return redirect(RouteServiceProvider::HOME);
         } else {
-            $video = $videos[0];
-
-            $uploader = VideoController::getVideoUploader($video->user_id);
-            
             /* Log::debug("Video is: $video");
             Log::debug("Channel is: $uploader"); */
 
             return Inertia::render('Video/Video', [
                 'video' => $video,
-                'channel' => $uploader
+                'channel' => $video->user()->first()
             ]);
         }
-    }
-
-    public static function getVideoUploader($videoId) {
-        $video = Video::where('id', $videoId)->get()->first();
-        return User::where('id', $video->user_id)->get()->first();
     }
 
     /**
