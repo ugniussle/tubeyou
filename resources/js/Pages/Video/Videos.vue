@@ -3,25 +3,17 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import VideoPreview from '@/Components/VideoPreview.vue';
 import PlaylistModal from '@/Components/PlaylistModal.vue';
 import { Head } from '@inertiajs/vue3';
-import { ref, onMounted } from 'vue';
+import { ref } from 'vue';
 
 defineProps(['videos'])
 
-const modalOpen = ref(false)
 const main = ref(null)
+
 const selectedVideoId = ref(null)
-
-var playlists = null
-
-const getUserPlaylists = async () => {
-    await axios.post(route('playlists.getPlaylists'))
-        .then(response => playlists = response.data)
-}
+const modalOpen = ref(false)
 
 const openPlaylistModal = async (videoId) => {
     console.log('opening playlist modal', videoId)
-
-    await getUserPlaylists()
 
     modalOpen.value = true
     selectedVideoId.value = videoId
@@ -52,8 +44,8 @@ const closePlaylistModal = () => {
     </AuthenticatedLayout>
 
     <PlaylistModal
+        v-if="modalOpen"
         :selectedVideoId="selectedVideoId" 
-        :playlists="playlists" 
         :show="modalOpen" 
         @close="closePlaylistModal"
     />

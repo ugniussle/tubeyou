@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, onUnmounted, watch } from 'vue';
+import { onMounted, onUnmounted, watch, ref } from 'vue';
 import { useForm, Link } from '@inertiajs/vue3';
 import PrimaryButton from './PrimaryButton.vue';
 import PlaylistModalItem from './PlaylistModalItem.vue';
@@ -22,9 +22,6 @@ const props = defineProps({
         type: Number,
         default: null
     },
-    playlists: {
-        default: null
-    }
 });
 
 const emit = defineEmits(['close']);
@@ -109,8 +106,17 @@ const closeOnEscape = (e) => {
     }
 };
 
+var playlists = ref(null)
+
+const getUserPlaylists = async () => {
+    await axios.post(route('playlists.getPlaylists'))
+        .then(response => playlists.value = response.data)
+}
+
 onMounted(() => {
     document.addEventListener('keydown', closeOnEscape)
+
+    getUserPlaylists()
 });
 
 onUnmounted(() => {
@@ -137,14 +143,14 @@ onUnmounted(() => {
                     leave-to-class="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                 >
                     <div
-                        v-if="show"
+                        v-if="playlists"
                         class="-translate-x-1/2 top-1/4 left-1/2  absolute mb-6 bg-white rounded-lg overflow-hidden shadow-xl transform transition-all w-full sm:mx-auto md:w-3/12 text-2xl p-2"
                     >
                         <div v-if="playlists.length === 0">
                             You have no playlists. You can create a playlist 
                             <Link class="text-blue-500" :href="route('playlists.create')">here</Link>.
                         </div>
-                        
+
                         <div v-else>
                             <PlaylistModalItem 
                                 v-for="playlist in playlists"
