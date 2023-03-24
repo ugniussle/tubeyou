@@ -22,10 +22,10 @@ class Subscription extends Model
     ];
 
     public function subscriber(): BelongsTo {
-        return $this->belongsTo(User::class, 'id', 'user_id');
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
     public function channel(): BelongsTo {
-        return $this->belongsTo(User::class, 'id', 'channel_id');
+        return $this->belongsTo(User::class, 'channel_id', 'id');
     }
 }

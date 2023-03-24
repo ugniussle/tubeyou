@@ -24,11 +24,11 @@ class Playlist_Video extends Model
 
     public function video(): HasOne 
     {
-        return $this->HasOne(Video::class, 'id', 'video_id');
+        return $this->HasOne(Video::class, 'video_id', 'id');
     }
 
     public function playlist(): BelongsTo
     {
-        return $this->belongsTo(Playlist::class, 'id', 'playlist_id');
+        return $this->belongsTo(Playlist::class, 'playlist_id', 'id');
     }
 }
