@@ -226,23 +226,30 @@ class VideoController extends Controller
 
         if(!$video) {
             return redirect(RouteServiceProvider::HOME);
-        } else {
-            $user = Auth::user();
-
-            $userRating = Rating::where([
-                ['user_id', '=', $user->id],
-                ['video_id', '=', $video->id],
-            ])->first();
-
-            $video->views += 1;
-            $video->save();
-
-            return Inertia::render('Video/Video', [
-                'video' => $video,
-                'channel' => $video->user()->first(),
-                'userRating' => $userRating
-            ]);
         }
+
+        $user = Auth::user();
+
+        $userRating = Rating::where([
+            ['user_id', '=', $user->id],
+            ['video_id', '=', $video->id],
+        ])->first();
+
+        $video->views += 1;
+        $video->save();
+        
+        $video->load('user');
+
+        $comments = $video->comments;
+
+        $comments->load('user');
+
+        return Inertia::render('Video/Video', [
+            'video' => $video,
+            'userRating' => $userRating,
+            'comments' => $comments
+        ]);
+        
     }
 
     /**

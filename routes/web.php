@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\PlaylistController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\VideoController;
@@ -10,6 +11,8 @@ use Inertia\Inertia;
 use Illuminate\Http\Request;
 use App\Http\Requests\PlaylistVideoRequest;
 use App\Http\Requests\PlaylistRequest;
+use App\Http\Requests\CommentRequest;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -46,8 +49,18 @@ Route::get('/videos/{token}', function(string $token) {
     return VideoController::view($token);
 })->name('videos.url_token');
 
-Route::post('videos/uploadVideo', [VideoController::class, 'upload'])
+Route::post('/videos/uploadVideo', [VideoController::class, 'upload'])
     ->middleware(['auth', 'verified'])->name('videos.uploadVideo');
+
+/* comments */
+Route::post('/comments', [CommentController::class, 'store'])
+    ->middleware(['auth', 'verified'])
+    ->name('comments.store');
+
+Route::post('/comments/get/{urlToken}', function($urlToken) {
+    return CommentController::getComments($urlToken);
+})->middleware(['auth', 'verified'])
+  ->name('comments.get');
 
 /* playlists */
 Route::resource('playlists', PlaylistController::class)
@@ -58,7 +71,7 @@ Route::get('/playlists/{token}', function(string $token) {
     return PlaylistController::view($token);
 })->middleware(['auth', 'verified', 'viewPlaylist']);
 
-Route::delete('playlists/delete', function(PlaylistRequest $request) {
+Route::delete('/playlists/delete', function(PlaylistRequest $request) {
     return PlaylistController::destroy($request);
 })->middleware(['auth', 'verified', 'editPlaylist'])
   ->name('playlists.destroy');
@@ -72,13 +85,13 @@ Route::resource('playlistVideos', PlaylistVideoController::class)
     ->only(['store'])
     ->middleware(['auth', 'verified']);
 
-Route::delete('playlistVideos/delete', function(PlaylistVideoRequest $request) {
+Route::delete('/playlistVideos/delete', function(PlaylistVideoRequest $request) {
     return PlaylistVideoController::destroy($request);
 })->middleware(['auth', 'verified', 'editPlaylist'])
   ->name('playlistVideos.destroy');
 
 /* ratings */
-Route::post('ratings/rateVideo', function(Request $request) {
+Route::post('/ratings/rateVideo', function(Request $request) {
     return RatingController::store($request);
 })->middleware(['auth', 'verified'])
   ->name('ratings.rateVideo');
