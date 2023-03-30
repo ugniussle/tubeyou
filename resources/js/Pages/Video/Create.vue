@@ -10,7 +10,6 @@ import SecondaryButton from '@/Components/SecondaryButton.vue';
 import TextInput from '@/Components/Forms/TextInput.vue';
 import SelectInput from '@/Components/Forms/SelectInput.vue';
 import TextAreaInput from '@/Components/Forms/TextAreaInput.vue';
-import FileInput from "@/Components/Forms/FileInput.vue"
 import FileUpload from '@/Components/Forms/FileUpload.vue';
 import FormContainer from '@/Components/Forms/FormContainer.vue';
 
@@ -28,7 +27,7 @@ const form = useForm({
 const createVideo = () => {
     form.post(route('videos.store'), {
         preserveScroll: true,
-        // onFinish: () => form.reset(),
+        onFinish: () => form.reset()
     });
 };
 
