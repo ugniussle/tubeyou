@@ -97,7 +97,7 @@ onMounted(() => {
 <template>
     <Head :title="video.title"/>
     <AuthenticatedLayout :main="main" :hideSidebar="true">
-        <div class="text-xl m-10" ref="main">
+        <div class="text-base m-10" ref="main">
             <div class="w-2/3">
                 <!-- video -->
                 <video class="w-full m-2 ml-0 aspect-video bg-black" controls width="320" height="240">
@@ -111,7 +111,7 @@ onMounted(() => {
                     
                     <div class="inline">
                         <!-- title -->
-                        <Link :href="route('videos.url_token', video.url_token)" class="block text-left">
+                        <Link :href="route('videos.url_token', video.url_token)" class="block text-left text-xl">
                             {{ video.title }}
                         </Link>
     

@@ -8,19 +8,17 @@ import ProfilePicture from '@/Components/ProfilePicture.vue';
 
 const props = defineProps(['videoId', 'videoUrlToken'])
 
-var comment = ""
+const form = useForm({
+        videoId: props.videoId,
+        body: ''
+    })
 
 const comments = ref([])
 
 const postComment = async() => {
-    const form = useForm({
-        videoId: props.videoId,
-        body: comment
-    })
-
     axios.post(route('comments.store'), form)
-
-    comment = ""
+    
+    form.body = ''
 
     const response = await getComments()
     comments.value = response.data
@@ -31,9 +29,7 @@ const getComments = async() => {
 }
 
 onMounted(async() => {
-    // comments.value = await getComments()
     const response = await getComments()
-
     comments.value = response.data
 
     console.log(comments.value)
@@ -42,10 +38,10 @@ onMounted(async() => {
 
 <template>
     <div>
-        <h2>Comments</h2>
+        <h2 class="text-xl">Comments</h2>
         <div>
             Write your own comment
-            <TextAreaInput v-model="comment" placeholder="Write your comment here..."/>
+            <TextAreaInput v-model="form.body" placeholder="Write your comment here..."/>
             <PrimaryButton @click="postComment()">Post</PrimaryButton>
         </div>
 
@@ -53,7 +49,7 @@ onMounted(async() => {
             <div class="p-2 mb-2 flex" v-for="comment in comments">
                 <ProfilePicture class="mr-2" :picture="comment.user.profile_picture" :size="'3rem'"/>
                 <div class="flex flex-col">
-                    <span class="text-base">
+                    <span>
                         <span class="text-gray-700 mr-2">
                             {{ comment.user.username }}
                         </span>  
@@ -61,8 +57,8 @@ onMounted(async() => {
                             {{ comment.created_at.slice(0, 10) }}
                         </span>
                     </span>
-                    
-                    <span class="text-base">{{ comment.body }}</span>
+
+                    <span>{{ comment.body }}</span>
                 </div>
             </div>
         </div>

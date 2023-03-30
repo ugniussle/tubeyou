@@ -35,11 +35,13 @@ class CommentController extends Controller
     public static function getComments($videoUrlToken) {
         $video = Video::where('url_token', $videoUrlToken)->get()->first();
 
-        $comments = $video->comments;
-
-        $comments->sortByDesc('created_at', SORT_STRING);
+        $comments = $video->comments()->orderBy('created_at', 'desc')->get();
 
         $comments->load('user');
+
+        /* foreach($comments as $comment) {
+            Log::debug($comment);
+        } */
 
         return $comments;
     }
