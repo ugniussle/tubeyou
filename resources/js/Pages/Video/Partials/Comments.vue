@@ -5,12 +5,14 @@ import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import { useForm } from '@inertiajs/vue3';
 import ProfilePicture from '@/Components/ProfilePicture.vue';
+import Comment from './Comment.vue';
 
 const props = defineProps(['videoId', 'videoUrlToken'])
 
 const form = useForm({
         videoId: props.videoId,
-        body: ''
+        body: '',
+        parent: null
     })
 
 const comments = ref([])
@@ -26,6 +28,30 @@ const postComment = async() => {
 
 const getComments = async() => {
     return axios.post(route('comments.get', props.videoUrlToken))
+}
+
+const replySetup = (target) => {
+    target.nextSibling.style.display = 'block'
+    target.style.display = 'none'
+}
+
+const postReply = (target, commentId) => {
+    target.parentElement.style.display = 'none'
+    target.parentElement.previousSibling.style.display = 'block'
+
+    const input = target.previousSibling
+
+    console.log(input.value)
+
+    const replyForm = useForm({
+        videoId: props.videoId,
+        body: input.value,
+        parent: commentId
+    })
+
+    axios.post(route('comments.store'), replyForm)
+
+    input.value = ""
 }
 
 onMounted(async() => {
@@ -45,22 +71,11 @@ onMounted(async() => {
             <PrimaryButton @click="postComment()">Post</PrimaryButton>
         </div>
 
-        <div>
-            <div class="p-2 mb-2 flex" v-for="comment in comments">
-                <ProfilePicture class="mr-2" :picture="comment.user.profile_picture" :size="'3rem'"/>
-                <div class="flex flex-col">
-                    <span>
-                        <span class="text-gray-700 mr-2">
-                            {{ comment.user.username }}
-                        </span>  
-                        <span>
-                            {{ comment.created_at.slice(0, 10) }}
-                        </span>
-                    </span>
-
-                    <span>{{ comment.body }}</span>
-                </div>
-            </div>
-        </div>
+        <Comment 
+            v-for="comment in comments" 
+            :comment="comment" 
+            @postReply="postReply" 
+            @replySetup="replySetup"
+        />
     </div>
 </template>

@@ -18,16 +18,14 @@ class CommentController extends Controller
     {
         $validated = $request->validated();
 
-        $videoId = $validated['videoId'];
-        $body = $validated['body'];
-
         $comment = Comment::create([
             'user_id' => Auth::user()->id,
-            'video_id' => $videoId,
-            'body' => $body,
+            'video_id' => $validated['videoId'],
+            'body' => $validated['body'],
+            'parent' => $validated['parent']
         ]);
 
-        Log::debug($comment);
+        // Log::debug($comment);
 
         return true;
     }
@@ -35,11 +33,11 @@ class CommentController extends Controller
     public static function getComments($videoUrlToken) {
         $video = Video::where('url_token', $videoUrlToken)->get()->first();
 
-        $comments = $video->comments()->orderBy('created_at', 'desc')->get();
+        $comments = $video->comments()->where('parent', null)->orderBy('created_at', 'desc')->get();
 
-        $comments->load('user');
+        $comments->load('replies');
 
-        /* foreach($comments as $comment) {
+/*         foreach($comments as $comment) {
             Log::debug($comment);
         } */
 

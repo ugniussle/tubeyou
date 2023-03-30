@@ -2,7 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Comment;
 use Illuminate\Foundation\Http\FormRequest;
+use App\Rules\ChildComment;
+use Illuminate\Support\Facades\Log;
 
 class CommentRequest extends FormRequest
 {
@@ -11,6 +14,16 @@ class CommentRequest extends FormRequest
      */
     public function authorize(): bool
     {
+        if($this->parent != null) {
+            $parentComment = Comment::find($this->parent);
+
+            if($parentComment->video_id != $this->videoId) {
+                Log::debug("Tried to reply to comment of a different video.");
+                
+                return false;
+            }
+        }
+
         return true;
     }
 
@@ -24,7 +37,7 @@ class CommentRequest extends FormRequest
         return [
             'videoId' => ['required', 'integer', 'numeric'],
             'body' => ['required', 'string'],
-            'parent' => ['nullable', 'integer', 'numeric']
+            'parent' => ['nullable', 'integer', 'numeric', new ChildComment]
         ];
     }
 }

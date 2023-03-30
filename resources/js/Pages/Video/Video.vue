@@ -157,7 +157,7 @@ onMounted(() => {
                 </div>
                 <div class="border-2">{{ video.description }}</div>
                 
-                <Comments :comments="comments" :videoId="video.id" :videoUrlToken="video.url_token"/>
+                <Comments :videoId="video.id" :videoUrlToken="video.url_token"/>
             </div>
         </div>
 
