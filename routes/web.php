@@ -5,6 +5,7 @@ use App\Http\Controllers\PlaylistController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\VideoController;
 use App\Http\Controllers\PlaylistVideoController;
+use App\Http\Controllers\ChannelController;
 use App\Http\Controllers\RatingController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -39,6 +40,12 @@ Route::middleware('auth')->group(function () {
     Route::post('/profile', [ProfileController::class, 'updatePicture'])->name('profile.updatePicture');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+/* channels */
+Route::get('channels/{id}', function($id) {
+    return ChannelController::view($id);
+})->middleware(['auth', 'verified'])
+  ->name('channels.view');
 
 /* videos */
 Route::resource('videos', VideoController::class)

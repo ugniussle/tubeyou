@@ -17,7 +17,7 @@ const props = defineProps(['video'])
 
             <div class="flex">
                 <!-- video info -->
-                <ProfilePicture class="mx-2" :picture="video.profilePicture" :size="'2.5rem'"/>
+                <ProfilePicture class="mx-2" :user="video.user" :size="'2.5rem'"/>
                 
                 <div>
                     <!-- title -->
@@ -27,7 +27,11 @@ const props = defineProps(['video'])
     
                     <!-- channel name, view count and date -->
                     <div class="text-left text-sm">
-                        <span>{{ video.username }}</span>
+                        <div class="inline">
+                            <Link :href="route('channels.view', video.user.id)" class="text-left text-sm">
+                                {{ video.user.username }}
+                            </Link>
+                        </div>
                         <svg class="inline w-5" viewBox="0 0 10 10"><circle cx="5" cy="4" r="1"/></svg>
                         <span>{{ video.views }} views</span>
                         <svg class="inline w-5" viewBox="0 0 10 10"><circle cx="5" cy="4" r="1"/></svg>
