@@ -116,9 +116,9 @@ onMounted(() => {
                         </Link>
     
                         <!-- channel name -->
-                        <div class="text-left text-sm">
+                        <Link :href="route('channels.view', video.user.id)"  class="text-left text-sm">
                             {{ video.user.username }}
-                        </div>
+                        </Link>
     
                         <!-- view count and date -->
                         <div class="text-sm">
