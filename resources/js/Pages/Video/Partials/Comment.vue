@@ -13,7 +13,7 @@ const showReplies = ref(false)
 
 <template>
 <div class="p-2 flex">
-    <ProfilePicture class="mr-2" :picture="comment.user.profile_picture" :size="'3rem'"/>
+    <ProfilePicture class="flex-none mr-2" :user="comment.user" :size="'3rem'"/>
     <div class="flex flex-col">
         <span>
             <span class="text-gray-700 mr-2">

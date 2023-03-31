@@ -1,12 +1,16 @@
 <script setup>
+import { Link } from '@inertiajs/vue3';
 
-defineProps(['picture', 'size']);
+defineProps(['user', 'size']);
 
 </script>
 
 <template>
-    <img 
-        style="object-fit: cover;" 
-        :style="'width:'+size+'; height:'+size" 
-        class="rounded-full" :src="picture">
+    <Link :href="route('channels.view', user.id)">
+        <img 
+            style="object-fit: cover;" 
+            :style="'width:'+size+'; height:'+size" 
+            class="rounded-full inline" 
+            :src="user.profile_picture">
+    </Link>
 </template>

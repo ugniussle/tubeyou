@@ -16,21 +16,23 @@ const props = defineProps(['video'])
 
         <div class="p-1 flex">
             <!-- video info -->
-            <ProfilePicture class="inline mr-2" :picture="video.profilePicture" :size="'2.5rem'"/>
+            <ProfilePicture class="inline mr-2 flex-none" :user="video.user" :size="'2.5rem'"/>
             
-            <div class="inline">
+            <div class="inline flex-col">
                 <!-- title -->
                 <Link :href="route('videos.url_token', video.url_token)" class="block text-left">
-                    {{ video.title }}
+                    {{ video.title.length > 35 ? video.title.slice(0,35) + '...' : video.title }}
                 </Link>
 
                 <!-- channel name -->
-                <div class="text-left text-sm">
-                    {{ video.username }}  
-                </div>
+                <Link :href="route('channels.view', video.user.id)" class="text-left text-sm">
+                    <div>
+                        {{ video.user.username }}
+                    </div>
+                </Link>
 
                 <!-- view count and date -->
-                <div class="text-sm">
+                <div class="text-sm text-left">
                     <span>{{ video.views }} views</span>
                     <svg class="inline w-5" viewBox="0 0 10 10"><circle cx="5" cy="4" r="1"/></svg>
                     <span>{{ video.created_at.slice(0, 10) }} </span>

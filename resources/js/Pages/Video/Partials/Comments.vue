@@ -4,7 +4,6 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import { useForm } from '@inertiajs/vue3';
-import ProfilePicture from '@/Components/ProfilePicture.vue';
 import Comment from './Comment.vue';
 
 const props = defineProps(['videoId', 'videoUrlToken'])

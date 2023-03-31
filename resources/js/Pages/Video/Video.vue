@@ -107,7 +107,7 @@ onMounted(() => {
     
                 <!-- video info -->
                 <div class="p-1 flex space-x-2">
-                    <ProfilePicture class="inline mr-2" :picture="video.user.profile_picture" :size="'2.5rem'"/>
+                    <ProfilePicture class="inline mr-2" :user="video.user" :size="'2.5rem'"/>
                     
                     <div class="inline">
                         <!-- title -->
@@ -116,9 +116,9 @@ onMounted(() => {
                         </Link>
     
                         <!-- channel name -->
-                        <div class="text-left text-sm">
+                        <Link :href="route('channels.view', video.user.id)"  class="text-left text-sm">
                             {{ video.user.username }}
-                        </div>
+                        </Link>
     
                         <!-- view count and date -->
                         <div class="text-sm">

@@ -33,10 +33,7 @@ class VideoController extends Controller
                     ->take(12)
                     ->get();
 
-        foreach($videos as $video) {
-            $video['username'] = $video->user->username;
-            $video['profilePicture'] = $video->user->profile_picture;
-        }
+        $videos->load('user');
 
         // Log::debug(Video::all(['title', 'id', 'visibility', 'thumbnail_asset']));
         return Inertia::render('Video/Videos', [

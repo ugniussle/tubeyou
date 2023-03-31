@@ -65,7 +65,7 @@ const navMargin = props.disableSidebar ? 'pl-0' : 'pl-16'
                                                 type="button"
                                                 class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150"
                                             >
-                                                <ProfilePicture class="mr-2" v-if="user.profile_picture" :picture="user.profile_picture" :size="'3rem'"/>
+                                                <ProfilePicture class="mr-2" v-if="user.profile_picture" :user="user" :size="'3rem'"/>
                                                 {{user.username}}
 
                                                 <svg
@@ -104,8 +104,8 @@ const navMargin = props.disableSidebar ? 'pl-0' : 'pl-16'
                                     :class="{
                                         hidden: showingNavigationDropdown,
                                         'inline-flex': !showingNavigationDropdown,
-                                    } + 'h-6 w-6'"
-                                    :picture="user.profile_picture"
+                                    }"
+                                    :user="user"
                                     :size="'3rem'"
                                 />
                             </button>
