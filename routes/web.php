@@ -7,6 +7,7 @@ use App\Http\Controllers\VideoController;
 use App\Http\Controllers\PlaylistVideoController;
 use App\Http\Controllers\ChannelController;
 use App\Http\Controllers\RatingController;
+use App\Http\Controllers\SubscriptionController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
@@ -42,10 +43,27 @@ Route::middleware('auth')->group(function () {
 });
 
 /* channels */
-Route::get('channels/{id}', function($id) {
+Route::get('channels/{id}', function(int $id) {
     return ChannelController::view($id);
 })->middleware(['auth', 'verified'])
   ->name('channels.view');
+
+/* subscriptions */
+Route::post('/channels/subscribe/{channelId}', function($channelId) {
+    return SubscriptionController::subscribe($channelId);
+})->middleware(['auth', 'verified'])
+  ->name('subscriptions.subscribe');
+
+Route::get('/users/isSubscribedTo/{channelId}', function($channelId) {
+    return SubscriptionController::isSubscribed($channelId);
+})->middleware(['auth', 'verified'])
+  ->name('subscriptions.getStatus');
+
+Route::get('/users/getSubscriptions', function() {
+    return SubscriptionController::getSubscriptions();
+})->middleware(['auth', 'verified'])
+  ->name('subscriptions.getSubscriptions');
+
 
 /* videos */
 Route::resource('videos', VideoController::class)
@@ -54,7 +72,7 @@ Route::resource('videos', VideoController::class)
 
 Route::get('/videos/{token}', function(string $token) {
     return VideoController::view($token);
-})->name('videos.url_token');
+})->name('videos.view');
 
 Route::post('/videos/uploadVideo', [VideoController::class, 'upload'])
     ->middleware(['auth', 'verified'])->name('videos.uploadVideo');
@@ -64,7 +82,7 @@ Route::post('/comments', [CommentController::class, 'store'])
     ->middleware(['auth', 'verified'])
     ->name('comments.store');
 
-Route::post('/comments/get/{urlToken}', function($urlToken) {
+Route::get('/comments/get/{urlToken}', function($urlToken) {
     return CommentController::getComments($urlToken);
 })->middleware(['auth', 'verified'])
   ->name('comments.get');
@@ -74,19 +92,19 @@ Route::resource('playlists', PlaylistController::class)
     ->only(['index', 'create', 'store'])
     ->middleware(['auth', 'verified']);
 
-Route::get('/playlists/{token}', function(string $token) {
-    return PlaylistController::view($token);
-})->middleware(['auth', 'verified', 'viewPlaylist']);
+Route::get('/playlists/get', function() {
+    return PlaylistController::getPlaylists();
+})->middleware(['auth', 'verified'])
+  ->name('playlists.getPlaylists');
 
 Route::delete('/playlists/delete', function(PlaylistRequest $request) {
     return PlaylistController::destroy($request);
 })->middleware(['auth', 'verified', 'editPlaylist'])
   ->name('playlists.destroy');
 
-Route::post('/playlists/get', function() {
-    return PlaylistController::getPlaylists();
-})->middleware(['auth', 'verified'])
-  ->name('playlists.getPlaylists');
+Route::get('/playlists/{token}', function(string $token) {
+    return PlaylistController::view($token);
+})->middleware(['auth', 'verified', 'viewPlaylist']);
 
 Route::resource('playlistVideos', PlaylistVideoController::class)
     ->only(['store'])

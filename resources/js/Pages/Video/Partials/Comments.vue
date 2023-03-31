@@ -26,7 +26,7 @@ const postComment = async() => {
 }
 
 const getComments = async() => {
-    return axios.post(route('comments.get', props.videoUrlToken))
+    return axios.get(route('comments.get', props.videoUrlToken))
 }
 
 const replySetup = (target) => {
@@ -56,8 +56,6 @@ const postReply = (target, commentId) => {
 onMounted(async() => {
     const response = await getComments()
     comments.value = response.data
-
-    console.log(comments.value)
 })
 </script>
 

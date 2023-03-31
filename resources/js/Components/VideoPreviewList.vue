@@ -11,7 +11,7 @@ const props = defineProps(['video'])
     <div class="text-center">
         <div class="w-full p-1 flex">
             <!-- thumbnail -->
-            <Link :href="route('videos.url_token', video.url_token)" class="rounded-sm">
+            <Link :href="route('videos.view', video.url_token)" class="rounded-sm">
                 <img class="bg-black aspect-video object-contain rounded-sm hover:ring-red-500 hover:ring-2 h-32" :src="video.thumbnail_asset"/>
             </Link>
 
@@ -21,7 +21,7 @@ const props = defineProps(['video'])
                 
                 <div>
                     <!-- title -->
-                    <Link :href="route('videos.url_token', video.url_token)" class="block text-left">
+                    <Link :href="route('videos.view', video.url_token)" class="block text-left">
                         {{ video.title }}
                     </Link>
     

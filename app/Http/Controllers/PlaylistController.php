@@ -194,6 +194,6 @@ class PlaylistController extends Controller
             $playlist->playlistVideos = Playlist_Video::where('playlist_id', $playlist->id)->get();
         }
 
-        return json_encode($playlists);
+        return $playlists;
     }
 }

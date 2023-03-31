@@ -4,62 +4,71 @@ namespace App\Http\Controllers;
 
 use App\Models\Subscription;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class SubscriptionController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public static function subscribe(int $channelId)
     {
-        //
+        $currentUser = Auth::user();
+
+        $isAlreadySubscribed = Subscription::where([
+            ['user_id', $currentUser->id],
+            ['channel_id', $channelId]
+        ])->count();
+
+        if($isAlreadySubscribed === 1) {
+            Subscription::where([
+                ['user_id', $currentUser->id],
+                ['channel_id', $channelId]
+            ])->delete();
+
+            return response()->json([
+                'action' => 'deleted'
+            ]);
+        }
+
+        $subscription = Subscription::create([
+            'user_id' => $currentUser->id,
+            'channel_id' => $channelId,
+        ]);
+        
+        return response()->json([
+            'action' => 'created'
+        ]);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Subscription $subscription)
-    {
-        //
+    public static function isSubscribed(int $channelId) {
+        $currentUser = Auth::user();
+        
+        $isAlreadySubscribed = Subscription::where([
+            ['user_id', $currentUser->id],
+            ['channel_id', $channelId]
+        ])->count();
+
+        if($isAlreadySubscribed === 1) {
+            return response()->json([
+                'status' => 'subscribed'
+            ]);
+        }
+
+        return response()->json([
+            'status' => 'notSubscribed'
+        ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Subscription $subscription)
-    {
-        //
-    }
+    public static function getSubscriptions() {
+        $currentUser = Auth::user();
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Subscription $subscription)
-    {
-        //
-    }
+        $subscriptions = Subscription::where([
+            ['user_id', $currentUser->id],
+        ])->get();
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Subscription $subscription)
-    {
-        //
+        $subscriptions->load('channel');
+        
+        return $subscriptions;
     }
 }
