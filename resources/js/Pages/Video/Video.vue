@@ -6,6 +6,7 @@ import { ref, onMounted } from 'vue';
 import DropdownMenu from '@/Components/DropdownMenu.vue';
 import PlaylistModal from '@/Components/PlaylistModal.vue';
 import Comments from './Partials/Comments.vue';
+import SubscribeButton from '@/Components/SubscribeButton.vue'
 import axios from 'axios';
 
 const props = defineProps(['video', 'userRating', 'comments'])
@@ -97,8 +98,8 @@ onMounted(() => {
 <template>
     <Head :title="video.title"/>
     <AuthenticatedLayout :main="main" :hideSidebar="true">
-        <div class="text-base m-10" ref="main">
-            <div class="w-2/3">
+        <div class="text-base m-5 md:m-10" ref="main">
+            <div class="w-full md:w-2/3">
                 <!-- video -->
                 <video class="w-full m-2 ml-0 aspect-video bg-black" controls width="320" height="240">
                     <source :src="video.video_asset">
@@ -107,13 +108,13 @@ onMounted(() => {
     
                 <!-- video info -->
                 <div class="p-1 flex space-x-2">
-                    <ProfilePicture class="inline mr-2" :user="video.user" :size="'2.5rem'"/>
+                    <ProfilePicture class="inline mr-2 flex-none" :user="video.user" :size="'2.5rem'"/>
                     
                     <div class="inline">
                         <!-- title -->
-                        <Link :href="route('videos.url_token', video.url_token)" class="block text-left text-xl">
+                        <div class="block text-left text-xl">
                             {{ video.title }}
-                        </Link>
+                        </div>
     
                         <!-- channel name -->
                         <Link :href="route('channels.view', video.user.id)"  class="text-left text-sm">
@@ -132,6 +133,8 @@ onMounted(() => {
     
                     <!-- spacer -->
                     <div class="grow"/>
+
+                    <SubscribeButton :channel="video.user"/>
     
                     <!-- rating -->
                     <div class="px-2 h-14 space-x-1 flex border rounded-full text-base">

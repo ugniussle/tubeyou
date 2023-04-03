@@ -48,9 +48,6 @@ class ProfileController extends Controller
      */
     public function updatePicture(Request $request): RedirectResponse
     {
-        // Log::debug("request update picture");
-        // Log::debug("$request->picture");
-
         $request->validate([
             'picture' => ['required', 'file', new ImageFile]
         ]);

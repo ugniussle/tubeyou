@@ -10,8 +10,6 @@ const showDropdown = (args) => {
 
     let yScroll = window.scrollY
 
-    console.log(window.innerWidth - event.pageX, dropdown.value.offsetWidth)
-
     // if dropdown would go beyond screen boundries, attach it to the right
     if(window.innerWidth - event.pageX < dropdown.value.offsetWidth) {
         dropdown.value.style.right = 0 + 'px'

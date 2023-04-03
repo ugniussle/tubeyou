@@ -13,15 +13,11 @@ const selectedVideoId = ref(null)
 const modalOpen = ref(false)
 
 const openPlaylistModal = async (videoId) => {
-    console.log('opening playlist modal', videoId)
-
     modalOpen.value = true
     selectedVideoId.value = videoId
 }
 
 const closePlaylistModal = () => {
-    console.log('closing playlist modal')
-
     modalOpen.value = false
 }
 

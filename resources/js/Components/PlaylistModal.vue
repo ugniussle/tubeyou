@@ -50,7 +50,6 @@ const saveVideoToPlaylist = (playlistId, videoId) => {
         videoId: videoId
     })
 
-    // playlistVideoForm.post(route('playlistVideos.store'))
     axios.post(route('playlistVideos.store'), playlistVideoForm)
 }
 
@@ -60,7 +59,6 @@ const deleteVideoFromPlaylist = (playlistId, videoId) => {
         videoId: videoId,
     })
 
-    //playlistVideoForm.delete(route('playlistVideos.destroy'))
     axios.delete(route('playlistVideos.destroy'), { data: playlistVideoForm })
 }
 
@@ -109,14 +107,14 @@ const closeOnEscape = (e) => {
 var playlists = ref(null)
 
 const getUserPlaylists = async () => {
-    await axios.post(route('playlists.getPlaylists'))
-        .then(response => playlists.value = response.data)
+    return await axios.get(route('playlists.getPlaylists'))
 }
 
-onMounted(() => {
+onMounted(async() => {
     document.addEventListener('keydown', closeOnEscape)
 
-    getUserPlaylists()
+    const response = await getUserPlaylists()
+    playlists.value = response.data
 });
 
 onUnmounted(() => {

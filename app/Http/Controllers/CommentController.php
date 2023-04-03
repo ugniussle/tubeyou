@@ -25,8 +25,6 @@ class CommentController extends Controller
             'parent' => $validated['parent']
         ]);
 
-        // Log::debug($comment);
-
         return true;
     }
 
@@ -36,10 +34,6 @@ class CommentController extends Controller
         $comments = $video->comments()->where('parent', null)->orderBy('created_at', 'desc')->get();
 
         $comments->load('replies');
-
-/*         foreach($comments as $comment) {
-            Log::debug($comment);
-        } */
 
         return $comments;
     }

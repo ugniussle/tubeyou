@@ -10,7 +10,7 @@ const props = defineProps(['video'])
 <template>
     <div class="text-center">
         <!-- thumbnail -->
-        <Link :href="route('videos.url_token', video.url_token)" class="rounded-sm w-2/6 h-1/6">
+        <Link :href="route('videos.view', video.url_token)" class="rounded-sm w-2/6 h-1/6">
             <img class="bg-black aspect-video object-contain rounded-sm hover:ring-red-500 hover:ring-2 w-full" :src="video.thumbnail_asset"/>
         </Link>
 
@@ -20,7 +20,7 @@ const props = defineProps(['video'])
             
             <div class="inline flex-col">
                 <!-- title -->
-                <Link :href="route('videos.url_token', video.url_token)" class="block text-left">
+                <Link :href="route('videos.view', video.url_token)" class="block text-left">
                     {{ video.title.length > 35 ? video.title.slice(0,35) + '...' : video.title }}
                 </Link>
 
