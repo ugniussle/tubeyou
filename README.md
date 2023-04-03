@@ -28,13 +28,13 @@
    3. ~~Remove video from playlist~~
    4. Arrange videos in playlist (change list order)
 3. Channels
-   1. **View user videos and playlists**
+   1. ~~**View user videos and playlists**~~
 4. Comments
    1. ~~User can write comments under videos~~
    2. ~~Comments can have 1 level nested comments (replies).~~
    3. Tag other users.
 5. Subscriptions
-   1. **User can subscribe to channel (and unsubscribe).**
+   1. ~~**User can subscribe to channel (and unsubscribe).**~~
 6. Design
    1. Custom page icon
    2. Style the navigation bar
