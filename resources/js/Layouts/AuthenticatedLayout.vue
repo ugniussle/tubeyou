@@ -8,7 +8,6 @@ import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import { Link, usePage } from '@inertiajs/vue3';
 import ProfilePicture from '@/Components/ProfilePicture.vue';
 import Sidebar from '@/Components/Layout/Sidebar.vue';
-import SidebarItem from '@/Components/Layout/SidebarItem.vue';
 
 const props = defineProps(['main', 'disableSidebar', 'hideSidebar'])
 

@@ -22,8 +22,6 @@ class ChildComment implements ValidationRule
 
         $comment = Comment::find($value)->first();
 
-        Log::debug($comment);
-
         if($comment == null) {
             $fail('Comment does not exist.');
         }

@@ -33,7 +33,6 @@ const newPicture = ref('')
 const setPicture = (file) => {
     // check file type and tell user if it is not an image
     if(!file.type.startsWith('image')) {
-        console.log('bad file')
         newPicture.value = null
         form.picture = null
         document.getElementById('profilePictureInput').value=''
@@ -47,9 +46,6 @@ const setPicture = (file) => {
 
     form.picture = file
     newPicture.value = URL.createObjectURL(file)
-
-/*     console.log(document.getElementById('profilePictureInput'))
-    console.log(newPicture.value) */
 }
 </script>
 

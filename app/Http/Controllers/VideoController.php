@@ -35,7 +35,6 @@ class VideoController extends Controller
 
         $videos->load('user');
 
-        // Log::debug(Video::all(['title', 'id', 'visibility', 'thumbnail_asset']));
         return Inertia::render('Video/Videos', [
             'videos' => $videos
         ]);
@@ -80,8 +79,6 @@ class VideoController extends Controller
 
         $percentageDone = $handler->getPercentageDone();
 
-        // Log::debug("Uploading file, progress: $percentageDone");
-//
         return response()->json([
             'done' => $percentageDone,
             'status' => true
@@ -105,9 +102,6 @@ class VideoController extends Controller
     {
         $user = $request->user();
 
-        // Log::debug("$user");
-        // Log::debug("$request");
-
         $request->validate([
             'title' => ['required', 'string', 'max:255'],
             'description' => ['string', 'nullable'],
@@ -127,8 +121,6 @@ class VideoController extends Controller
 
         $proccessedFileInfo = $this->processVideo(public_path($filepath));
         
-        Log::debug($proccessedFileInfo);
-
         $visibility = $this->getVisibility($request->visibility);
 
         $token = Str::random();
@@ -151,8 +143,6 @@ class VideoController extends Controller
             'video_asset' => asset($filepath),
             'thumbnail_asset' => asset($proccessedFileInfo['thumbnailPath']),
         ]);
-
-        // Log::debug("video is $video");
 
         return redirect("videos/$token");
     }

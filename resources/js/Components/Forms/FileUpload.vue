@@ -24,16 +24,12 @@ const setupUpload = (event) => {
 }
 
 r.on('fileAdded', (file, event) => {
-    console.log(props.csrfToken)
     if(!validateFile(file)) {
         document.getElementById('progressDisplay').style.display = 'none'
         document.getElementById('startUploadButton').style.display = 'none'
         document.getElementById('videoFileDisplay').innerHTML = ''
         return
     }
-
-    // console.log(file.file.type)
-    // console.log(file, event)
 
     document.getElementById('progressDisplay').style.display = 'block'
     document.getElementById('startUploadButton').style.display = 'inline-block'
@@ -70,8 +66,6 @@ const startStopUpload = (event) => {
         return
     }
 
-    console.log('starting download')
-    
     if(r.isUploading()) {
         event.target.innerHTML = "Pause File Upload"
     } else {

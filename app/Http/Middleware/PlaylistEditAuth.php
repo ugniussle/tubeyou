@@ -24,11 +24,9 @@ class PlaylistEditAuth
         $user = User::find($currentUserId);
 
         if($user == null) {
-            Log::debug('user is null');
+            Log::error('user is null');
             return redirect('/');
         }
-
-        Log::debug("$user");
 
         $playlistId = $request->playlistId;
 
@@ -37,8 +35,6 @@ class PlaylistEditAuth
                 ['id', '=', $playlistId],
                 ['user_id', '=', $user['id']]
             ])->get()->count();
-
-            Log::debug("$result");
 
             if($result === 1)
             {

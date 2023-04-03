@@ -7,14 +7,11 @@ const props = defineProps(['channel'])
 const subscribeToChannel = async() => {
     const response = (await axios.post(route('subscriptions.subscribe', props.channel.id))).data
 
-    console.log(response)
-
     if(response['action'] == 'deleted') {
         subscribed.value = false
     } else {
         subscribed.value = true
     }
-    
 }
 
 const getSubscriptionStatus = async() => {

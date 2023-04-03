@@ -24,11 +24,6 @@ class PlaylistVideoController extends Controller
         ]);
 
         $playlist = $playlistVideo->playlist()->get()->first();
-
-        Log::debug("playlistVideo is $playlistVideo");
-        Log::debug("playlist is $playlist");
-
-        return;
     }
 
     /**
@@ -40,7 +35,5 @@ class PlaylistVideoController extends Controller
             'playlist_id' => $request->playlistId,
             'video_id' => $request->videoId
         ])->delete();
-
-        return;
     }
 }

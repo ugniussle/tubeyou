@@ -69,8 +69,6 @@ onMounted(async() => {
     const response = await getSubscriptions()
 
     subscriptions.value = response
-    
-    console.log(response)
 })
 </script>
 

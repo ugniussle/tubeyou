@@ -24,14 +24,11 @@ class PlaylistViewAuth
         $user = User::find($currentUserId);
 
         $token = $request->route('token');
-        Log::debug("$token");
 
         if($user == null) {
-            Log::debug('user is null');
+            Log::error('user is null');
             return redirect('/');
         }
-
-        Log::debug("$user");
 
         $playlist = Playlist::where('url_token', $token)->get()->first();
 

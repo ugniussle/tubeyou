@@ -18,7 +18,7 @@ class CommentRequest extends FormRequest
             $parentComment = Comment::find($this->parent);
 
             if($parentComment->video_id != $this->videoId) {
-                Log::debug("Tried to reply to comment of a different video.");
+                Log::error("Tried to reply to comment of a different video.");
                 
                 return false;
             }

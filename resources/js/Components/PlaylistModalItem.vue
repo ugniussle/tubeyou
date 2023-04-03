@@ -4,8 +4,6 @@ const props = defineProps(['playlist', 'videoId'])
 const emit = defineEmits(['updateSelectedPlaylists'])
 
 var checked = false
-console.log(props.videoId)
-console.log(props.playlist.playlistVideos)
 
 if(props.playlist.playlistVideos.find(
     playlistVideo => playlistVideo.video_id == props.videoId)

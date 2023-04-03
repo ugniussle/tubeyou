@@ -40,8 +40,6 @@ const postReply = (target, commentId) => {
 
     const input = target.previousSibling
 
-    console.log(input.value)
-
     const replyForm = useForm({
         videoId: props.videoId,
         body: input.value,
