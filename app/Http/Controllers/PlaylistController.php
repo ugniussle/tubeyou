@@ -53,9 +53,6 @@ class PlaylistController extends Controller
     {
         $user = $request->user();
 
-        // Log::debug("$user");
-        Log::debug("$request");
-
         $request->validate([
             'title' => ['required', 'string', 'max:255'],
             'visibility' => ['required', 'string'],
@@ -80,10 +77,6 @@ class PlaylistController extends Controller
             'url_token' => $token,
         ]);
 
-
-
-        Log::debug("playlist is $playlist");
-
         return redirect("playlists/$token");
     }
 
@@ -106,22 +99,6 @@ class PlaylistController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Playlist $playlist)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Playlist $playlist)
-    {
-        //
-    }
-
-    /**
      * Remove the specified resource from storage.
      */
     public static function destroy(PlaylistRequest $request)
@@ -138,7 +115,7 @@ class PlaylistController extends Controller
     {
         $playlist = Playlist::where('url_token', $token)->get()->first();
 
-        $playlist->length = PlaylistController::getPlaylistLength($playlist->id);
+        $playlist->length = $playlist->playlistVideos->count();
         $playlist->thumbnail = PlaylistController::getPlaylistThumbnail($playlist->id);
 
         $videos = PlaylistController::getPlaylistVideos($playlist);
@@ -153,12 +130,8 @@ class PlaylistController extends Controller
             'videos' => $videos
         ]);
     }
-    
-    private static function getPlaylistLength($playlistId) {
-        return Playlist_Video::where('playlist_id', $playlistId)->count();
-    }
 
-    private static function getPlaylistThumbnail($playlistId) {
+    public static function getPlaylistThumbnail($playlistId) {
         $firstVideo = Playlist_Video::where([
             ['playlist_id', '=', $playlistId],
             /* ['position', '=', 1] */
@@ -175,8 +148,6 @@ class PlaylistController extends Controller
         $videos = [];
 
         $playlistVideos = $playlist->playlistVideos()->get();
-
-        Log::debug($playlistVideos);
 
         foreach($playlistVideos as $playlistVideo) {
             array_push($videos, Video::where('id', $playlistVideo->video_id)->get()->first());

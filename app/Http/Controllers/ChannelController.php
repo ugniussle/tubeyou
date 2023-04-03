@@ -3,29 +3,42 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Log;
-use App\Models\Video;
+use App\Http\Controllers\PlaylistController;
 
 class ChannelController extends Controller
 {
-    public static function index() {
+
+    public static function index() 
+    {
         return Inertia::render('');
     }
 
-    public static function view(int $id) {
-        $videos = Video::where([['visibility', 0], ['user_id', $id]])
-                ->latest()
-                ->take(12)
-                ->get();
+    public static function view(int $id) 
+    {
+        $channel = User::find($id);
 
+        $videos = $channel->videos
+            ->where('visibility', 0);
         $videos->load('user');
+
+        $playlists = $channel->playlists
+            ->where('visibility', 0);
+
+        foreach($playlists as $playlist) {
+            $playlistLength = $playlist->playlistVideos->count();
+
+            $playlist->length = $playlistLength;
+
+            $playlist->thumbnail = PlaylistController::getPlaylistThumbnail($playlist->id);
+        }
 
         return Inertia::render('Channel/Channel', [
             'videos' => $videos,
-            'channel' => User::find($id)
+            'playlists' => $playlists,
+            'channel' => User::find($id),
         ]);
     }
 }
