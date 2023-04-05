@@ -15,6 +15,12 @@ class SubscriptionController extends Controller
     {
         $currentUser = Auth::user();
 
+        if($currentUser->id === $channelId) {
+            return response()->json([
+                'action' => 'sameChannel'
+            ]);
+        }
+
         $isAlreadySubscribed = Subscription::where([
             ['user_id', $currentUser->id],
             ['channel_id', $channelId]
