@@ -1,6 +1,8 @@
 <script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import { useForm, Head } from '@inertiajs/vue3';
+import { ref } from 'vue';
 
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import InputError from '@/Components/Forms/InputError.vue';
 import InputLabel from '@/Components/Forms/InputLabel.vue';
@@ -10,9 +12,6 @@ import SelectInput from '@/Components/Forms/SelectInput.vue';
 import TextAreaInput from '@/Components/Forms/TextAreaInput.vue';
 import FormContainer from '@/Components/Forms/FormContainer.vue';
 import UpdateVideoThumbnail from './Partials/UpdateVideoThumbnail.vue'
-
-import { useForm, Head } from '@inertiajs/vue3';
-import { ref } from 'vue';
 
 const props = defineProps(['video'])
 
@@ -69,7 +68,9 @@ const options = ["public", "unlisted", "private"];
             <FormContainer>
                 <form @submit.prevent="submit" enctype="multipart/form-data">
                     <header class="mb-8">
-                        <h2 class="text-lg font-medium text-gray-900">Edit Video - {{ video.title }}</h2>
+                        <h2 class="text-lg font-medium text-gray-900">
+                            Edit Video - {{ video.title }}
+                        </h2>
 
                         <p class="mt-1 text-sm text-gray-600">
                             Change video properties.
@@ -97,21 +98,6 @@ const options = ["public", "unlisted", "private"];
                 </form>
             </FormContainer>
 
-            <Modal :show="showModal" @close="closeModal">
-                <div class="flex flex-col">
-                    <div class="mb-6">
-                        <span class="text-xl">Are you sure you want to do delete the video </span>
-                        <span class="text-2xl text-red-800">{{ video.title }}</span>?
-                        <p class="text-sm">This action is permanent.</p>
-                    </div>
-                    <div class="flex">
-                        <PrimaryButton @click="deleteVideo" class="bg-red-800">Delete</PrimaryButton>
-                        <div class="grow"></div>
-                        <PrimaryButton @click="closeModal">Cancel</PrimaryButton>
-                    </div>
-                </div>
-            </Modal>
-
             <FormContainer>
                 <form @submit.prevent="submit" enctype="multipart/form-data">
                     <header class="mb-8">
@@ -128,6 +114,22 @@ const options = ["public", "unlisted", "private"];
             <FormContainer>
                    <UpdateVideoThumbnail :video="video"/>
             </FormContainer>
+
+
+            <Modal :show="showModal" @close="closeModal">
+                <div class="flex flex-col">
+                    <div class="mb-6">
+                        <span class="text-xl">Are you sure you want to do delete the video </span>
+                        <span class="text-2xl text-red-800">{{ video.title }}</span>?
+                        <p class="text-sm">This action is permanent.</p>
+                    </div>
+                    <div class="flex">
+                        <PrimaryButton @click="deleteVideo" class="bg-red-800">Delete</PrimaryButton>
+                        <div class="grow"></div>
+                        <PrimaryButton @click="closeModal">Cancel</PrimaryButton>
+                    </div>
+                </div>
+            </Modal>
         </div>
     </AuthenticatedLayout>
 </template>

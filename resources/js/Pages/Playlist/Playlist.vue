@@ -2,7 +2,7 @@
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import DropdownMenu from '@/Components/DropdownMenu.vue';
+import DropdownMenu from '@/Components/Dropdown/DropdownMenu.vue';
 import VideoPreviewList from '@/Components/VideoPreviewList.vue';
 
 const props = defineProps(['playlist', 'videos'])

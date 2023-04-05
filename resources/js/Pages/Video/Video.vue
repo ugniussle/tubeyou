@@ -3,27 +3,15 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import ProfilePicture from '@/Components/ProfilePicture.vue';
 import { ref, onMounted } from 'vue';
-import DropdownMenu from '@/Components/DropdownMenu.vue';
-import PlaylistModal from '@/Components/PlaylistModal.vue';
+import DropdownMenu from '@/Components/Dropdown/DropdownMenu.vue';
 import Comments from './Partials/Comments.vue';
 import SubscribeButton from '@/Components/SubscribeButton.vue'
 import axios from 'axios';
+import AddToPlaylist from '@/Components/Dropdown/AddToPlaylist.vue';
 
 const props = defineProps(['video', 'userRating', 'comments'])
 
 const main = ref(null)
-
-const selectedVideoId = ref(null)
-const modalOpen = ref(false)
-
-const openPlaylistModal = async (videoId) => {
-    modalOpen.value = true
-    selectedVideoId.value = videoId
-}
-
-const closePlaylistModal = () => {
-    modalOpen.value = false
-}
 
 const rateVideo = async(type) => {
     const form = useForm({
@@ -152,9 +140,7 @@ onMounted(() => {
                     <!-- dropdown with button -->
                     <div class="h-14 border rounded-full">
                         <DropdownMenu>
-                            <div @click="openPlaylistModal(video.id)" class="hover:cursor-pointer hover:bg-gray-300 p-2">
-                                Add to playlist...
-                            </div>
+                            <AddToPlaylist :video="video"/>
                         </DropdownMenu>
                     </div>
                 </div>
@@ -163,14 +149,6 @@ onMounted(() => {
                 <Comments :videoId="video.id" :videoUrlToken="video.url_token"/>
             </div>
         </div>
-
-
-        <PlaylistModal
-            v-if="modalOpen"
-            :selectedVideoId="selectedVideoId" 
-            :show="modalOpen" 
-            @close="closePlaylistModal"
-        />
     </AuthenticatedLayout>
     
 </template>

@@ -84,7 +84,7 @@ const setPicture = (file) => {
                     autofocus
                 />
 
-                <InputError class="mt-2" :message="form.errors.picture" />
+                <InputError class="mt-2" :message="form.errors.thumbnail" />
             </div>
 
             <div class="flex items-center gap-4">

@@ -1,8 +1,8 @@
 <script setup>
 import { ref } from 'vue';
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
-import Dropdown from '@/Components/Dropdown.vue';
-import DropdownLink from '@/Components/DropdownLink.vue';
+import Dropdown from '@/Components/Dropdown/Dropdown.vue';
+import DropdownLink from '@/Components/Dropdown/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import { Link, usePage } from '@inertiajs/vue3';
@@ -23,9 +23,11 @@ const navMargin = props.disableSidebar ? 'pl-0' : 'pl-16'
     <div>
         <div class="min-h-screen bg-gray-100">
             <!-- Sidebar -->
-            <Sidebar v-if="!props.disableSidebar" :main="props.main" :sidebarHidden="props.hideSidebar">
-
-            </Sidebar>
+            <Sidebar 
+                v-if="!props.disableSidebar" 
+                :main="props.main" 
+                :sidebarHidden="props.hideSidebar"
+            />
 
             <nav :class="navMargin" class="bg-white sticky top-0 w-screen">
                 <!-- Primary Navigation Menu -->
@@ -122,7 +124,10 @@ const navMargin = props.disableSidebar ? 'pl-0' : 'pl-16'
                         </div>
 
                         <div class="mt-3 space-y-1">
-                            <ResponsiveNavLink :href="route('profile.edit')"> Profile </ResponsiveNavLink>
+                            <ResponsiveNavLink :href="route('profile.edit')"> 
+                                Profile 
+                            </ResponsiveNavLink>
+                            
                             <ResponsiveNavLink :href="route('logout')" method="post" as="button">
                                 Log Out
                             </ResponsiveNavLink>

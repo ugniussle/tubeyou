@@ -1,19 +1,15 @@
 <script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head } from '@inertiajs/vue3';
+import { Head, useForm } from '@inertiajs/vue3';
 
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import InputError from '@/Components/Forms/InputError.vue';
 import InputLabel from '@/Components/Forms/InputLabel.vue';
-import Modal from '@/Components/Modal.vue';
-import SecondaryButton from '@/Components/SecondaryButton.vue';
 import TextInput from '@/Components/Forms/TextInput.vue';
 import SelectInput from '@/Components/Forms/SelectInput.vue';
 import TextAreaInput from '@/Components/Forms/TextAreaInput.vue';
 import FileUpload from '@/Components/Forms/FileUpload.vue';
 import FormContainer from '@/Components/Forms/FormContainer.vue';
-
-import { useForm } from '@inertiajs/vue3';
 
 const props = defineProps(['csrfToken'])
 

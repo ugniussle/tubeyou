@@ -1,25 +1,13 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import VideoPreview from '@/Components/VideoPreviewGrid.vue';
-import PlaylistModal from '@/Components/PlaylistModal.vue';
 import { Head } from '@inertiajs/vue3';
 import { ref } from 'vue';
+import AddToPlaylist from '@/Components/Dropdown/AddToPlaylist.vue';
 
 defineProps(['videos'])
 
 const main = ref(null)
-
-const selectedVideoId = ref(null)
-const modalOpen = ref(false)
-
-const openPlaylistModal = async (videoId) => {
-    modalOpen.value = true
-    selectedVideoId.value = videoId
-}
-
-const closePlaylistModal = () => {
-    modalOpen.value = false
-}
 
 </script>
 
@@ -36,17 +24,8 @@ const closePlaylistModal = () => {
                 :video="video"
             >
                 <!-- dropdown menu items -->
-                <div @click="openPlaylistModal(video.id)" class="hover:cursor-pointer hover:bg-gray-300 p-2">
-                    Add to playlist...
-                </div>
+                <AddToPlaylist :video="video"/>
             </VideoPreview>
         </div>
     </AuthenticatedLayout>
-
-    <PlaylistModal
-        v-if="modalOpen"
-        :selectedVideoId="selectedVideoId" 
-        :show="modalOpen" 
-        @close="closePlaylistModal"
-    />
 </template>

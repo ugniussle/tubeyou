@@ -2,30 +2,20 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import VideoPreview from '@/Components/VideoPreviewGrid.vue';
 import PlaylistPreview from '@/Components/PlaylistPreviewList.vue';
-import PlaylistModal from '@/Components/PlaylistModal.vue';
 import ProfilePicture from '@/Components/ProfilePicture.vue';
 import SubscribeButton from '@/Components/SubscribeButton.vue';
 import NavLink from '@/Components/NavLink.vue';
 import { Head, usePage, Link } from '@inertiajs/vue3';
 import { ref } from 'vue';
+import DropdownMenu from '@/Components/Dropdown/DropdownMenu.vue';
+import DeletePlaylist from '@/Components/Dropdown/DeletePlaylist.vue';
+import AddToPlaylist from '@/Components/Dropdown/AddToPlaylist.vue';
 
 const props = defineProps(['videos', 'playlists', 'channel'])
 
 const user = usePage().props.auth.user;
 
 const main = ref(null)
-
-const selectedVideoId = ref(null)
-const modalOpen = ref(false)
-
-const openPlaylistModal = async (videoId) => {
-    modalOpen.value = true
-    selectedVideoId.value = videoId
-}
-
-const closePlaylistModal = () => {
-    modalOpen.value = false
-}
 
 const Menus = {
     VIDEOS: 0,
@@ -73,9 +63,7 @@ const selectedMenu = ref(0)
                         :video="video"
                     >
                         <!-- dropdown menu items -->
-                        <div @click="openPlaylistModal(video.id)" class="hover:cursor-pointer hover:bg-gray-300 p-2">
-                            Add to playlist...
-                        </div>
+                        <AddToPlaylist :video="video"/>
 
                         <div v-if="user.id == channel.id" class="hover:cursor-pointer hover:bg-gray-300 p-2">
                             <Link :href="route('videos.edit', video.url_token)">
@@ -92,21 +80,12 @@ const selectedMenu = ref(0)
                         :key="playlist.id"
                         :playlist="playlist"
                     >
-
+                        <DropdownMenu>
+                            <DeletePlaylist :playlist="playlist"></DeletePlaylist>
+                        </DropdownMenu>
                     </PlaylistPreview>
                 </div>
             </div>
-
-            <div>
-
-            </div>
         </div>
     </AuthenticatedLayout>
-
-    <PlaylistModal
-        v-if="modalOpen"
-        :selectedVideoId="selectedVideoId" 
-        :show="modalOpen" 
-        @close="closePlaylistModal"
-    />
 </template>

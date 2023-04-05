@@ -1,64 +1,18 @@
 <script setup>
-import { Head, Link, useForm } from '@inertiajs/vue3';
-import { ref, onMounted } from 'vue';
+import { Head, Link } from '@inertiajs/vue3';
+import { ref } from 'vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import DropdownMenu from '@/Components/DropdownMenu.vue';
-import Modal from '@/Components/Modal.vue'
-import PrimaryButton from '@/Components/PrimaryButton.vue';
+import DropdownMenu from '@/Components/Dropdown/DropdownMenu.vue';
 import PlaylistPreview from '@/Components/PlaylistPreviewList.vue';
+import DeletePlaylist from '@/Components/Dropdown/DeletePlaylist.vue';
 
 const props = defineProps(['playlists'])
 
 const main = ref(null)
-
-const showModal = ref(false)
-
-const playlistName = ref(null)
-const playlistToDelete = ref(null)
-
-const openDeletePlaylistModal = (playlist) => {
-    playlistToDelete.value = playlist
-    showModal.value = true
-
-    playlistName.value = playlist.title
-}
-
-const deletePlaylist = () => {
-    const form = useForm({
-        playlistId: playlistToDelete.value.id
-    })
-
-    form.delete(route('playlists.destroy'), [playlistToDelete.value.id, 1])
-
-    closeModal()
-}
-
-const closeModal = () => {
-    showModal.value = false
-}
-
-/* onMounted(() => {
-    deletePlaylistButton.value.addEventListener('click', )
-}) */
 </script>
 
 <template>
     <Head title="Homepage"/>
-
-    <Modal :show="showModal" @close="closeModal">
-        <div class="flex flex-col">
-            <div class="mb-6">
-                <span class="text-xl">Are you sure you want to do delete the playlist </span>
-                <span class="text-2xl text-red-800">{{ playlistName }}</span>?
-                <p class="text-sm">This action is permanent.</p>
-            </div>
-            <div class="flex">
-                <PrimaryButton @click="deletePlaylist" class="bg-red-800">Delete</PrimaryButton>
-                <div class="grow"></div>
-                <PrimaryButton @click="closeModal">Cancel</PrimaryButton>
-            </div>
-        </div>
-    </Modal>
 
     <AuthenticatedLayout :main="main">
         <div ref="main" class="grid grid-flow-row grid-rows-max gap-4 grid-cols-1 text-left text-xl pl-24 p-10">
@@ -77,9 +31,7 @@ const closeModal = () => {
                 :playlist="playlist"
             >
                 <DropdownMenu>
-                    <div @click="openDeletePlaylistModal(playlist)" class="hover:cursor-pointer hover:bg-gray-300 p-2">
-                        Delete playlist
-                    </div>
+                    <DeletePlaylist :playlist="playlist"></DeletePlaylist>
                 </DropdownMenu>
             </PlaylistPreview>
         </div>

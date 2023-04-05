@@ -1,7 +1,7 @@
 <script setup>
 import ProfilePicture from './ProfilePicture.vue';
 import { Link } from '@inertiajs/vue3';
-import DropdownMenu from './DropdownMenu.vue'
+import DropdownMenu from './Dropdown/DropdownMenu.vue'
 
 const props = defineProps(['video'])
 
