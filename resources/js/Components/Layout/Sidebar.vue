@@ -1,12 +1,9 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import { usePage } from '@inertiajs/vue3';
 import SidebarItem from './SidebarItem.vue';
 import ProfilePicture from '../ProfilePicture.vue';
 
 const props = defineProps(['main', 'sidebarHidden'])
-
-const user = usePage().props.auth.user;
 
 const sidebarHidden = props.sidebarHidden ? true : false;
 const sidebar = ref(null);
@@ -14,18 +11,17 @@ const sidebarExpanded = ref(false);
 var sidebarClosedWidth = null
 var sidebarOpenWidth = null
 
-if(sidebarHidden) {
-    sidebarClosedWidth = '0'
-    sidebarOpenWidth = '12rem'
+if(sidebarHidden) { 
+    sidebarClosedWidth = 0 // all widths in rem
+    sidebarOpenWidth = 14
 } else {
-    sidebarClosedWidth = '4rem'
-    sidebarOpenWidth = '12rem'
+    sidebarClosedWidth = 4
+    sidebarOpenWidth = 14
 }
 
 const getSubscriptions = async() => {
     return (await axios.get(route('subscriptions.getSubscriptions'))).data
 }
-
 
 if(!sidebarHidden) {
     window.addEventListener('resize', () => {
@@ -33,9 +29,9 @@ if(!sidebarHidden) {
         // and add a margin to main if width is higher than 768px
         if(sidebarExpanded.value) {
             if(document.body.clientWidth < 768) {
-                props.main.style.marginLeft='0rem'
+                props.main.style.marginLeft = '0rem'
             } else {
-                props.main.style.marginLeft='8rem'
+                props.main.style.marginLeft = sidebarOpenWidth - sidebarClosedWidth + 'rem'
             }
         }
     })
@@ -49,16 +45,16 @@ const toggleSidebar = () => {
     }
 
     if(!sidebarExpanded.value) {    // close
-        sidebar.value.style.width = sidebarClosedWidth
+        sidebar.value.style.width = sidebarClosedWidth + 'rem'
 
         if(!sidebarHidden) {
             props.main.style.marginLeft = '0rem'
         }
     } else {                        // open
-        sidebar.value.style.width = sidebarOpenWidth
+        sidebar.value.style.width = sidebarOpenWidth + 'rem'
 
         if(!sidebarHidden && document.body.clientWidth > 768) {
-            props.main.style.marginLeft = '8rem'
+            props.main.style.marginLeft = sidebarOpenWidth - sidebarClosedWidth + 'rem'
         }
     }
 }
@@ -84,13 +80,13 @@ onMounted(async() => {
     <div 
         ref="sidebar" 
         class="bg-white fixed left-0 top-16 h-screen overflow-y-auto transition-all"
-        :style="'width:'+sidebarClosedWidth"
+        :style="'width:'+sidebarClosedWidth + 'rem'"
     >
         <div class="flex items-center space-y-24 text-gray-400">
             <main class="w-full">
                 <SidebarItem :link="route('playlists.index')">
                     <svg class="inline w-12 h-12" fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve"><g><path d="M48 32 l 160 0"/><path d="M48 128 l 160 0"/><path d="M48 224 l 160 0"/></g><g><path d="M336 32 l 0 384" stroke-width="50"/><path d="M336 64 c 160 85 145 160 95 225" fill="none" stroke-width="50"/><circle cx="273" cy="415" r="86" stroke-width="5"/></g></svg>
-                    <span class="pl-10">
+                    <span class="pl-4">
                         Playlists
                     </span>
                 </SidebarItem>
@@ -101,7 +97,7 @@ onMounted(async() => {
 
                 <SidebarItem v-for="subscription in subscriptions" :link="route('channels.view', subscription.channel.id)">
                     <ProfilePicture :user="subscription.channel" :size="'3rem'"/>
-                    <span class="pl-10">
+                    <span class="pl-4">
                         {{ subscription.channel.username }}
                     </span>
                 </SidebarItem>
