@@ -80,7 +80,8 @@ class PlaylistController extends Controller
         return redirect("playlists/$token");
     }
 
-    private static function getVisibility(string $str) {
+    private static function getVisibility(string $str) 
+    {
         $visibility = 0;
 
         switch(strtolower($str)){

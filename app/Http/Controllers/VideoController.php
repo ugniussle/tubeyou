@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Rating;
 use App\Models\Video;
-use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
@@ -20,6 +19,10 @@ use Pion\Laravel\ChunkUpload\Exceptions\UploadFailedException;
 use Pion\Laravel\ChunkUpload\Exceptions\UploadMissingFileException;
 use Pion\Laravel\ChunkUpload\Handler\HandlerFactory;
 use Pion\Laravel\ChunkUpload\Receiver\FileReceiver;
+use App\Http\Requests\VideoUpdateRequest;
+use App\Http\Requests\VideoStoreRequest;
+use App\Rules\ImageFile;
+use Illuminate\Support\Facades\Storage;
 
 class VideoController extends Controller
 {
@@ -98,19 +101,13 @@ class VideoController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request)
+    public function store(VideoStoreRequest $request)
     {
         $user = $request->user();
 
-        $request->validate([
-            'title' => ['required', 'string', 'max:255'],
-            'description' => ['string', 'nullable'],
-            'visibility' => ['required', 'string'],
-            'filename' => ['required', 'string', 'unique:App\Models\Video,filename']
-        ]);
+        $validated = $request->validated();
 
-        $filepath = 'storage/videos/'.basename($request->filename);
-
+        $filepath = 'storage/videos/'.basename($validated['filename']);
         // validate file
         if(str_starts_with(mime_content_type($filepath), 'video')) {
             Log::debug('file is valid');
@@ -119,9 +116,7 @@ class VideoController extends Controller
             return;
         }
 
-        $proccessedFileInfo = $this->processVideo(public_path($filepath));
-        
-        $visibility = $this->getVisibility($request->visibility);
+        $visibility = $this->getVisibility($validated['visibility']);
 
         $token = Str::random();
 
@@ -131,11 +126,13 @@ class VideoController extends Controller
         }
 
         Log::debug("generated token is '$token'");
+
+        $proccessedFileInfo = $this->processVideo(public_path($filepath));
         
         $video = Video::create([
             'user_id' => $user['id'],
-            'title' => $request->title,
-            'description' => $request->description,
+            'title' => $validated['title'],
+            'description' => $validated['description'],
             'visibility' => $visibility,
             'url_token' => $token,
             'filename' => $filepath,
@@ -211,7 +208,12 @@ class VideoController extends Controller
     {
         $video = Video::where('url_token', $token)->get()->first();
 
+
         if(!$video) {
+            return redirect(RouteServiceProvider::HOME);
+        }
+
+        if($video->visibility > 1) {
             return redirect(RouteServiceProvider::HOME);
         }
 
@@ -228,7 +230,6 @@ class VideoController extends Controller
         $video->load('user');
 
         $comments = $video->comments;
-
         $comments->load('user');
 
         return Inertia::render('Video/Video', [
@@ -239,27 +240,80 @@ class VideoController extends Controller
         
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Video $video)
+    public static function edit(string $token)
     {
-        //
+        $user = Auth::user();
+
+        $video = Video::where('url_token', $token)->get()->first();
+
+        if(!$video) {
+            return redirect('/');
+        }
+
+        if($user->id != $video->user->id) {
+            Log::debug("Unauthorized video edit");
+
+            return;
+        }
+
+        return Inertia::render('Video/Edit', [
+            'video' => $video,
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Video $video)
+    public static function update(VideoUpdateRequest $request, Video $video)
     {
-        //
+        $validated = $request->validated();
+
+        Log::debug($validated);
+
+        $video->title = $validated['title'];
+        $video->description = $validated['description'];
+        $video->visibility = VideoController::getVisibility($validated['visibility']);
+
+        $video->save();
+
+        return redirect('/videos/'.$video->url_token);
+    }
+
+        /**
+     * Update the specified resource in storage.
+     */
+    public static function updateThumbnail(Request $request)
+    {
+        $request->validate([
+            'id' => ['required', 'numeric', 'integer'],
+            'thumbnail' => ['required', 'file', new ImageFile]
+        ]);
+
+        $thumbnail = $request->thumbnail;
+
+        $video = Video::find($request->id);
+
+        $url = 'storage/'.$thumbnail->storePublicly('thumbnails/', 'public');
+
+        $oldPicture = 'thumbnails/'.basename($video->thumbnail);
+
+        if(Storage::disk('public')->exists($oldPicture) && Storage::disk('public')->delete($oldPicture) === true) {
+            Log::debug('old picture deleted');
+        }
+
+        $video->thumbnail = $url;
+        $video->thumbnail_asset = asset($url);
+
+        $video->save();
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Video $video)
+    public static function destroy(Video $video)
     {
-        //
+        // delete files here
+
+        $video->delete();
     }
 }

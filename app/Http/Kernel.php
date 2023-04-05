@@ -67,5 +67,6 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'viewPlaylist' => \App\Http\Middleware\PlaylistViewAuth::class,
         'editPlaylist' => \App\Http\Middleware\PlaylistEditAuth::class,
+        'editVideo' => \App\Http\Middleware\VideoEditAuth::class,
     ];
 }

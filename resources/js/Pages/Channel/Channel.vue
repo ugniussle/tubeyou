@@ -6,10 +6,12 @@ import PlaylistModal from '@/Components/PlaylistModal.vue';
 import ProfilePicture from '@/Components/ProfilePicture.vue';
 import SubscribeButton from '@/Components/SubscribeButton.vue';
 import NavLink from '@/Components/NavLink.vue';
-import { Head } from '@inertiajs/vue3';
+import { Head, usePage, Link } from '@inertiajs/vue3';
 import { ref } from 'vue';
 
-defineProps(['videos', 'playlists', 'channel'])
+const props = defineProps(['videos', 'playlists', 'channel'])
+
+const user = usePage().props.auth.user;
 
 const main = ref(null)
 
@@ -73,6 +75,12 @@ const selectedMenu = ref(0)
                         <!-- dropdown menu items -->
                         <div @click="openPlaylistModal(video.id)" class="hover:cursor-pointer hover:bg-gray-300 p-2">
                             Add to playlist...
+                        </div>
+
+                        <div v-if="user.id == channel.id" class="hover:cursor-pointer hover:bg-gray-300 p-2">
+                            <Link :href="route('videos.edit', video.url_token)">
+                                Edit video
+                            </Link>
                         </div>
                     </VideoPreview>
                 </div>

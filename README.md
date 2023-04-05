@@ -12,11 +12,10 @@
 1. Videos
    1. ~~Upload video~~
    2. ~~Watch video~~
-   3. **Edit video (title, description, tags)**
-   4. **Delete video**
+   3. **Edit video (~~title, description~~, tags)**
+   4. ~~**Delete video**~~
    5. Add content tags
-   6. Add own thumbnail
-   7. Edit thumbnail
+   7. ~~Edit thumbnail~~
    8. ~~Count views~~
    9. ~~Add liking and disliking~~
    10. Create multiple resolution video sources
@@ -27,6 +26,7 @@
    2. ~~Add video to playlist~~
    3. ~~Remove video from playlist~~
    4. Arrange videos in playlist (change list order)
+   5. Watch playlist videos in order
 3. Channels
    1. ~~**View user videos and playlists**~~
 4. Comments
