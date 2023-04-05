@@ -1,8 +1,11 @@
 <script setup>
 import {  onBeforeMount, ref } from 'vue';
+import { usePage } from '@inertiajs/vue3';
 import axios from 'axios';
 
 const props = defineProps(['channel'])
+
+const user = usePage().props.auth.user;
 
 const subscribeToChannel = async() => {
     const response = (await axios.post(route('subscriptions.subscribe', props.channel.id))).data
@@ -36,10 +39,12 @@ onBeforeMount(async() => {
 </script>
 
 <template>
-    <div v-if="subscribed" @click="subscribeToChannel()" class="px-2 py-3 h-14 border rounded-full tracking-wide bg-green-300 text-xl hover:cursor-pointer">
-        Subscribed
-    </div>
-    <div v-else @click="subscribeToChannel()" class="px-2 py-3 h-14 border rounded-full tracking-wide bg-red-300 text-xl hover:cursor-pointer">
-        Subscribe
+    <div v-if="user.id != channel.id">
+        <div v-if="subscribed" @click="subscribeToChannel()" class="px-2 py-3 h-14 border rounded-full tracking-wide bg-green-300 text-xl hover:cursor-pointer">
+            Subscribed
+        </div>
+        <div v-else @click="subscribeToChannel()" class="px-2 py-3 h-14 border rounded-full tracking-wide bg-red-300 text-xl hover:cursor-pointer">
+            Subscribe
+        </div>
     </div>
 </template>
