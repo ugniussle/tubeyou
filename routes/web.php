@@ -9,13 +9,10 @@ use App\Http\Controllers\ChannelController;
 use App\Http\Controllers\RatingController;
 use App\Http\Controllers\SubscriptionController;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 use Illuminate\Http\Request;
 use App\Http\Requests\PlaylistVideoRequest;
 use App\Http\Requests\PlaylistRequest;
-use App\Http\Requests\VideoEditRequest;
 use App\Http\Requests\VideoUpdateRequest;
-use Illuminate\Support\Facades\Log;
 use App\Models\Video;
 
 

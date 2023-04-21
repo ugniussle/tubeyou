@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Rating;
 use App\Models\Video;
 use App\Providers\RouteServiceProvider;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
@@ -15,6 +17,7 @@ use FFMpeg\Coordinate\TimeCode;
 use FFMpeg\Media\Video as FFMpegVideo;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Response;
 use Pion\Laravel\ChunkUpload\Exceptions\UploadFailedException;
 use Pion\Laravel\ChunkUpload\Exceptions\UploadMissingFileException;
 use Pion\Laravel\ChunkUpload\Handler\HandlerFactory;
@@ -29,7 +32,7 @@ class VideoController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): Response
     {
         $videos = Video::where('visibility', 0)
                     ->latest()
@@ -46,7 +49,7 @@ class VideoController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(): Response
     {
         return Inertia::render('Video/Create',[
             'csrfToken' => csrf_token()
@@ -55,17 +58,17 @@ class VideoController extends Controller
 
     /**
      * Receive a large file in chunks.
-     * 
+     *
      * @param Request $request
-     * 
+     *
      * @return JsonResponse
-     * 
+     *
      * @throws UploadFailedException
      * @throws UploadMissingFileException
      */
-    public static function upload(Request $request) {
+    public static function upload(Request $request): JsonResponse {
         $receiver = new FileReceiver('file', $request, HandlerFactory::classFromRequest($request));
-        
+
         if($receiver->isUploaded() === false) {
             throw new UploadMissingFileException();
         }
@@ -88,7 +91,7 @@ class VideoController extends Controller
         ]);
     }
 
-    private static function moveVideo(UploadedFile $file) {
+    private static function moveVideo(UploadedFile $file): JsonResponse {
         $filepath = $file->storePublicly('videos/', 'public');
 
         return response()->json([
@@ -101,7 +104,7 @@ class VideoController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(VideoStoreRequest $request)
+    public function store(VideoStoreRequest $request): Redirector|RedirectResponse
     {
         $user = $request->user();
 
@@ -113,7 +116,7 @@ class VideoController extends Controller
             Log::debug('file is valid');
         } else {
             Log::debug('file is invalid');
-            return;
+            return redirect(to: "/");
         }
 
         $visibility = $this->getVisibility($validated['visibility']);
@@ -128,7 +131,7 @@ class VideoController extends Controller
         Log::debug("generated token is '$token'");
 
         $proccessedFileInfo = $this->processVideo(public_path($filepath));
-        
+
         $video = Video::create([
             'user_id' => $user['id'],
             'title' => $validated['title'],
@@ -147,10 +150,10 @@ class VideoController extends Controller
     /**
      * Store a newly created resource in storage.
      * @param string $filepath
-     * 
+     *
      * @return array
      */
-    private function processVideo(string $filepath) {
+    private function processVideo(string $filepath): array {
         $info = array();
         $info['filepath'] = $filepath;
 
@@ -168,13 +171,13 @@ class VideoController extends Controller
         $video = $ffmpeg->open($info['filepath']);
 
         $thumbnailPath = "$thumbnailStorage/$thumbnailFilename.jpg";
-        $this->saveThumbnail($video, $thumbnailPath); 
+        $this->saveThumbnail($video, $thumbnailPath);
         $info['thumbnailPath'] = 'storage/thumbnails/'.$thumbnailFilename.'.jpg';
 
         return $info;
     }
 
-    private function saveThumbnail(FFMpegVideo $video, string $filepath) {
+    private function saveThumbnail(FFMpegVideo $video, string $filepath): void {
         $format = $video->getFormat();
         $duration = $format->get('duration');
 
@@ -183,7 +186,7 @@ class VideoController extends Controller
         $thumbnail->save($filepath);
     }
 
-    private static function getVisibility(string $str) {
+    private static function getVisibility(string $str): int {
         $visibility = 0;
 
         switch(strtolower($str)){
@@ -204,7 +207,7 @@ class VideoController extends Controller
     /**
      * Display the specified resource.
      */
-    public static function view(string $token)
+    public static function view(string $token): Redirector|RedirectResponse|Response
     {
         $video = Video::where('url_token', $token)->get()->first();
 
@@ -226,7 +229,7 @@ class VideoController extends Controller
 
         $video->views += 1;
         $video->save();
-        
+
         $video->load('user');
 
         $comments = $video->comments;
@@ -237,10 +240,10 @@ class VideoController extends Controller
             'userRating' => $userRating,
             'comments' => $comments
         ]);
-        
+
     }
 
-    public static function edit(string $token)
+    public static function edit(string $token): Redirector|RedirectResponse|Response
     {
         $user = Auth::user();
 
@@ -253,7 +256,7 @@ class VideoController extends Controller
         if($user->id != $video->user->id) {
             Log::debug("Unauthorized video edit");
 
-            return;
+            return redirect(to: "/");
         }
 
         return Inertia::render('Video/Edit', [
@@ -264,7 +267,7 @@ class VideoController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public static function update(VideoUpdateRequest $request, Video $video)
+    public static function update(VideoUpdateRequest $request, Video $video): Redirector|RedirectResponse
     {
         $validated = $request->validated();
 
@@ -282,7 +285,7 @@ class VideoController extends Controller
         /**
      * Update the specified resource in storage.
      */
-    public static function updateThumbnail(Request $request)
+    public static function updateThumbnail(Request $request): void
     {
         $request->validate([
             'id' => ['required', 'numeric', 'integer'],
@@ -310,10 +313,11 @@ class VideoController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public static function destroy(Video $video)
+    public static function destroy(Video $video): void
     {
         // delete files here
 
         $video->delete();
     }
 }
+
