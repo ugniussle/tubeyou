@@ -63,3 +63,8 @@
 6. ``` php artisan key:generate ```
 7. ``` php artisan storage:link ```
 8. install ffmpeg (make sure you can run it from any path)
+
+### running (development)
+
+1. ``` npm run dev ```
+2. ``` php artisan serve ```
