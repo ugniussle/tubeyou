@@ -9,7 +9,7 @@ const props = defineProps(['video']);
 var videoElement = null
 const isVideoPlaying = ref(false)
 var lastVolume = 0.5
-var muted = false
+var muted = ref(false)
 
 const togglePlay = () => {
     if(videoElement.paused) {
@@ -22,6 +22,9 @@ const togglePlay = () => {
 }
 
 const updateVolume = () => {
+    if(muted.value) {
+        muted.value = false
+    }
     let volume = parseFloat(document.getElementById("volumeSlider").value)
     videoElement.volume = volume
     lastVolume = volume
@@ -30,9 +33,11 @@ const updateVolume = () => {
 const toggleMute = () => {
     if(videoElement.muted) {
         videoElement.muted = false
+        muted.value = false
         document.getElementById("volumeSlider").value = lastVolume
     } else {
         videoElement.muted = true
+        muted.value = true
         document.getElementById("volumeSlider").value = "0.0"
     }
 }
@@ -65,8 +70,16 @@ onMounted(() => {
                 <path v-show=" isVideoPlaying" id="pausedIcon"  d="M7 5 V15 M13 5 V15"  fill="#FFFFFF" stroke-width="2"/>
             </svg>
             <!-- volume icon -->
-            <svg class="h-12 w-12" @click="toggleMute()" viewBox="0 0 100 100">
-
+            <svg stroke="currentColor" class="h-12 w-12" @click="toggleMute()" viewBox="0 0 100 100">
+                <rect fill-opacity="0" x="0" y="0" width="100" height="100"/>
+                <g fill="currentColor">
+                    <rect x="20" y="40" width="20" height="20"/>
+                    <path d="M40 40 l10 -10 l0 40 l-10 -10Z"/>
+                </g>
+                <g>
+                    <path v-show=" muted" stroke-width="3" d="M60 40 l20 20 M60 60 l20 -20"/>
+                    <path v-show="!muted" stroke-width="4" d="M55 25 Q80 50 55 75" />
+                </g>
             </svg>
 
             <!-- volume slider -->
