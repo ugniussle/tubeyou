@@ -23,13 +23,13 @@ const navMargin = props.disableSidebar ? 'pl-0' : 'pl-16'
     <div>
         <div class="min-h-screen bg-gray-100">
             <!-- Sidebar -->
-            <Sidebar 
-                v-if="!props.disableSidebar" 
-                :main="props.main" 
+            <Sidebar
+                v-if="!props.disableSidebar"
+                :main="props.main"
                 :sidebarHidden="props.hideSidebar"
             />
 
-            <nav :class="navMargin" class="bg-white sticky top-0 w-screen">
+            <nav :class="navMargin" class="bg-white sticky top-0 w-screen z-10">
                 <!-- Primary Navigation Menu -->
                 <div class="mx-auto px-4">
                     <div class="flex justify-between h-16">
@@ -42,7 +42,7 @@ const navMargin = props.disableSidebar ? 'pl-0' : 'pl-16'
                                     />
                                 </Link>
                             </div>
-                            
+
                             <!-- Navigation Links -->
                             <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                                 <NavLink :href="route('videos.create')" :active="route().current('videos.create')">
@@ -70,11 +70,11 @@ const navMargin = props.disableSidebar ? 'pl-0' : 'pl-16'
                                     </template>
 
                                     <template #content>
-                                        <DropdownLink :href="route('profile.edit')"> 
-                                            Profile 
+                                        <DropdownLink :href="route('profile.edit')">
+                                            Profile
                                         </DropdownLink>
-                                        <DropdownLink :href="route('channels.view', user.id)"> 
-                                            Channel 
+                                        <DropdownLink :href="route('channels.view', user.id)">
+                                            Channel
                                         </DropdownLink>
                                         <DropdownLink :href="route('logout')" method="post" as="button">
                                             Log Out
@@ -124,10 +124,10 @@ const navMargin = props.disableSidebar ? 'pl-0' : 'pl-16'
                         </div>
 
                         <div class="mt-3 space-y-1">
-                            <ResponsiveNavLink :href="route('profile.edit')"> 
-                                Profile 
+                            <ResponsiveNavLink :href="route('profile.edit')">
+                                Profile
                             </ResponsiveNavLink>
-                            
+
                             <ResponsiveNavLink :href="route('logout')" method="post" as="button">
                                 Log Out
                             </ResponsiveNavLink>
