@@ -8,7 +8,7 @@ const props = defineProps(['video']);
 */
 var videoElement = null
 const isVideoPlaying = ref(false)
-var lastVolume = 0.5
+var lastVolume = ref(0.5)
 var muted = ref(false)
 
 const togglePlay = () => {
@@ -25,18 +25,21 @@ const updateVolume = () => {
     if(muted.value) {
         muted.value = false
     }
+
     let volume = parseFloat(document.getElementById("volumeSlider").value)
     videoElement.volume = volume
-    lastVolume = volume
+    lastVolume.value = volume
+
+    if(volume == 0.0) {
+        muted.value = true
+    }
 }
 
 const toggleMute = () => {
     if(videoElement.muted) {
-        videoElement.muted = false
         muted.value = false
-        document.getElementById("volumeSlider").value = lastVolume
+        document.getElementById("volumeSlider").value = lastVolume.value
     } else {
-        videoElement.muted = true
         muted.value = true
         document.getElementById("volumeSlider").value = "0.0"
     }
@@ -48,7 +51,7 @@ const setupVideo = () => {
 
 onMounted(() => {
     videoElement = document.getElementById("video")
-    videoElement.volume = lastVolume
+    videoElement.volume = lastVolume.value
 
     setupVideo()
 })
@@ -57,13 +60,13 @@ onMounted(() => {
 <template>
     <div>
         <!-- video -->
-        <video id="video" class="w-full m-2 ml-0 mb-0 aspect-video bg-black" width="320" height="240">
+        <video id="video" class="w-full m-2 ml-0 mb-0 aspect-video bg-black" width="320" height="240" :muted="muted">
             <source :src="video.video_asset">
             Your browser does not support the video tag.
         </video>
 
         <!-- video controls -->
-        <div class="flex w-full h-12 bottom-0 -translate-y-12 text-white bg-black/50">
+        <div class="-mb-12 flex w-full h-12 bottom-0 -translate-y-12 text-white bg-black/50">
             <!-- play button -->
             <svg stroke="currentColor"  viewBox="0 0 20 20" @click="togglePlay()"                                                                                                                                                                                                                                                      class="w-12 h-12" color="white">
                 <path v-show="!isVideoPlaying" id="playingIcon" d="M6 5 L6 15 L15 10 Z" fill="#FFFFFF" />
@@ -71,19 +74,20 @@ onMounted(() => {
             </svg>
             <!-- volume icon -->
             <svg stroke="currentColor" class="h-12 w-12" @click="toggleMute()" viewBox="0 0 100 100">
-                <rect fill-opacity="0" x="0" y="0" width="100" height="100"/>
+                <!-- <rect fill-opacity="0" x="0" y="0" width="100" height="100"/> -->
                 <g fill="currentColor">
                     <rect x="20" y="40" width="20" height="20"/>
                     <path d="M40 40 l10 -10 l0 40 l-10 -10Z"/>
                 </g>
-                <g>
+                <g fill="none">
                     <path v-show=" muted" stroke-width="3" d="M60 40 l20 20 M60 60 l20 -20"/>
                     <path v-show="!muted" stroke-width="4" d="M55 25 Q80 50 55 75" />
+                    <path v-show="!muted && lastVolume > 0.5" stroke-width="4" d="M65 20 Q95 50 65 80" />
                 </g>
             </svg>
 
             <!-- volume slider -->
-            <input id="volumeSlider" type="range" min="0" max="1" step="0.01" value="0.5"                                                                                                    @change="updateVolume()">
+            <input id="volumeSlider" type="range" min="0" max="1" step="0.05" value="0.5" @input="updateVolume()">
         </div>
     </div>
 </template>
