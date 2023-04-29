@@ -7,6 +7,7 @@ const props = defineProps(['video']);
 * @type {HTMLMediaElement}
 */
 var videoElement = null
+var seekBarElement = null
 const isVideoPlaying = ref(false)
 var lastVolume = ref(0.5)
 var muted = ref(false)
@@ -46,25 +47,27 @@ const toggleMute = () => {
 }
 
 const seek = (event) => {
-    console.log(event)
-
-    let seekBar = document.getElementById("seekBar")
     let seekTime = event.layerX / seekBar.clientWidth * videoElement.duration
+    videoElement.currentTime = seekTime
 
-    seekBar.firstChild.style.width = (event.layerX / seekBar.clientWidth * 100) + "%"
+    updateProgressBar()
+}
 
-    console.log(seekBar.firstChild.style.width)
-
-    videoElement.fastSeek(seekTime)
+const updateProgressBar = () => {
+    let position = (videoElement.currentTime / videoElement.duration) * 100
+    seekBarElement.firstChild.style.width = position + '%'
 }
 
 const setupVideo = () => {
     videoElement.addEventListener("click", togglePlay)
+    videoElement.addEventListener("timeupdate", updateProgressBar);
 }
 
 onMounted(() => {
     videoElement = document.getElementById("video")
     videoElement.volume = lastVolume.value
+
+    seekBarElement = document.getElementById("seekBar")
 
     setupVideo()
 })
