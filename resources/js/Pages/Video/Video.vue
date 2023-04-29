@@ -90,7 +90,7 @@ onMounted(() => {
         <div class="text-base m-5 md:m-10" ref="main">
             <div class="w-full md:w-2/3">
                 <!-- video -->
-                <VideoPlayer :video="video"/>
+                <VideoPlayer :videoInfo="video"/>
 
                 <!-- video info -->
                 <div class="p-1 flex space-x-2">

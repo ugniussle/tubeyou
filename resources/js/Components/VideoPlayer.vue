@@ -1,23 +1,23 @@
 <script setup>
 import { onMounted, ref} from 'vue';
-const props = defineProps(['video']);
+const props = defineProps(['videoInfo']);
 
 
 /**
 * @type {HTMLMediaElement}
 */
-var videoElement = null
+var video = null
 var seekBarElement = null
 const isVideoPlaying = ref(false)
 var lastVolume = ref(0.5)
 var muted = ref(false)
 
 const togglePlay = () => {
-    if(videoElement.paused) {
-        videoElement.play()
+    if(video.paused) {
+        video.play()
         isVideoPlaying.value = true
     } else {
-        videoElement.pause()
+        video.pause()
         isVideoPlaying.value = false
     }
 }
@@ -28,7 +28,7 @@ const updateVolume = () => {
     }
 
     let volume = parseFloat(document.getElementById("volumeSlider").value)
-    videoElement.volume = volume
+    video.volume = volume
     lastVolume.value = volume
 
     if(volume == 0.0) {
@@ -37,7 +37,7 @@ const updateVolume = () => {
 }
 
 const toggleMute = () => {
-    if(videoElement.muted) {
+    if(video.muted) {
         muted.value = false
         document.getElementById("volumeSlider").value = lastVolume.value
     } else {
@@ -47,27 +47,29 @@ const toggleMute = () => {
 }
 
 const seek = (event) => {
-    let seekTime = event.layerX / seekBar.clientWidth * videoElement.duration
-    videoElement.currentTime = seekTime
+    let seekTime = event.layerX / seekBar.clientWidth * video.duration
+    video.currentTime = seekTime
 
-    updateProgressBar()
+    handleTimeUpdate()
 }
 
-const updateProgressBar = () => {
-    let position = (videoElement.currentTime / videoElement.duration) * 100
+const handleTimeUpdate = () => {
+    let position = (video.currentTime / video.duration) * 100
     seekBarElement.firstChild.style.width = position + '%'
 }
 
 const setupVideo = () => {
-    videoElement.addEventListener("click", togglePlay)
-    videoElement.addEventListener("timeupdate", updateProgressBar);
+    video.addEventListener("click", togglePlay)
+    video.addEventListener("timeupdate", handleTimeUpdate);
 }
 
 onMounted(() => {
-    videoElement = document.getElementById("video")
-    videoElement.volume = lastVolume.value
+    video = document.getElementById("video")
+    video.volume = lastVolume.value
 
     seekBarElement = document.getElementById("seekBar")
+
+    document.getElementById("totalTime").innerText = video.duration
 
     setupVideo()
 })
@@ -77,7 +79,7 @@ onMounted(() => {
     <div>
         <!-- video -->
         <video id="video" class="w-full m-2 ml-0 mb-0 aspect-video bg-black" width="320" height="240" :muted="muted">
-            <source :src="video.video_asset">
+            <source :src="videoInfo.video_asset">
             Your browser does not support the video tag.
         </video>
 
@@ -107,7 +109,21 @@ onMounted(() => {
                 </svg>
 
                 <!-- volume slider -->
-                <input id="volumeSlider" type="range" min="0" max="1" step="0.05" value="0.5" @input="updateVolume()">
+                <input id="volumeSlider" type="range" min="0" max="1" step="0.05" value="0.5" @input="updateVolume()" class="w-24">
+
+                <div>
+                    <span id="currentTime">0:00</span>
+                    <span id="totalTime"></span>
+                </div>
+
+                <div class="grow"></div>
+
+                <svg stroke="currentColor" stroke-width="6" stroke-linecap="round" fill="none" class="h-12 w-12 mr-2" @click="toggleFullscreen()" viewBox="0 0 160 90">
+                    <path d="M10 5 v20 Z h20"/>
+                    <path d="M150 5 v20 Z h-20"/>
+                    <path d="M10 85 v-20 Z h20"/>
+                    <path d="M150 85 v-20 Z h-20"/>
+                </svg>
             </div>
         </div>
     </div>
