@@ -7,6 +7,7 @@ const props = defineProps(['videoInfo']);
 * @type {HTMLMediaElement}
 */
 var video = null
+var container = null
 var seekBarElement = null
 const isVideoPlaying = ref(false)
 var lastVolume = ref(0.5)
@@ -19,6 +20,14 @@ const togglePlay = () => {
     } else {
         video.pause()
         isVideoPlaying.value = false
+    }
+}
+
+const toggleFullscreen = () => {
+    if(document.fullscreenElement) {
+        document.exitFullscreen()
+    } else {
+        container.requestFullscreen()
     }
 }
 
@@ -63,16 +72,18 @@ const handleTimeUpdate = () => {
 }
 
 const formatTime = (seconds) => {
-    if(seconds >= 60*60) {
-        return "Not Implemented"
-    } else {
-        let secondPart = Math.round(seconds % 60)
-        let minutePart = Math.floor(seconds / 60)
+    let secondPart = Math.floor(seconds % 60)
+    let minutePart = Math.floor(seconds / 60)
+    let hourPart = Math.floor(seconds / (60 * 60))
 
-        if(seconds % 60 < 10) secondPart = '0' + secondPart
+    if(secondPart < 10) secondPart = '0' + secondPart
 
+    if(hourPart < 1) {
         return minutePart + ":" + secondPart
+    } else {
+        return hourPart + ":" + minutePart + ":" + secondPart
     }
+
 }
 
 const setupVideo = () => {
@@ -83,17 +94,27 @@ const setupVideo = () => {
 onMounted(() => {
     video = document.getElementById("video")
     video.volume = lastVolume.value
-
+    container = document.getElementById("container")
     seekBarElement = document.getElementById("seekBar")
 
-    console.log(video)
+    addEventListener("fullscreenchange", () => {
+        controls = document.getElementById("controls")
+
+        if(document.fullscreenElement == null) {
+            controls.classList.add("-translate-y-12")
+            controls.classList.remove("-translate-y-14")
+        } else {
+            controls.classList.remove("-translate-y-12")
+            controls.classList.add("-translate-y-14")
+        }
+    })
 
     setupVideo()
 })
 </script>
 
 <template>
-    <div>
+    <div id="container">
         <!-- video -->
         <video id="video" preload="metadata" class="w-full m-2 ml-0 mb-0 aspect-video bg-black" width="320" height="240" :muted="muted">
             <source :src="videoInfo.video_asset">
@@ -101,10 +122,12 @@ onMounted(() => {
         </video>
 
         <!-- video controls -->
-        <div class="-mb-12 w-full h-12 bottom-0 -translate-y-12 text-white bg-black/50">
+        <div id="controls" class="-mb-12 w-full h-12 bottom-0 -translate-y-12 text-white bg-black/50">
+            <!-- seek bar -->
             <div id="seekBar" @click="e => seek(e)" class="bg-white w-full h-1 hover:scale-y-[5] -translate-y-1 hover:-translate-y-3 transition-all">
-                <div class="bg-red-600 w-0 h-full"></div>
+                <div class="bg-blue-600 w-0 h-full"></div>
             </div>
+
             <div class="flex -mt-1">
                 <!-- play button -->
                 <svg stroke="currentColor"  viewBox="0 0 20 20" @click="togglePlay()"                                                                                                                                                                                                                                                      class="w-12 h-12" color="white">
