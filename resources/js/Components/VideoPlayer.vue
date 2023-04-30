@@ -47,7 +47,9 @@ const toggleMute = () => {
 }
 
 const seek = (event) => {
-    let seekTime = event.layerX / seekBar.clientWidth * video.duration
+    // if(event.buttons < 1) return
+
+    let seekTime = event.layerX / seekBarElement.clientWidth * video.duration
     video.currentTime = seekTime
 
     handleTimeUpdate()
@@ -56,6 +58,21 @@ const seek = (event) => {
 const handleTimeUpdate = () => {
     let position = (video.currentTime / video.duration) * 100
     seekBarElement.firstChild.style.width = position + '%'
+    document.getElementById("currentTime").innerText = formatTime(video.currentTime)
+    document.getElementById("totalTime").innerText = formatTime(video.duration)
+}
+
+const formatTime = (seconds) => {
+    if(seconds >= 60*60) {
+        return "Not Implemented"
+    } else {
+        let secondPart = Math.round(seconds % 60)
+        let minutePart = Math.floor(seconds / 60)
+
+        if(seconds % 60 < 10) secondPart = '0' + secondPart
+
+        return minutePart + ":" + secondPart
+    }
 }
 
 const setupVideo = () => {
@@ -69,7 +86,7 @@ onMounted(() => {
 
     seekBarElement = document.getElementById("seekBar")
 
-    document.getElementById("totalTime").innerText = video.duration
+    console.log(video)
 
     setupVideo()
 })
@@ -78,29 +95,30 @@ onMounted(() => {
 <template>
     <div>
         <!-- video -->
-        <video id="video" class="w-full m-2 ml-0 mb-0 aspect-video bg-black" width="320" height="240" :muted="muted">
+        <video id="video" preload="metadata" class="w-full m-2 ml-0 mb-0 aspect-video bg-black" width="320" height="240" :muted="muted">
             <source :src="videoInfo.video_asset">
             Your browser does not support the video tag.
         </video>
 
         <!-- video controls -->
         <div class="-mb-12 w-full h-12 bottom-0 -translate-y-12 text-white bg-black/50">
-            <div id="seekBar" @click="e => seek(e)" class="bg-white w-full h-1 hover:scale-y-[5] hover:-translate-y-2 transition-all">
+            <div id="seekBar" @click="e => seek(e)" class="bg-white w-full h-1 hover:scale-y-[5] -translate-y-1 hover:-translate-y-3 transition-all">
                 <div class="bg-red-600 w-0 h-full"></div>
             </div>
-            <div class="flex">
+            <div class="flex -mt-1">
                 <!-- play button -->
                 <svg stroke="currentColor"  viewBox="0 0 20 20" @click="togglePlay()"                                                                                                                                                                                                                                                      class="w-12 h-12" color="white">
                     <path v-show="!isVideoPlaying" id="playingIcon" d="M6 5 L6 15 L15 10 Z" fill="#FFFFFF"/>
                     <path v-show=" isVideoPlaying" id="pausedIcon"  d="M7 5 V15 M13 5 V15"  fill="#FFFFFF" stroke-width="2"/>
                 </svg>
+
                 <!-- volume icon -->
                 <svg stroke="currentColor" class="h-12 w-12" @click="toggleMute()" viewBox="0 0 100 100">
-                    <!-- <rect fill-opacity="0" x="0" y="0" width="100" height="100"/> -->
                     <g fill="currentColor">
                         <rect x="20" y="40" width="20" height="20"/>
                         <path d="M40 40 l10 -10 l0 40 l-10 -10Z"/>
                     </g>
+
                     <g fill="none">
                         <path v-show=" muted" stroke-width="3" d="M60 40 l20 20 M60 60 l20 -20"/>
                         <path v-show="!muted" stroke-width="4" d="M55 25 Q80 50 55 75"/>
@@ -111,9 +129,13 @@ onMounted(() => {
                 <!-- volume slider -->
                 <input id="volumeSlider" type="range" min="0" max="1" step="0.05" value="0.5" @input="updateVolume()" class="w-24">
 
-                <div>
-                    <span id="currentTime">0:00</span>
-                    <span id="totalTime"></span>
+                <!-- time -->
+                <div class="ml-2 flex justify-center items-center">
+                    <div class="">
+                        <span id="currentTime">0:00</span>
+                        <span> / </span>
+                        <span id="totalTime">?:?</span>
+                    </div>
                 </div>
 
                 <div class="grow"></div>
