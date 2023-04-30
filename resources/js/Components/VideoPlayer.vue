@@ -1,6 +1,8 @@
 <script setup>
-import { onMounted, ref} from 'vue';
-const props = defineProps(['videoInfo']);
+import { onMounted, ref} from 'vue'
+import Tooltip from './Tooltip.vue'
+
+const props = defineProps(['videoInfo'])
 
 
 /**
@@ -56,8 +58,6 @@ const toggleMute = () => {
 }
 
 const seek = (event) => {
-    // if(event.buttons < 1) return
-
     let seekTime = event.layerX / seekBarElement.clientWidth * video.duration
     video.currentTime = seekTime
 
@@ -83,7 +83,6 @@ const formatTime = (seconds) => {
     } else {
         return hourPart + ":" + minutePart + ":" + secondPart
     }
-
 }
 
 const setupVideo = () => {
@@ -127,6 +126,10 @@ onMounted(() => {
             <div id="seekBar" @click="e => seek(e)" class="bg-white w-full h-1 hover:scale-y-[5] -translate-y-1 hover:-translate-y-3 transition-all">
                 <div class="bg-blue-600 w-0 h-full"></div>
             </div>
+
+            <Tooltip v-if="seekBarElement" :target="seekBarElement">
+                Bruh
+            </Tooltip>
 
             <div class="flex -mt-1">
                 <!-- play button -->
