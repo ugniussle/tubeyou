@@ -1,24 +1,50 @@
 <script setup>
-import { onMounted } from 'vue';
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 
-const props = defineProps(['target'])
-
-const showTooltip = ref(false)
-
-onMounted(() => {
-    if(props.target.constructor === Array) {
-        for(let i = 0; i < props.length; i++) {
-            target[i].addEventListener('mouseover', () => { showTooltip = true })
-        }
-    } else {
-        target.addEventListener('mouseover', () => { showTooltip = true; console.log('works') })
-    }
+const props = defineProps({
+    message: String,
 })
+onMounted(() => {
+    console.log(props.message)
+})
+
+const tooltip = ref(null)
+
+const showTooltip = (args) => {
+    console.log(args)
+    const event = args[0]
+    tooltip.value.style.transform = "scale(1)"
+
+    let yScroll = window.scrollY
+
+    // if tooltip would go beyond screen boundries, attach it to the right
+    if(window.innerWidth - event.pageX < tooltip.value.offsetWidth) {
+        tooltip.value.style.right = 0 + 'px'
+    } else {
+        tooltip.value.style.left = event.pageX + 'px'
+    }
+
+    // if tooltip would go beyond screen boundries, attach it to the bottom
+    if((window.innerHeight + yScroll) - event.pageY < tooltip.value.offsetHeight) {
+        tooltip.value.style.bottom = 0 + 'px'
+        tooltip.value.style.top = ''
+    } else {
+        tooltip.value.style.top = (event.pageY - yScroll) + 'px'
+        tooltip.value.style.bottom = ''
+    }
+
+    tooltip.value.focus({focusVisible: false})
+}
 </script>
 
 <template>
-    <div v-show="showTooltip">
-        <slot />
+    <div ref="tooltip" class="fixed bg-white whitespace-nowrap transition-all border-1 border-gray-700 text-base scale-0">
+        {{ message }}
     </div>
+
+    <main >
+        <div @mouseover="(e) => showTooltip([e])">
+            <slot/>
+        </div>
+    </main>
 </template>

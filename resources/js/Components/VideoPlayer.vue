@@ -4,13 +4,12 @@ import Tooltip from './Tooltip.vue'
 
 const props = defineProps(['videoInfo'])
 
-
 /**
 * @type {HTMLMediaElement}
 */
 var video = null
 var container = null
-var seekBarElement = null
+var seekBar = ref(null)
 const isVideoPlaying = ref(false)
 var lastVolume = ref(0.5)
 var muted = ref(false)
@@ -58,7 +57,7 @@ const toggleMute = () => {
 }
 
 const seek = (event) => {
-    let seekTime = event.layerX / seekBarElement.clientWidth * video.duration
+    let seekTime = event.layerX / seekBar.value.clientWidth * video.duration
     video.currentTime = seekTime
 
     handleTimeUpdate()
@@ -66,7 +65,7 @@ const seek = (event) => {
 
 const handleTimeUpdate = () => {
     let position = (video.currentTime / video.duration) * 100
-    seekBarElement.firstChild.style.width = position + '%'
+    seekBar.value.firstChild.style.width = position + '%'
     document.getElementById("currentTime").innerText = formatTime(video.currentTime)
     document.getElementById("totalTime").innerText = formatTime(video.duration)
 }
@@ -94,7 +93,6 @@ onMounted(() => {
     video = document.getElementById("video")
     video.volume = lastVolume.value
     container = document.getElementById("container")
-    seekBarElement = document.getElementById("seekBar")
 
     addEventListener("fullscreenchange", () => {
         controls = document.getElementById("controls")
@@ -123,12 +121,12 @@ onMounted(() => {
         <!-- video controls -->
         <div id="controls" class="-mb-12 w-full h-12 bottom-0 -translate-y-12 text-white bg-black/50">
             <!-- seek bar -->
-            <div id="seekBar" @click="e => seek(e)" class="bg-white w-full h-1 hover:scale-y-[5] -translate-y-1 hover:-translate-y-3 transition-all">
+            <div ref="seekBar" @click="e => seek(e)" class="bg-white w-full h-1 hover:scale-y-[5] -translate-y-1 hover:-translate-y-3 transition-all">
                 <div class="bg-blue-600 w-0 h-full"></div>
             </div>
 
-            <Tooltip v-if="seekBarElement" :target="seekBarElement">
-                Bruh
+            <Tooltip :message="'hello from kazakstan'">
+                TOOL TIP MY ASS
             </Tooltip>
 
             <div class="flex -mt-1">
