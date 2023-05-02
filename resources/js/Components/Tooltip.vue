@@ -1,5 +1,10 @@
 <script setup>
+import { onMounted } from 'vue';
 import { ref } from 'vue';
+
+defineProps(['teleportLocation'])
+
+const mounted = ref(false)
 
 const tooltip = ref(null)
 const content = ref(null)
@@ -14,7 +19,8 @@ const showTooltip = (args) => {
     if(window.innerWidth - event.pageX < tooltip.value.offsetWidth) {
         tooltip.value.style.right = 0 + 'px'
     } else {
-        tooltip.value.style.left = event.pageX + 'px'
+        tooltip.value.style.left = event.pageX + 15 + 'px'
+        tooltip.value.style.right = ''
     }
 
     // if the tooltip would go beyond screen boundries, attach it to the bottom
@@ -22,15 +28,19 @@ const showTooltip = (args) => {
         tooltip.value.style.bottom = 0 + 'px'
         tooltip.value.style.top = ''
     } else {
-        tooltip.value.style.top = (event.pageY - yScroll - tooltip.value.offsetHeight - 10) + 'px'
+        tooltip.value.style.top = (event.pageY - yScroll) - 20 + 'px'
         tooltip.value.style.bottom = ''
     }
 }
+
+onMounted(() => {
+    mounted.value = true
+})
 </script>
 
 <template>
-    <Teleport to="body">
-        <div ref="tooltip" class="fixed bg-black/50 text-white whitespace-nowrap border-2 border-gray-700 text-base">
+    <Teleport v-if="mounted" :disabled="teleportLocation == null" :to="teleportLocation">
+        <div ref="tooltip" class="z-50 fixed bg-black/50 text-white whitespace-nowrap border-2 border-gray-700 text-base scale-0">
             <slot name="tooltipMessage"/>
         </div>
     </Teleport>

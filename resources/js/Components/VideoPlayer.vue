@@ -91,6 +91,7 @@ const formatTime = (seconds) => {
 const setupVideo = () => {
     video.addEventListener("click", togglePlay)
     video.addEventListener("timeupdate", handleTimeUpdate);
+    video.currentTime = 0.00001
 }
 
 onMounted(() => {
@@ -124,8 +125,7 @@ onMounted(() => {
 
         <!-- video controls -->
         <div id="controls" class="-mb-12 w-full h-12 bottom-0 -translate-y-12 text-white bg-black/50">
-
-            <Tooltip>
+            <Tooltip :teleportLocation="'#container'">
                 <template #tooltipMessage>
                     {{ formatTime(seekTime) }}
                 </template>
