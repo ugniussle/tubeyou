@@ -9,10 +9,11 @@ const props = defineProps(['videoInfo'])
 */
 var video = null
 var container = null
-var seekBar = ref(null)
+const seekBar = ref(null)
+const seekTime = ref(0)
 const isVideoPlaying = ref(false)
-var lastVolume = ref(0.5)
-var muted = ref(false)
+const lastVolume = ref(0.5)
+const muted = ref(false)
 
 const togglePlay = () => {
     if(video.paused) {
@@ -56,9 +57,12 @@ const toggleMute = () => {
     }
 }
 
-const seek = (event) => {
-    let seekTime = event.layerX / seekBar.value.clientWidth * video.duration
-    video.currentTime = seekTime
+const updateSeekTime = (event) => {
+    seekTime.value = event.layerX / seekBar.value.clientWidth * video.duration
+}
+
+const seek = () => {
+    video.currentTime = seekTime.value
 
     handleTimeUpdate()
 }
@@ -120,13 +124,16 @@ onMounted(() => {
 
         <!-- video controls -->
         <div id="controls" class="-mb-12 w-full h-12 bottom-0 -translate-y-12 text-white bg-black/50">
-            <!-- seek bar -->
-            <div ref="seekBar" @click="e => seek(e)" class="bg-white w-full h-1 hover:scale-y-[5] -translate-y-1 hover:-translate-y-3 transition-all">
-                <div class="bg-blue-600 w-0 h-full"></div>
-            </div>
 
-            <Tooltip :message="'hello from kazakstan'">
-                TOOL TIP MY ASS
+            <Tooltip>
+                <template #tooltipMessage>
+                    {{ formatTime(seekTime) }}
+                </template>
+
+                <!-- seek bar -->
+                <div ref="seekBar" @mousemove="e => updateSeekTime(e)" @click="seek()" class="bg-white w-full h-1 hover:scale-y-[5] -translate-y-1 hover:-translate-y-3 transition-all">
+                    <div class="bg-blue-600 w-0 h-full"></div>
+                </div>
             </Tooltip>
 
             <div class="flex -mt-1">
