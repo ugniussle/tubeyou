@@ -87,7 +87,7 @@ onMounted(() => {
 <template>
     <Head :title="video.title"/>
     <AuthenticatedLayout :main="main" :hideSidebar="true">
-        <div class="text-base m-5 md:m-10" ref="main">
+        <div class="text-base p-5 md:p-10" ref="main">
             <div class="w-full md:w-2/3">
                 <!-- video -->
                 <VideoPlayer :videoInfo="video"/>

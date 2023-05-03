@@ -29,7 +29,7 @@ const navMargin = props.disableSidebar ? 'pl-0' : 'pl-16'
                 :sidebarHidden="props.hideSidebar"
             />
 
-            <nav :class="navMargin" class="bg-white sticky top-0 w-screen z-10">
+            <nav :class="navMargin" class="bg-white sticky top-0 z-10">
                 <!-- Primary Navigation Menu -->
                 <div class="mx-auto px-4">
                     <div class="flex justify-between h-16">

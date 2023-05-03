@@ -91,7 +91,7 @@ const formatTime = (seconds) => {
 const setupVideo = () => {
     video.addEventListener("click", togglePlay)
     video.addEventListener("timeupdate", handleTimeUpdate);
-    video.currentTime = 0.00001
+    video.currentTime = 0.00000001
 }
 
 onMounted(() => {
@@ -118,7 +118,7 @@ onMounted(() => {
 <template>
     <div id="container">
         <!-- video -->
-        <video id="video" preload="metadata" class="w-full m-2 ml-0 mb-0 aspect-video bg-black" width="320" height="240" :muted="muted">
+        <video id="video" preload="metadata" class="w-full block m-2 ml-0 mb-0 aspect-video bg-black" :muted="muted">
             <source :src="videoInfo.video_asset">
             Your browser does not support the video tag.
         </video>
