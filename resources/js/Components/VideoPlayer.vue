@@ -33,6 +33,10 @@ const toggleFullscreen = () => {
     }
 }
 
+const openSettings = () => {
+    console.log("opening settings")
+}
+
 const updateVolume = () => {
     if(muted.value) {
         muted.value = false
@@ -171,7 +175,11 @@ onMounted(() => {
 
                 <div class="grow"></div>
 
-                <svg stroke="currentColor" stroke-width="6" stroke-linecap="round" fill="none" class="h-12 w-12 mr-2" @click="toggleFullscreen()" viewBox="0 0 160 90">
+                <svg @click="openSettings()" stroke="currentColor" stroke-width="10" stroke-linecap="round" fill="none" class="h-12 w-12 mr-2" viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="30"/>
+                </svg>
+
+                <svg @click="toggleFullscreen()" stroke="currentColor" stroke-width="6" stroke-linecap="round" fill="none" class="h-12 w-12 mr-2" viewBox="0 0 160 90">
                     <path d="M10 5 v20 Z h20"/>
                     <path d="M150 5 v20 Z h-20"/>
                     <path d="M10 85 v-20 Z h20"/>
