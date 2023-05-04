@@ -10,6 +10,7 @@ const props = defineProps(['videoInfo'])
 var video = null
 var container = null
 const seekBar = ref(null)
+const settingsMenu = ref(null)
 const seekTime = ref(0)
 const isVideoPlaying = ref(false)
 const lastVolume = ref(0.5)
@@ -33,8 +34,16 @@ const toggleFullscreen = () => {
     }
 }
 
-const openSettings = () => {
-    console.log("opening settings")
+const openSettings = (event) => {
+    console.log(event)
+
+    if(settingsMenu.value.classList.contains("hidden")){
+        settingsMenu.value.classList.add("flex")
+        settingsMenu.value.classList.remove("hidden")
+    } else {
+        settingsMenu.value.classList.add("hidden")
+        settingsMenu.value.classList.remove("flex")
+    }
 }
 
 const updateVolume = () => {
@@ -175,9 +184,15 @@ onMounted(() => {
 
                 <div class="grow"></div>
 
-                <svg @click="openSettings()" stroke="currentColor" stroke-width="10" stroke-linecap="round" fill="none" class="h-12 w-12 mr-2" viewBox="0 0 100 100">
+                <svg @click="(e) => openSettings(e)" stroke="currentColor" stroke-width="10" stroke-linecap="round" fill="none" class="h-12 w-12 mr-2" viewBox="0 0 100 100">
                     <circle cx="50" cy="50" r="30"/>
                 </svg>
+
+                <div ref="settingsMenu" class="flex-col hidden fixed bg-gray-700/70 w-48 bottom-14 right-0">
+                    <div class="p-2">
+                        Quality
+                    </div>
+                </div>
 
                 <svg @click="toggleFullscreen()" stroke="currentColor" stroke-width="6" stroke-linecap="round" fill="none" class="h-12 w-12 mr-2" viewBox="0 0 160 90">
                     <path d="M10 5 v20 Z h20"/>
