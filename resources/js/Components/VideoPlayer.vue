@@ -8,7 +8,17 @@ const props = defineProps(['videoInfo'])
 * @type {HTMLMediaElement}
 */
 var video = null
+
+/**
+* @type {HTMLMediaElement}
+*/
 var container = null
+
+/**
+* @type {HTMLMediaElement}
+*/
+var controls = null
+
 const seekBar = ref(null)
 const settingsMenu = ref(null)
 const seekTime = ref(0)
@@ -35,8 +45,6 @@ const toggleFullscreen = () => {
 }
 
 const openSettings = (event) => {
-    console.log(event)
-
     if(settingsMenu.value.classList.contains("hidden")){
         settingsMenu.value.classList.add("flex")
         settingsMenu.value.classList.remove("hidden")
@@ -101,16 +109,34 @@ const formatTime = (seconds) => {
     }
 }
 
+const hideControls = () => {
+    controls.classList.add("hidden")
+}
+
+var controlsTimeoutID = 0
+
+const showControls = () => {
+    console.log(controlsTimeoutID)
+    controls.classList.remove("hidden")
+
+    clearTimeout(controlsTimeoutID)
+    controlsTimeoutID = setTimeout(hideControls, 2000)
+}
+
 const setupVideo = () => {
     video.addEventListener("click", togglePlay)
-    video.addEventListener("timeupdate", handleTimeUpdate);
+    video.addEventListener("timeupdate", handleTimeUpdate)
     video.currentTime = 0.00000001
+
+    container.addEventListener("mouseover", showControls)
 }
 
 onMounted(() => {
     video = document.getElementById("video")
     video.volume = lastVolume.value
-    container = document.getElementById("container")
+    container = document.getElementById("videoContainer")
+    controls = document.getElementById("controls")
+
 
     addEventListener("fullscreenchange", () => {
         controls = document.getElementById("controls")
@@ -129,7 +155,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <div id="container">
+    <div id="videoContainer">
         <!-- video -->
         <video id="video" preload="metadata" class="w-full block m-2 ml-0 mb-0 aspect-video bg-black" :muted="muted">
             <source :src="videoInfo.video_asset">
@@ -138,7 +164,7 @@ onMounted(() => {
 
         <!-- video controls -->
         <div id="controls" class="-mb-12 w-full h-12 bottom-0 -translate-y-12 text-white bg-black/50">
-            <Tooltip :teleportLocation="'#container'">
+            <Tooltip :teleportLocation="'#videoContainer'">
                 <template #tooltipMessage>
                     {{ formatTime(seekTime) }}
                 </template>
