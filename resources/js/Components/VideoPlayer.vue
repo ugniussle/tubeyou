@@ -44,7 +44,7 @@ const toggleFullscreen = () => {
     }
 }
 
-const openSettings = (event) => {
+const openSettings = () => {
     if(settingsMenu.value.classList.contains("hidden")){
         settingsMenu.value.classList.add("flex")
         settingsMenu.value.classList.remove("hidden")
@@ -54,18 +54,31 @@ const openSettings = (event) => {
     }
 }
 
-const updateVolume = () => {
+const updateVolume = (volume) => {
     if(muted.value) {
         muted.value = false
     }
 
-    let volume = parseFloat(document.getElementById("volumeSlider").value)
+    if(volume < 0) {
+        volume = 0.0
+    }
+
+    if(volume > 1) {
+        volume = 1.0
+    }
+
     video.volume = volume
     lastVolume.value = volume
 
     if(volume == 0.0) {
         muted.value = true
     }
+}
+
+const handleVolumeSlider = () => {
+    let volume = parseFloat(document.getElementById("volumeSlider").value)
+
+    updateVolume(volume)
 }
 
 const toggleMute = () => {
@@ -116,11 +129,13 @@ const hideControls = () => {
 var controlsTimeoutID = 0
 
 const showControls = () => {
-    console.log(controlsTimeoutID)
     controls.classList.remove("hidden")
 
     clearTimeout(controlsTimeoutID)
-    controlsTimeoutID = setTimeout(hideControls, 2000)
+
+    if(!video.paused) {
+        controlsTimeoutID = setTimeout(hideControls, 2000)
+    }
 }
 
 const setupVideo = () => {
@@ -129,6 +144,45 @@ const setupVideo = () => {
     video.currentTime = 0.00000001
 
     container.addEventListener("mouseover", showControls)
+}
+
+const setupKeyboardControls = () => {
+    video.addEventListener("keydown", (event) => {
+        switch(event.key) {
+            case " ":
+                event.preventDefault()
+                togglePlay()
+                break
+            case "m":
+                event.preventDefault()
+                toggleMute()
+                break
+            case "f":
+                event.preventDefault()
+                toggleFullscreen()
+                break
+            case "ArrowLeft":
+                video.currentTime -= 10
+                event.preventDefault()
+                break
+            case "ArrowRight":
+                video.currentTime += 10
+                event.preventDefault()
+                break
+            case "ArrowUp":
+                updateVolume(lastVolume.value + 0.05)
+                event.preventDefault()
+                document.getElementById("volumeSlider").value = lastVolume.value + 0.05
+                break
+            case "ArrowDown":
+                updateVolume(lastVolume.value - 0.05)
+                event.preventDefault()
+                document.getElementById("volumeSlider").value = lastVolume.value - 0.05
+                break
+        }
+
+        showControls()
+    })
 }
 
 onMounted(() => {
@@ -151,6 +205,7 @@ onMounted(() => {
     })
 
     setupVideo()
+    setupKeyboardControls()
 })
 </script>
 
@@ -197,7 +252,7 @@ onMounted(() => {
                 </svg>
 
                 <!-- volume slider -->
-                <input id="volumeSlider" type="range" min="0" max="1" step="0.05" value="0.5" @input="updateVolume()" class="w-24">
+                <input id="volumeSlider" type="range" min="0" max="1" step="0.05" value="0.5" @input="handleVolumeSlider()" class="w-24">
 
                 <!-- time -->
                 <div class="ml-2 flex justify-center items-center">
