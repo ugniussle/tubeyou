@@ -270,8 +270,11 @@ onMounted(() => {
                 </svg>
 
                 <div ref="settingsMenu" class="flex-col hidden fixed bg-gray-700/70 w-48 bottom-14 right-0">
-                    <div class="p-2">
+                    <div class="p-2 cursor-pointer">
                         Quality
+                    </div>
+                    <div class="p-2 cursor-pointer">
+                        Help
                     </div>
                 </div>
 
