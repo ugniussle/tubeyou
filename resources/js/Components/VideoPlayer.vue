@@ -1,6 +1,7 @@
 <script setup>
 import { onMounted, ref} from 'vue'
 import Tooltip from './Tooltip.vue'
+import Modal from './Modal.vue'
 
 const props = defineProps(['videoInfo'])
 
@@ -25,6 +26,8 @@ const seekTime = ref(0)
 const isVideoPlaying = ref(false)
 const lastVolume = ref(0.5)
 const muted = ref(false)
+
+const showHelp = ref(false)
 
 const togglePlay = () => {
     if(video.paused) {
@@ -273,8 +276,16 @@ onMounted(() => {
                     <div class="p-2 cursor-pointer">
                         Quality
                     </div>
-                    <div class="p-2 cursor-pointer">
+                    <div class="p-2 cursor-pointer" @click="showHelp = true">
                         Help
+                        <Modal :show="showHelp" @close="() => showHelp = false">
+                            <h1>Keyboard controls:</h1>
+                                <p><span class="italic">f</span> - fullscreen</p>
+                                <p><span class="italic">arrow left / right</span> - seek by 10 seconds</p>
+                                <p><span class="italic">arrow up / down</span> - change volume</p>
+                                <p><span class="italic">space</span> - pause / resume video</p>
+                                <p><span class="italic">m</span> - mute / unmute video</p>
+                        </Modal>
                     </div>
                 </div>
 
