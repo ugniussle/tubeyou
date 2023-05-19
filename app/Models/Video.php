@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * App\Models\Video
@@ -51,6 +50,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @method static \Illuminate\Database\Eloquent\Builder|Video whereVideoAsset($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Video whereViews($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Video whereVisibility($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Comment> $comments
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Rating> $ratings
  * @mixin \Eloquent
  */
 class Video extends Model
@@ -74,13 +75,11 @@ class Video extends Model
         'thumbnail_asset',
     ];
 
-    public function user(): BelongsTo
-    {
+    public function user(): BelongsTo {
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
-    public function comments(): HasMany
-    {
+    public function comments(): HasMany {
         return $this->hasMany(Comment::class, 'video_id', 'id');
     }
 
