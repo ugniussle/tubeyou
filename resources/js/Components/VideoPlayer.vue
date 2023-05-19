@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref} from 'vue'
+import { onMounted, ref } from 'vue'
 import Tooltip from './Tooltip.vue'
 import Modal from './Modal.vue'
 
@@ -22,6 +22,7 @@ var controls = null
 
 const seekBar = ref(null)
 const settingsMenu = ref(null)
+const qualityList = ref(null)
 const seekTime = ref(0)
 const isVideoPlaying = ref(false)
 const lastVolume = ref(0.5)
@@ -147,6 +148,8 @@ const setupVideo = () => {
     video.currentTime = 0.00000001
 
     container.addEventListener("mouseover", showControls)
+
+
 }
 
 const setupKeyboardControls = () => {
@@ -193,7 +196,6 @@ onMounted(() => {
     video.volume = lastVolume.value
     container = document.getElementById("videoContainer")
     controls = document.getElementById("controls")
-
 
     addEventListener("fullscreenchange", () => {
         controls = document.getElementById("controls")
@@ -259,7 +261,7 @@ onMounted(() => {
 
                 <!-- time -->
                 <div class="ml-2 flex justify-center items-center">
-                    <div class="">
+                    <div>
                         <span id="currentTime">0:00</span>
                         <span> / </span>
                         <span id="totalTime">?:?</span>
@@ -276,6 +278,9 @@ onMounted(() => {
                     <div class="p-2 cursor-pointer">
                         Quality
                     </div>
+
+                    <div ref="qualityList"></div>
+
                     <div class="p-2 cursor-pointer" @click="showHelp = true">
                         Help
                         <Modal :show="showHelp" @close="() => showHelp = false">
