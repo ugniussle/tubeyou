@@ -33,7 +33,7 @@ onMounted(() => {
     dropdownButton.value.addEventListener('click', (event) => {
         setTimeout(showDropdown, 20, [event])
     })
-    
+
     dropdown.value.addEventListener('focusout', () => {
         setTimeout(() => {
             dropdown.value.style.transform = "scale(0)"
@@ -43,11 +43,11 @@ onMounted(() => {
 </script>
 
 <template>
-    <!-- dropdown button --> 
+    <!-- dropdown button -->
     <div class="cursor-pointer">
         <svg ref="dropdownButton" class="h-14 w-14 p-2" viewport="0 0 40 40" color="gray"><circle cx="20" cy="10" r="2"/><circle cx="20" cy="20" r="2"/><circle cx="20" cy="30" r="2"/></svg>
     </div>
-    
+
     <!-- dropdown -->
     <div tabindex="0" style="transform: scale(0);" ref="dropdown" class="fixed bg-white whitespace-nowrap transition-all border-2 border-gray-700 text-base">
         <main>
@@ -55,4 +55,4 @@ onMounted(() => {
         </main>
     </div>
 </template>
-dropdown
+

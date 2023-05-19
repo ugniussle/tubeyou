@@ -11,7 +11,7 @@ const sidebarExpanded = ref(false);
 var sidebarClosedWidth = null
 var sidebarOpenWidth = null
 
-if(sidebarHidden) { 
+if(sidebarHidden) {
     sidebarClosedWidth = 0 // all widths in rem
     sidebarOpenWidth = 14
 } else {
@@ -71,15 +71,14 @@ onMounted(async() => {
 <template>
     <button
         @click="toggleSidebar"
-        class="fixed top:0 inline items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out"
-        style="z-index: 1;"
+        class="fixed z-20 top:0 inline items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out"
     >
         <svg class="h-12 w-12" stroke="currentColor" fill="none" viewBox="0 0 512 512"><path :class="{'inline-flex': !sidebarExpanded}" stroke-linecap="round" stroke-linejoin="round" stroke-width="20" d="M80 128 h352 M80 256 h352 M80 384 h352"/></svg>
     </button>
 
-    <div 
-        ref="sidebar" 
-        class="bg-white fixed left-0 top-16 h-screen overflow-y-auto transition-all"
+    <div
+        ref="sidebar"
+        class="z-20 bg-white fixed left-0 top-16 h-screen overflow-y-auto transition-all"
         :style="'width:'+sidebarClosedWidth + 'rem'"
     >
         <div class="flex items-center space-y-24 text-gray-400">
