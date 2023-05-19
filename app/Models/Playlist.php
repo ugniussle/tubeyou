@@ -34,6 +34,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @method static \Illuminate\Database\Eloquent\Builder|Playlist whereViews($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Playlist whereVisibility($value)
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Playlist_Video> $playlistVideos
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Playlist_Video> $playlistVideos
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Playlist_Video> $playlistVideos
  * @mixin \Eloquent
  */
 class Playlist extends Model

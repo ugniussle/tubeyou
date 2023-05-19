@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Rating;
 use App\Models\Video;
+use App\Models\VideoAsset;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -130,21 +131,27 @@ class VideoController extends Controller
 
         Log::debug("generated token is '$token'");
 
-        $proccessedFileInfo = $this->processVideo(public_path($filepath));
-
         $video = Video::create([
             'user_id' => $user['id'],
             'title' => $validated['title'],
             'description' => $validated['description'],
             'visibility' => $visibility,
             'url_token' => $token,
-            'filename' => $filepath,
-            'thumbnail' => $proccessedFileInfo['thumbnailPath'],
-            'video_asset' => asset($filepath),
-            'thumbnail_asset' => asset($proccessedFileInfo['thumbnailPath']),
         ]);
 
+        $asset = $this->createVideoAsset(public_path($filepath));
+
         return redirect("videos/$token");
+    }
+
+    /**
+     * Process video file into a VideoAsset.
+     * @param string $filepath
+     *
+     * @return VideoAsset
+     */
+    private function createVideoAsset(string $filepath): VideoAsset {
+        Log::debug($filepath);
     }
 
     /**

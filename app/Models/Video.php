@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * App\Models\Video
@@ -52,6 +53,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder|Video whereVisibility($value)
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Comment> $comments
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Rating> $ratings
+ * @property-read \App\Models\VideoAsset|null $asset
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Comment> $comments
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Rating> $ratings
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Comment> $comments
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Rating> $ratings
  * @mixin \Eloquent
  */
 class Video extends Model
@@ -71,8 +77,6 @@ class Video extends Model
         'thumbnail',
         'visibility',
         'url_token',
-        'video_asset',
-        'thumbnail_asset',
     ];
 
     public function user(): BelongsTo {
@@ -85,5 +89,9 @@ class Video extends Model
 
     public function ratings(): HasMany {
         return $this->hasMany(Rating::class, 'video_id', 'id');
+    }
+
+    public function asset(): HasOne {
+        return $this->hasOne(VideoAsset::class, 'video_id', 'id');
     }
 }
