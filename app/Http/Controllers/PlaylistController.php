@@ -80,7 +80,7 @@ class PlaylistController extends Controller
         return redirect("playlists/$token");
     }
 
-    private static function getVisibility(string $str) 
+    private static function getVisibility(string $str)
     {
         $visibility = 0;
 
@@ -124,6 +124,7 @@ class PlaylistController extends Controller
         foreach($videos as $video) {
             $video['username'] = $video->user->username;
             $video['profilePicture'] = $video->user->profile_picture;
+            $video->load("asset");
         }
 
         return Inertia::render('Playlist/Playlist', [
@@ -139,7 +140,7 @@ class PlaylistController extends Controller
         ])->get()->first();
 
         if($firstVideo != null) {
-            return Video::where('id', $firstVideo->video_id)->get()->first()->thumbnail_asset;
+            return Video::where('id', $firstVideo->video_id)->get()->first()->asset->thumbnail_small;
         }
 
         return null;

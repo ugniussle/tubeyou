@@ -193,6 +193,7 @@ const setupKeyboardControls = () => {
 
 onMounted(() => {
     video = document.getElementById("video")
+
     video.volume = lastVolume.value
     container = document.getElementById("videoContainer")
     controls = document.getElementById("controls")
@@ -212,13 +213,15 @@ onMounted(() => {
     setupVideo()
     setupKeyboardControls()
 })
+
+console.log(props.videoInfo.asset)
 </script>
 
 <template>
     <div id="videoContainer">
         <!-- video -->
         <video id="video" preload="metadata" class="w-full block m-2 ml-0 mb-0 aspect-video bg-black" :muted="muted">
-            <source :src="videoInfo.video_asset">
+            <source :src="'/'+videoInfo.asset.video_1080p">
             Your browser does not support the video tag.
         </video>
 

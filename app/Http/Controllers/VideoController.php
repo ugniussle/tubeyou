@@ -42,6 +42,7 @@ class VideoController extends Controller
                     ->get();
 
         $videos->load('user');
+        $videos->load('asset');
 
         return Inertia::render('Video/Videos', [
             'videos' => $videos
@@ -268,6 +269,7 @@ class VideoController extends Controller
         $video->save();
 
         $video->load('user');
+        $video->load('asset');
 
         $comments = $video->comments;
         $comments->load('user');
