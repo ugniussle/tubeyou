@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('video_assets', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->foreign("video_id")->references("id")->on("video")->onDelete("cascade");
+            $table->unsignedBigInteger("video_id");
+            $table->foreign("video_id")->references("id")->on("videos")->onDelete("cascade");
             $table->string("thumbnail_full");
             $table->string("thumbnail_small");
-            $table->string("thumbnail_original");
             $table->string("video_1080p");
             $table->string("video_720p");
             $table->string("video_480p");

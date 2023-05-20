@@ -14,8 +14,10 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use FFMpeg\FFMpeg;
+use FFMpeg\Format;
 use FFMpeg\Coordinate\TimeCode;
 use FFMpeg\Media\Video as FFMpegVideo;
+use FFMpeg\Coordinate\Dimension as FFMpegDimension;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Response;
@@ -33,8 +35,7 @@ class VideoController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): Response
-    {
+    public function index(): Response {
         $videos = Video::where('visibility', 0)
                     ->latest()
                     ->take(12)
@@ -50,8 +51,7 @@ class VideoController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create(): Response
-    {
+    public function create(): Response {
         return Inertia::render('Video/Create',[
             'csrfToken' => csrf_token()
         ]);
@@ -139,8 +139,9 @@ class VideoController extends Controller
             'url_token' => $token,
         ]);
 
-        $asset = $this->createVideoAsset(public_path($filepath));
+        $asset = $this->createVideoAsset($filepath, $video->id);
 
+        Log::debug("asset is '$asset'");
         return redirect("videos/$token");
     }
 
@@ -150,38 +151,67 @@ class VideoController extends Controller
      *
      * @return VideoAsset
      */
-    private function createVideoAsset(string $filepath): VideoAsset {
+    private function createVideoAsset(string $filepath, int $videoId): VideoAsset {
         Log::debug($filepath);
-    }
 
-    /**
-     * Store a newly created resource in storage.
-     * @param string $filepath
-     *
-     * @return array
-     */
-    private function processVideo(string $filepath): array {
-        $info = array();
-        $info['filepath'] = $filepath;
+        $pathInfo = pathinfo($filepath);
+        $outputFolder = "storage/videos/".basename($filepath, '.'.$pathInfo["extension"]);
+        mkdir($outputFolder);
 
-        $info['filename'] = basename($filepath);
+        $resolutions = [
+            [1080, 1920],
+            [720, 1280],
+            [480, 854],
+            [360, 640],
+            [240, 426],
+        ];
 
-        $thumbnailStorage = public_path("storage/thumbnails");
+        $format = new Format\Video\X264();
+        $ffmpeg = FFMpeg::create();
+        $video = $ffmpeg->open($filepath);
+        $asset = [
+            'video_id' => $videoId
+        ];
 
-        if(!is_dir($thumbnailStorage)) {
-            mkdir($thumbnailStorage);
+        foreach($resolutions as $resolution) {
+            $resizedVideo = $this->downscaleVideoResolution($resolution[1], $resolution[0], $video);
+
+            $outputPath = "{$outputFolder}/{$resolution[0]}.mp4";
+            Log::debug("output path is :  {$outputPath}");
+
+            $resizedVideo->save(format: $format, outputPathfile: $outputPath);
+
+            switch($resolution[0]) {
+                case 1080:
+                    $asset["video_1080p"] = $outputPath;
+                    $asset["thumbnail_full"] = "{$outputFolder}/thumbnail_full.png";
+                    $this->saveThumbnail($ffmpeg->open($outputPath), "{$outputFolder}/thumbnail_full.png");
+                    break;
+                case 720: $asset["video_720p"] = $outputPath; break;
+                case 480:
+                    $asset["video_480p"] = $outputPath;
+                    $asset["thumbnail_small"] = "{$outputFolder}/thumbnail_small.png";
+                    $this->saveThumbnail($ffmpeg->open($outputPath), "{$outputFolder}/thumbnail_small.png");
+                    break;
+                case 360: $asset["video_360p"] = $outputPath; break;
+                case 240: $asset["video_240p"] = $outputPath; break;
+            }
+
+            $format->setKiloBitrate($format->getKiloBitrate() * 0.7);
         }
 
-        $thumbnailFilename = explode('.', $info['filename'])[0];
+        $asset["video_original"] = $filepath;
 
-        $ffmpeg = FFMpeg::create();
-        $video = $ffmpeg->open($info['filepath']);
+        $videoAsset = VideoAsset::create($asset);
 
-        $thumbnailPath = "$thumbnailStorage/$thumbnailFilename.jpg";
-        $this->saveThumbnail($video, $thumbnailPath);
-        $info['thumbnailPath'] = 'storage/thumbnails/'.$thumbnailFilename.'.jpg';
+        return $videoAsset;
+    }
 
-        return $info;
+    private function downscaleVideoResolution(int $width, int $height, FFMpegVideo $video): FFMpegVideo {
+        Log::debug("res: {$width} {$height}");
+        $dimension = new FFMpegDimension($width, $height);
+        $video->filters()->resize($dimension);
+        return $video;
     }
 
     private function saveThumbnail(FFMpegVideo $video, string $filepath): void {

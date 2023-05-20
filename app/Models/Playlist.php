@@ -36,6 +36,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Playlist_Video> $playlistVideos
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Playlist_Video> $playlistVideos
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Playlist_Video> $playlistVideos
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Playlist_Video> $playlistVideos
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Playlist_Video> $playlistVideos
  * @mixin \Eloquent
  */
 class Playlist extends Model

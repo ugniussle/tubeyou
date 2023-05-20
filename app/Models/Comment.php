@@ -35,6 +35,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read \Illuminate\Database\Eloquent\Collection<int, Comment> $replies
  * @property-read \Illuminate\Database\Eloquent\Collection<int, Comment> $replies
  * @property-read \Illuminate\Database\Eloquent\Collection<int, Comment> $replies
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Comment> $replies
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Comment> $replies
  * @mixin \Eloquent
  */
 class Comment extends Model
