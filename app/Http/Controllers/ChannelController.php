@@ -10,18 +10,19 @@ use App\Http\Controllers\PlaylistController;
 class ChannelController extends Controller
 {
 
-    public static function index() 
+    public static function index()
     {
         return Inertia::render('');
     }
 
-    public static function view(int $id) 
+    public static function view(int $id)
     {
         $channel = User::find($id);
 
         $videos = $channel->videos
             ->where('visibility', 0);
         $videos->load('user');
+        $videos->load('asset');
 
         $playlists = $channel->playlists
             ->where('visibility', 0);
