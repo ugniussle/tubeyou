@@ -174,6 +174,22 @@ class VideoController extends Controller
             'video_id' => $videoId
         ];
 
+        Log::debug("format is ".print_r($video->getStreams()->videos()->first()->all(), true));
+        $stream = $video->getStreams()->videos()->first();
+
+        $height = $stream->getDimensions()->getHeight();
+        for($i = 0; $i < 5; $i++) {
+            if($resolutions[$i][0] > $height) {
+                array_splice($resolutions, $i, 1);
+                $i--;
+            } else {
+                break;
+            }
+        }
+
+        $asset["thumbnail_full"] = "{$outputFolder}/thumbnail_full.png";
+        $this->saveThumbnail($video, "{$outputFolder}/thumbnail_full.png");
+
         foreach($resolutions as $resolution) {
             $resizedVideo = $this->downscaleVideoResolution($resolution[1], $resolution[0], $video);
 
@@ -185,17 +201,14 @@ class VideoController extends Controller
             switch($resolution[0]) {
                 case 1080:
                     $asset["video_1080p"] = $outputPath;
-                    $asset["thumbnail_full"] = "{$outputFolder}/thumbnail_full.png";
-                    $this->saveThumbnail($ffmpeg->open($outputPath), "{$outputFolder}/thumbnail_full.png");
                     break;
                 case 720: $asset["video_720p"] = $outputPath; break;
-                case 480:
-                    $asset["video_480p"] = $outputPath;
+                case 480: $asset["video_480p"] = $outputPath; break;
+                case 360: $asset["video_360p"] = $outputPath; break;
+                case 240:
                     $asset["thumbnail_small"] = "{$outputFolder}/thumbnail_small.png";
                     $this->saveThumbnail($ffmpeg->open($outputPath), "{$outputFolder}/thumbnail_small.png");
-                    break;
-                case 360: $asset["video_360p"] = $outputPath; break;
-                case 240: $asset["video_240p"] = $outputPath; break;
+                    $asset["video_240p"] = $outputPath; break;
             }
 
             $format->setKiloBitrate($format->getKiloBitrate() * 0.7);

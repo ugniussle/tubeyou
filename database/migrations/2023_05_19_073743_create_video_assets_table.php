@@ -18,10 +18,10 @@ return new class extends Migration
             $table->foreign("video_id")->references("id")->on("videos")->onDelete("cascade");
             $table->string("thumbnail_full");
             $table->string("thumbnail_small");
-            $table->string("video_1080p");
-            $table->string("video_720p");
-            $table->string("video_480p");
-            $table->string("video_360p");
+            $table->string("video_1080p")->nullable();
+            $table->string("video_720p")->nullable();
+            $table->string("video_480p")->nullable();
+            $table->string("video_360p")->nullable();
             $table->string("video_240p");
             $table->string("video_original");
         });

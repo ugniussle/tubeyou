@@ -27,7 +27,6 @@ const seekTime = ref(0)
 const isVideoPlaying = ref(false)
 const lastVolume = ref(0.5)
 const muted = ref(false)
-
 const showHelp = ref(false)
 
 const togglePlay = () => {
@@ -142,14 +141,35 @@ const showControls = () => {
     }
 }
 
+onMounted(() => {
+    video = document.getElementById("video")
+
+    video.volume = lastVolume.value
+    container = document.getElementById("videoContainer")
+    controls = document.getElementById("controls")
+
+    addEventListener("fullscreenchange", () => {
+        controls = document.getElementById("controls")
+
+        if(document.fullscreenElement == null) {
+            controls.classList.add("-translate-y-12")
+            controls.classList.remove("-translate-y-14")
+        } else {
+            controls.classList.remove("-translate-y-12")
+            controls.classList.add("-translate-y-14")
+        }
+    })
+
+    setupVideo()
+    setupKeyboardControls()
+})
+
 const setupVideo = () => {
     video.addEventListener("click", togglePlay)
     video.addEventListener("timeupdate", handleTimeUpdate)
     video.currentTime = 0.00000001
 
     container.addEventListener("mouseover", showControls)
-
-
 }
 
 const setupKeyboardControls = () => {
@@ -191,37 +211,42 @@ const setupKeyboardControls = () => {
     })
 }
 
-onMounted(() => {
-    video = document.getElementById("video")
+const switchQuality = (event) => {
+    let time = video.currentTime
 
-    video.volume = lastVolume.value
-    container = document.getElementById("videoContainer")
-    controls = document.getElementById("controls")
+    switch(event.target.outerText) {
+        case "1080p":
+            video.src = '/'+props.videoInfo.asset.video_1080p
+            break
+        case "720p":
+            video.src = '/'+props.videoInfo.asset.video_720p
+            break
+        case "480p":
+            video.src = '/'+props.videoInfo.asset.video_480p
+            break
+        case "360p":
+            video.src = '/'+props.videoInfo.asset.video_360p
+            break
+        case "240p":
+            video.src = '/'+props.videoInfo.asset.video_240p
+            break
+    }
 
-    addEventListener("fullscreenchange", () => {
-        controls = document.getElementById("controls")
-
-        if(document.fullscreenElement == null) {
-            controls.classList.add("-translate-y-12")
-            controls.classList.remove("-translate-y-14")
-        } else {
-            controls.classList.remove("-translate-y-12")
-            controls.classList.add("-translate-y-14")
-        }
-    })
-
-    setupVideo()
-    setupKeyboardControls()
-})
-
-console.log(props.videoInfo.asset)
+    video.load()
+    video.currentTime = time
+    if(isVideoPlaying.value) video.play()
+}
 </script>
 
 <template>
     <div id="videoContainer">
         <!-- video -->
         <video id="video" preload="metadata" class="w-full block m-2 ml-0 mb-0 aspect-video bg-black" :muted="muted">
-            <source :src="'/'+videoInfo.asset.video_1080p">
+            <source v-if="videoInfo.asset.video_1080p" :src="'/'+videoInfo.asset.video_1080p">
+            <source v-if="videoInfo.asset.video_720p" :src="'/'+videoInfo.asset.video_720p">
+            <source v-if="videoInfo.asset.video_480p" :src="'/'+videoInfo.asset.video_480p">
+            <source v-if="videoInfo.asset.video_360p" :src="'/'+videoInfo.asset.video_360p">
+            <source :src="'/'+videoInfo.asset.video_240p">
             Your browser does not support the video tag.
         </video>
 
@@ -282,7 +307,13 @@ console.log(props.videoInfo.asset)
                         Quality
                     </div>
 
-                    <div ref="qualityList"></div>
+                    <div ref="qualityList">
+                        <div v-if="videoInfo.asset.video_1080p" @click="e => switchQuality(e)">1080p</div>
+                        <div v-if="videoInfo.asset.video_720p"  @click="e => switchQuality(e)">720p</div>
+                        <div v-if="videoInfo.asset.video_480p"  @click="e => switchQuality(e)">480p</div>
+                        <div v-if="videoInfo.asset.video_360p"  @click="e => switchQuality(e)">360p</div>
+                        <div @click="e => switchQuality(e)">240p</div>
+                    </div>
 
                     <div class="p-2 cursor-pointer" @click="showHelp = true">
                         Help
