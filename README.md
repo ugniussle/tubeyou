@@ -51,7 +51,7 @@
 2. Let unregistered users view videos
 3. Group vue templates by usage (videos, input)
 4. ~~Show channel name and picture in video preview~~
-5. Use Provide / Inject in the frontend
+5. Remove all event listeners on unmount
 
 ### setup instructions
 
