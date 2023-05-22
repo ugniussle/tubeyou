@@ -2,6 +2,7 @@
 import { onMounted, ref } from 'vue'
 import Tooltip from './Tooltip.vue'
 import Modal from './Modal.vue'
+import { onUnmounted } from 'vue'
 
 const props = defineProps(['videoInfo'])
 
@@ -106,7 +107,7 @@ const seek = () => {
 
 const handleTimeUpdate = () => {
     let position = (video.currentTime / video.duration) * 100
-    seekBar.value.firstChild.style.width = position + '%'
+    seekBar.value.lastChild.style.width = position + '%'
     document.getElementById("currentTime").innerText = formatTime(video.currentTime)
     document.getElementById("totalTime").innerText = formatTime(video.duration)
 }
@@ -164,12 +165,27 @@ onMounted(() => {
     setupKeyboardControls()
 })
 
+var bufferCheckIntervalID = 0
+
 const setupVideo = () => {
     video.addEventListener("click", togglePlay)
     video.addEventListener("timeupdate", handleTimeUpdate)
     video.currentTime = 0.00000001
 
     container.addEventListener("mouseover", showControls)
+    container.addEventListener("mousemove", showControls)
+
+    bufferCheckIntervalID = setInterval(updateBufferLine, 2000)
+}
+
+const updateBufferLine = () => {
+    console.log(
+        video.buffered.start(0),
+        video.buffered.end(0)
+    )
+
+    let position = (video.buffered.end(0) / video.duration) * 100
+    seekBar.value.firstChild.style.width = position + '%'
 }
 
 const setupKeyboardControls = () => {
@@ -236,6 +252,10 @@ const switchQuality = (event) => {
     video.currentTime = time
     if(isVideoPlaying.value) video.play()
 }
+
+onUnmounted(() => {
+    clearInterval(bufferCheckIntervalID)
+})
 </script>
 
 <template>
@@ -259,7 +279,8 @@ const switchQuality = (event) => {
 
                 <!-- seek bar -->
                 <div ref="seekBar" @mousemove="e => updateSeekTime(e)" @click="seek()" class="bg-white w-full h-1 hover:scale-y-[5] -translate-y-1 hover:-translate-y-3 transition-all">
-                    <div class="bg-blue-600 w-0 h-full"></div>
+                    <div id="bufferLine" class="bg-blue-400/50 w-0 h-full"></div>
+                    <div id="playbackLine" class="bg-blue-800 w-0 h-full -mt-1"></div>
                 </div>
             </Tooltip>
 
@@ -280,7 +301,7 @@ const switchQuality = (event) => {
                     <g fill="none">
                         <path v-show=" muted" stroke-width="3" d="M60 40 l20 20 M60 60 l20 -20"/>
                         <path v-show="!muted" stroke-width="4" d="M55 25 Q80 50 55 75"/>
-                        <path v-show="!muted && lastVolume > 0.5" stroke-width="4" d="M65 20 Q95 50 65 80" />
+                        <path v-show="!muted && lastVolume > 0.5" stroke-width="4" d="M65 20 Q95 50 65 80"/>
                     </g>
                 </svg>
 
