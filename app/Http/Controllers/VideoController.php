@@ -168,6 +168,7 @@ class VideoController extends Controller
         ];
 
         $format = new Format\Video\X264();
+        $format->setKiloBitrate(4000);
         $ffmpeg = FFMpeg::create();
         $video = $ffmpeg->open($filepath);
         $asset = [
