@@ -8,7 +8,7 @@ const props = defineProps(['playlist'])
     <div class="w-full border-2 p-2 flex bg-white">
         <!-- thumbnail -->
         <Link :href="'/playlists/'+playlist.url_token">
-            <img class="object-contain aspect-video h-32 bg-black" :src="playlist.thumbnail">
+            <img class="object-contain aspect-video h-32 bg-black" :src="'/'+playlist.thumbnail">
         </Link>
 
         <!-- info -->
@@ -26,5 +26,5 @@ const props = defineProps(['playlist'])
             <slot/>
         </main>
     </div>
-    
+
 </template>

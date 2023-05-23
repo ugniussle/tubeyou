@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Rating;
 use App\Models\Video;
+use App\Models\VideoAsset;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -13,8 +14,10 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use FFMpeg\FFMpeg;
+use FFMpeg\Format;
 use FFMpeg\Coordinate\TimeCode;
 use FFMpeg\Media\Video as FFMpegVideo;
+use FFMpeg\Coordinate\Dimension as FFMpegDimension;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Response;
@@ -32,14 +35,14 @@ class VideoController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): Response
-    {
+    public function index(): Response {
         $videos = Video::where('visibility', 0)
                     ->latest()
                     ->take(12)
                     ->get();
 
         $videos->load('user');
+        $videos->load('asset');
 
         return Inertia::render('Video/Videos', [
             'videos' => $videos
@@ -49,8 +52,7 @@ class VideoController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create(): Response
-    {
+    public function create(): Response {
         return Inertia::render('Video/Create',[
             'csrfToken' => csrf_token()
         ]);
@@ -130,51 +132,101 @@ class VideoController extends Controller
 
         Log::debug("generated token is '$token'");
 
-        $proccessedFileInfo = $this->processVideo(public_path($filepath));
-
         $video = Video::create([
             'user_id' => $user['id'],
             'title' => $validated['title'],
             'description' => $validated['description'],
             'visibility' => $visibility,
             'url_token' => $token,
-            'filename' => $filepath,
-            'thumbnail' => $proccessedFileInfo['thumbnailPath'],
-            'video_asset' => asset($filepath),
-            'thumbnail_asset' => asset($proccessedFileInfo['thumbnailPath']),
         ]);
 
+        $asset = $this->createVideoAsset($filepath, $video->id);
+
+        Log::debug("asset is '$asset'");
         return redirect("videos/$token");
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Process video file into a VideoAsset.
      * @param string $filepath
      *
-     * @return array
+     * @return VideoAsset
      */
-    private function processVideo(string $filepath): array {
-        $info = array();
-        $info['filepath'] = $filepath;
+    private function createVideoAsset(string $filepath, int $videoId): VideoAsset {
+        Log::debug($filepath);
 
-        $info['filename'] = basename($filepath);
+        $pathInfo = pathinfo($filepath);
+        $outputFolder = "storage/videos/".basename($filepath, '.'.$pathInfo["extension"]);
+        mkdir($outputFolder);
 
-        $thumbnailStorage = public_path("storage/thumbnails");
+        $resolutions = [
+            [1080, 1920],
+            [720, 1280],
+            [480, 854],
+            [360, 640],
+            [240, 426],
+        ];
 
-        if(!is_dir($thumbnailStorage)) {
-            mkdir($thumbnailStorage);
+        $format = new Format\Video\X264();
+        $format->setKiloBitrate(4000);
+        $ffmpeg = FFMpeg::create();
+        $video = $ffmpeg->open($filepath);
+        $asset = [
+            'video_id' => $videoId
+        ];
+
+        Log::debug("format is ".print_r($video->getStreams()->videos()->first()->all(), true));
+        $stream = $video->getStreams()->videos()->first();
+
+        $height = $stream->getDimensions()->getHeight();
+        for($i = 0; $i < 5; $i++) {
+            if($resolutions[$i][0] > $height) {
+                array_splice($resolutions, $i, 1);
+                $i--;
+            } else {
+                break;
+            }
         }
 
-        $thumbnailFilename = explode('.', $info['filename'])[0];
+        $asset["thumbnail_full"] = "{$outputFolder}/thumbnail_full.png";
+        $this->saveThumbnail($video, "{$outputFolder}/thumbnail_full.png");
 
-        $ffmpeg = FFMpeg::create();
-        $video = $ffmpeg->open($info['filepath']);
+        foreach($resolutions as $resolution) {
+            $resizedVideo = $this->downscaleVideoResolution($resolution[1], $resolution[0], $video);
 
-        $thumbnailPath = "$thumbnailStorage/$thumbnailFilename.jpg";
-        $this->saveThumbnail($video, $thumbnailPath);
-        $info['thumbnailPath'] = 'storage/thumbnails/'.$thumbnailFilename.'.jpg';
+            $outputPath = "{$outputFolder}/{$resolution[0]}.mp4";
+            Log::debug("output path is :  {$outputPath}");
 
-        return $info;
+            $resizedVideo->save(format: $format, outputPathfile: $outputPath);
+
+            switch($resolution[0]) {
+                case 1080:
+                    $asset["video_1080p"] = $outputPath;
+                    break;
+                case 720: $asset["video_720p"] = $outputPath; break;
+                case 480: $asset["video_480p"] = $outputPath; break;
+                case 360: $asset["video_360p"] = $outputPath; break;
+                case 240:
+                    $asset["thumbnail_small"] = "{$outputFolder}/thumbnail_small.png";
+                    $this->saveThumbnail($ffmpeg->open($outputPath), "{$outputFolder}/thumbnail_small.png");
+                    $asset["video_240p"] = $outputPath; break;
+            }
+
+            $format->setKiloBitrate($format->getKiloBitrate() * 0.7);
+        }
+
+        $asset["video_original"] = $filepath;
+
+        $videoAsset = VideoAsset::create($asset);
+
+        return $videoAsset;
+    }
+
+    private function downscaleVideoResolution(int $width, int $height, FFMpegVideo $video): FFMpegVideo {
+        Log::debug("res: {$width} {$height}");
+        $dimension = new FFMpegDimension($width, $height);
+        $video->filters()->resize($dimension);
+        return $video;
     }
 
     private function saveThumbnail(FFMpegVideo $video, string $filepath): void {
@@ -231,6 +283,7 @@ class VideoController extends Controller
         $video->save();
 
         $video->load('user');
+        $video->load('asset');
 
         $comments = $video->comments;
         $comments->load('user');

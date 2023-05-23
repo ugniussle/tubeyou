@@ -2,6 +2,7 @@
 import { onMounted, ref } from 'vue'
 import Tooltip from './Tooltip.vue'
 import Modal from './Modal.vue'
+import { onUnmounted } from 'vue'
 
 const props = defineProps(['videoInfo'])
 
@@ -27,8 +28,8 @@ const seekTime = ref(0)
 const isVideoPlaying = ref(false)
 const lastVolume = ref(0.5)
 const muted = ref(false)
-
 const showHelp = ref(false)
+const showQualitySettings = ref(false)
 
 const togglePlay = () => {
     if(video.paused) {
@@ -48,7 +49,7 @@ const toggleFullscreen = () => {
     }
 }
 
-const openSettings = () => {
+const toggleSettings = () => {
     if(settingsMenu.value.classList.contains("hidden")){
         settingsMenu.value.classList.add("flex")
         settingsMenu.value.classList.remove("hidden")
@@ -56,6 +57,8 @@ const openSettings = () => {
         settingsMenu.value.classList.add("hidden")
         settingsMenu.value.classList.remove("flex")
     }
+
+    showQualitySettings.value = false
 }
 
 const updateVolume = (volume) => {
@@ -107,7 +110,7 @@ const seek = () => {
 
 const handleTimeUpdate = () => {
     let position = (video.currentTime / video.duration) * 100
-    seekBar.value.firstChild.style.width = position + '%'
+    seekBar.value.lastChild.style.width = position + '%'
     document.getElementById("currentTime").innerText = formatTime(video.currentTime)
     document.getElementById("totalTime").innerText = formatTime(video.duration)
 }
@@ -128,6 +131,7 @@ const formatTime = (seconds) => {
 
 const hideControls = () => {
     controls.classList.add("hidden")
+    showQualitySettings.value = false
 }
 
 var controlsTimeoutID = 0
@@ -138,9 +142,37 @@ const showControls = () => {
     clearTimeout(controlsTimeoutID)
 
     if(!video.paused) {
-        controlsTimeoutID = setTimeout(hideControls, 2000)
+        controlsTimeoutID = setTimeout(hideControls, 2500)
     }
 }
+
+onMounted(() => {
+    video = document.getElementById("video")
+
+    video.volume = lastVolume.value
+    container = document.getElementById("videoContainer")
+    controls = document.getElementById("controls")
+
+    addEventListener("fullscreenchange", () => {
+        controls = document.getElementById("controls")
+
+        if(document.fullscreenElement == null) {
+            controls.classList.add("-translate-y-12")
+            controls.classList.remove("-translate-y-14")
+        } else {
+            controls.classList.remove("-translate-y-12")
+            controls.classList.add("-translate-y-14")
+        }
+    })
+
+    let bestQuality = qualityList.value.firstElementChild.innerHTML
+    document.getElementById("currentQuality").innerHTML = "(" + bestQuality + ")"
+
+    setupVideo()
+    setupKeyboardControls()
+})
+
+var bufferCheckIntervalID = 0
 
 const setupVideo = () => {
     video.addEventListener("click", togglePlay)
@@ -148,8 +180,14 @@ const setupVideo = () => {
     video.currentTime = 0.00000001
 
     container.addEventListener("mouseover", showControls)
+    container.addEventListener("mousemove", showControls)
 
+    bufferCheckIntervalID = setInterval(updateBufferLine, 2000)
+}
 
+const updateBufferLine = () => {
+    let position = (video.buffered.end(0) / video.duration) * 100
+    seekBar.value.firstChild.style.width = position + '%'
 }
 
 const setupKeyboardControls = () => {
@@ -191,26 +229,26 @@ const setupKeyboardControls = () => {
     })
 }
 
-onMounted(() => {
-    video = document.getElementById("video")
-    video.volume = lastVolume.value
-    container = document.getElementById("videoContainer")
-    controls = document.getElementById("controls")
+const switchQuality = (event) => {
+    let time = video.currentTime
+    console.log(event)
+    document.getElementById("currentQuality").innerHTML = "(" + event.target.outerText + ")"
 
-    addEventListener("fullscreenchange", () => {
-        controls = document.getElementById("controls")
+    switch(event.target.outerText) {
+        case "1080p": video.src = '/'+props.videoInfo.asset.video_1080p; break
+        case "720p": video.src = '/'+props.videoInfo.asset.video_720p; break
+        case "480p": video.src = '/'+props.videoInfo.asset.video_480p; break
+        case "360p": video.src = '/'+props.videoInfo.asset.video_360p; break
+        case "240p": video.src = '/'+props.videoInfo.asset.video_240p; break
+    }
 
-        if(document.fullscreenElement == null) {
-            controls.classList.add("-translate-y-12")
-            controls.classList.remove("-translate-y-14")
-        } else {
-            controls.classList.remove("-translate-y-12")
-            controls.classList.add("-translate-y-14")
-        }
-    })
+    video.load()
+    video.currentTime = time
+    if(isVideoPlaying.value) video.play()
+}
 
-    setupVideo()
-    setupKeyboardControls()
+onUnmounted(() => {
+    clearInterval(bufferCheckIntervalID)
 })
 </script>
 
@@ -218,7 +256,11 @@ onMounted(() => {
     <div id="videoContainer">
         <!-- video -->
         <video id="video" preload="metadata" class="w-full block m-2 ml-0 mb-0 aspect-video bg-black" :muted="muted">
-            <source :src="videoInfo.video_asset">
+            <source v-if="videoInfo.asset.video_1080p" :src="'/'+videoInfo.asset.video_1080p">
+            <source v-if="videoInfo.asset.video_720p" :src="'/'+videoInfo.asset.video_720p">
+            <source v-if="videoInfo.asset.video_480p" :src="'/'+videoInfo.asset.video_480p">
+            <source v-if="videoInfo.asset.video_360p" :src="'/'+videoInfo.asset.video_360p">
+            <source :src="'/'+videoInfo.asset.video_240p">
             Your browser does not support the video tag.
         </video>
 
@@ -231,7 +273,8 @@ onMounted(() => {
 
                 <!-- seek bar -->
                 <div ref="seekBar" @mousemove="e => updateSeekTime(e)" @click="seek()" class="bg-white w-full h-1 hover:scale-y-[5] -translate-y-1 hover:-translate-y-3 transition-all">
-                    <div class="bg-blue-600 w-0 h-full"></div>
+                    <div id="bufferLine" class="bg-blue-400/50 w-0 h-full"></div>
+                    <div id="playbackLine" class="bg-blue-800 w-0 h-full -mt-1"></div>
                 </div>
             </Tooltip>
 
@@ -252,7 +295,7 @@ onMounted(() => {
                     <g fill="none">
                         <path v-show=" muted" stroke-width="3" d="M60 40 l20 20 M60 60 l20 -20"/>
                         <path v-show="!muted" stroke-width="4" d="M55 25 Q80 50 55 75"/>
-                        <path v-show="!muted && lastVolume > 0.5" stroke-width="4" d="M65 20 Q95 50 65 80" />
+                        <path v-show="!muted && lastVolume > 0.5" stroke-width="4" d="M65 20 Q95 50 65 80"/>
                     </g>
                 </svg>
 
@@ -270,16 +313,22 @@ onMounted(() => {
 
                 <div class="grow"></div>
 
-                <svg @click="(e) => openSettings(e)" stroke="currentColor" stroke-width="10" stroke-linecap="round" fill="none" class="h-12 w-12 mr-2" viewBox="0 0 100 100">
+                <svg @click="(e) => toggleSettings(e)" stroke="currentColor" stroke-width="10" stroke-linecap="round" fill="none" class="h-12 w-12 mr-2" viewBox="0 0 100 100">
                     <circle cx="50" cy="50" r="30"/>
                 </svg>
 
-                <div ref="settingsMenu" class="flex-col hidden fixed bg-gray-700/70 w-48 bottom-14 right-0">
-                    <div class="p-2 cursor-pointer">
-                        Quality
+                <div ref="settingsMenu" class="flex-col hidden fixed bg-gray-700/70 w-48 bottom-14 right-0 border border-black">
+                    <div class="p-2 cursor-pointer" @click="showQualitySettings = !showQualitySettings">
+                        Quality <span id="currentQuality"></span>
                     </div>
 
-                    <div ref="qualityList"></div>
+                    <div ref="qualityList" v-show="showQualitySettings" @click="showQualitySettings = false" class="bg-gray-700/70 fixed w-24 bottom-14 -translate-x-24 text-center border border-black">
+                        <div v-if="videoInfo.asset.video_1080p" @click="e => switchQuality(e)">1080p</div>
+                        <div v-if="videoInfo.asset.video_720p"  @click="e => switchQuality(e)">720p</div>
+                        <div v-if="videoInfo.asset.video_480p"  @click="e => switchQuality(e)">480p</div>
+                        <div v-if="videoInfo.asset.video_360p"  @click="e => switchQuality(e)">360p</div>
+                        <div v-if="videoInfo.asset.video_240p"  @click="e => switchQuality(e)">240p</div>
+                    </div>
 
                     <div class="p-2 cursor-pointer" @click="showHelp = true">
                         Help

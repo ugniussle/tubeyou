@@ -18,8 +18,8 @@
    7. ~~Edit thumbnail~~
    8. ~~Count views~~
    9. ~~Add liking and disliking~~
-   10. Create multiple resolution video sources
-   11. Create multiple resolution thumbnails
+   10. ~~Create multiple resolution video sources~~
+   11. ~~Create multiple resolution thumbnails~~
    12. Add pagination
 2. Playlists
    1. ~~Create playlist~~
@@ -51,7 +51,7 @@
 2. Let unregistered users view videos
 3. Group vue templates by usage (videos, input)
 4. ~~Show channel name and picture in video preview~~
-5. Use Provide / Inject in the frontend
+5. Remove all event listeners on unmount
 
 ### setup instructions
 

@@ -25,6 +25,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @method static \Illuminate\Database\Eloquent\Builder|Playlist_Video wherePosition($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Playlist_Video whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Playlist_Video whereVideoId($value)
+ * @property int $id
+ * @method static \Illuminate\Database\Eloquent\Builder|Playlist_Video whereId($value)
  * @mixin \Eloquent
  */
 class Playlist_Video extends Model

@@ -32,6 +32,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder|Comment whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Comment whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Comment whereVideoId($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Comment> $replies
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Comment> $replies
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Comment> $replies
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Comment> $replies
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Comment> $replies
  * @mixin \Eloquent
  */
 class Comment extends Model

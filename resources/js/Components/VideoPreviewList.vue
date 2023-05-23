@@ -12,19 +12,19 @@ const props = defineProps(['video'])
         <div class="w-full p-1 flex">
             <!-- thumbnail -->
             <Link :href="route('videos.view', video.url_token)" class="rounded-sm">
-                <img class="bg-black aspect-video object-contain rounded-sm hover:ring-red-500 hover:ring-2 h-32" :src="video.thumbnail_asset"/>
+                <img class="bg-black aspect-video object-contain rounded-sm hover:ring-red-500 hover:ring-2 h-32" :src="'/'+video.asset.thumbnail_small"/>
             </Link>
 
             <div class="flex">
                 <!-- video info -->
                 <ProfilePicture class="mx-2" :user="video.user" :size="'2.5rem'"/>
-                
+
                 <div>
                     <!-- title -->
                     <Link :href="route('videos.view', video.url_token)" class="block text-left">
                         {{ video.title }}
                     </Link>
-    
+
                     <!-- channel name, view count and date -->
                     <div class="text-left text-sm">
                         <div class="inline">

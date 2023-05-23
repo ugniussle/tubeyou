@@ -51,6 +51,17 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @method static \Illuminate\Database\Eloquent\Builder|Video whereVideoAsset($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Video whereViews($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Video whereVisibility($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Comment> $comments
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Rating> $ratings
+ * @property-read \App\Models\VideoAsset|null $asset
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Comment> $comments
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Rating> $ratings
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Comment> $comments
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Rating> $ratings
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Comment> $comments
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Rating> $ratings
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Comment> $comments
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Rating> $ratings
  * @mixin \Eloquent
  */
 class Video extends Model
@@ -70,21 +81,21 @@ class Video extends Model
         'thumbnail',
         'visibility',
         'url_token',
-        'video_asset',
-        'thumbnail_asset',
     ];
 
-    public function user(): BelongsTo
-    {
+    public function user(): BelongsTo {
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
-    public function comments(): HasMany
-    {
+    public function comments(): HasMany {
         return $this->hasMany(Comment::class, 'video_id', 'id');
     }
 
     public function ratings(): HasMany {
         return $this->hasMany(Rating::class, 'video_id', 'id');
+    }
+
+    public function asset(): HasOne {
+        return $this->hasOne(VideoAsset::class, 'video_id', 'id');
     }
 }
