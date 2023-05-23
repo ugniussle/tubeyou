@@ -29,6 +29,7 @@ const isVideoPlaying = ref(false)
 const lastVolume = ref(0.5)
 const muted = ref(false)
 const showHelp = ref(false)
+const showQualitySettings = ref(false)
 
 const togglePlay = () => {
     if(video.paused) {
@@ -48,7 +49,7 @@ const toggleFullscreen = () => {
     }
 }
 
-const openSettings = () => {
+const toggleSettings = () => {
     if(settingsMenu.value.classList.contains("hidden")){
         settingsMenu.value.classList.add("flex")
         settingsMenu.value.classList.remove("hidden")
@@ -56,6 +57,8 @@ const openSettings = () => {
         settingsMenu.value.classList.add("hidden")
         settingsMenu.value.classList.remove("flex")
     }
+
+    showQualitySettings.value = false
 }
 
 const updateVolume = (volume) => {
@@ -128,6 +131,7 @@ const formatTime = (seconds) => {
 
 const hideControls = () => {
     controls.classList.add("hidden")
+    showQualitySettings.value = false
 }
 
 var controlsTimeoutID = 0
@@ -138,7 +142,7 @@ const showControls = () => {
     clearTimeout(controlsTimeoutID)
 
     if(!video.paused) {
-        controlsTimeoutID = setTimeout(hideControls, 2000)
+        controlsTimeoutID = setTimeout(hideControls, 2500)
     }
 }
 
@@ -161,6 +165,9 @@ onMounted(() => {
         }
     })
 
+    let bestQuality = qualityList.value.firstElementChild.innerHTML
+    document.getElementById("currentQuality").innerHTML = "(" + bestQuality + ")"
+
     setupVideo()
     setupKeyboardControls()
 })
@@ -179,11 +186,6 @@ const setupVideo = () => {
 }
 
 const updateBufferLine = () => {
-    console.log(
-        video.buffered.start(0),
-        video.buffered.end(0)
-    )
-
     let position = (video.buffered.end(0) / video.duration) * 100
     seekBar.value.firstChild.style.width = position + '%'
 }
@@ -229,23 +231,15 @@ const setupKeyboardControls = () => {
 
 const switchQuality = (event) => {
     let time = video.currentTime
+    console.log(event)
+    document.getElementById("currentQuality").innerHTML = "(" + event.target.outerText + ")"
 
     switch(event.target.outerText) {
-        case "1080p":
-            video.src = '/'+props.videoInfo.asset.video_1080p
-            break
-        case "720p":
-            video.src = '/'+props.videoInfo.asset.video_720p
-            break
-        case "480p":
-            video.src = '/'+props.videoInfo.asset.video_480p
-            break
-        case "360p":
-            video.src = '/'+props.videoInfo.asset.video_360p
-            break
-        case "240p":
-            video.src = '/'+props.videoInfo.asset.video_240p
-            break
+        case "1080p": video.src = '/'+props.videoInfo.asset.video_1080p; break
+        case "720p": video.src = '/'+props.videoInfo.asset.video_720p; break
+        case "480p": video.src = '/'+props.videoInfo.asset.video_480p; break
+        case "360p": video.src = '/'+props.videoInfo.asset.video_360p; break
+        case "240p": video.src = '/'+props.videoInfo.asset.video_240p; break
     }
 
     video.load()
@@ -319,21 +313,21 @@ onUnmounted(() => {
 
                 <div class="grow"></div>
 
-                <svg @click="(e) => openSettings(e)" stroke="currentColor" stroke-width="10" stroke-linecap="round" fill="none" class="h-12 w-12 mr-2" viewBox="0 0 100 100">
+                <svg @click="(e) => toggleSettings(e)" stroke="currentColor" stroke-width="10" stroke-linecap="round" fill="none" class="h-12 w-12 mr-2" viewBox="0 0 100 100">
                     <circle cx="50" cy="50" r="30"/>
                 </svg>
 
-                <div ref="settingsMenu" class="flex-col hidden fixed bg-gray-700/70 w-48 bottom-14 right-0">
-                    <div class="p-2 cursor-pointer">
-                        Quality
+                <div ref="settingsMenu" class="flex-col hidden fixed bg-gray-700/70 w-48 bottom-14 right-0 border border-black">
+                    <div class="p-2 cursor-pointer" @click="showQualitySettings = !showQualitySettings">
+                        Quality <span id="currentQuality"></span>
                     </div>
 
-                    <div ref="qualityList">
+                    <div ref="qualityList" v-show="showQualitySettings" @click="showQualitySettings = false" class="bg-gray-700/70 fixed w-24 bottom-14 -translate-x-24 text-center border border-black">
                         <div v-if="videoInfo.asset.video_1080p" @click="e => switchQuality(e)">1080p</div>
                         <div v-if="videoInfo.asset.video_720p"  @click="e => switchQuality(e)">720p</div>
                         <div v-if="videoInfo.asset.video_480p"  @click="e => switchQuality(e)">480p</div>
                         <div v-if="videoInfo.asset.video_360p"  @click="e => switchQuality(e)">360p</div>
-                        <div @click="e => switchQuality(e)">240p</div>
+                        <div v-if="videoInfo.asset.video_240p"  @click="e => switchQuality(e)">240p</div>
                     </div>
 
                     <div class="p-2 cursor-pointer" @click="showHelp = true">
